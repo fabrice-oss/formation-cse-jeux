@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape Game CSE/SSCT - Les 9 principes généraux de prévention</title>
+<style>
+:root{
+  --navy:#101f3c;--blue:#2563eb;--cyan:#0891b2;--orange:#ea580c;--gold:#f59e0b;
+  --green:#16a34a;--red:#dc2626;--purple:#7c3aed;--ink:#142033;--muted:#64748b;
+  --bg:#f4f8ff;--card:#fff;--line:#d8e2f0;--shadow:0 22px 60px rgba(15,23,42,.14);
+  --radius:28px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:Aptos,Arial,Helvetica,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 8%,rgba(8,145,178,.17),transparent 28%),
+    radial-gradient(circle at 92% 18%,rgba(234,88,12,.16),transparent 30%),
+    radial-gradient(circle at 60% 92%,rgba(37,99,235,.12),transparent 30%),
+    linear-gradient(135deg,#f8fbff,#eef5fc 52%,#fff7ed);
+}
+.app{max-width:1380px;margin:0 auto;padding:26px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{width:76px;height:76px;border-radius:26px;background:linear-gradient(135deg,#0f1f3a,#075985 52%,#f59e0b);color:#fff;display:grid;place-items:center;font-size:38px;box-shadow:var(--shadow);position:relative}
+.logo:after{content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.35);border-radius:20px}
+h1{font-size:34px;line-height:1.04;margin:0;letter-spacing:-.7px}
+.sub{color:var(--muted);margin:7px 0 0;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button,a.btn{
+  border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;font-size:15px;
+  background:var(--navy);color:#fff;box-shadow:0 12px 25px rgba(15,23,42,.16);transition:.16s transform,.16s filter,.16s opacity;text-decoration:none;display:inline-flex;align-items:center;gap:8px
+}
+button:hover,a.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+button.secondary,a.secondary{background:#fff;color:var(--navy);border:1px solid var(--line);box-shadow:none}
+button.blue{background:var(--blue)}button.green{background:var(--green)}button.red{background:var(--red)}
+button.gold{background:linear-gradient(135deg,#f59e0b,#fde68a);color:#111827}
+button.ghost{background:#eef2ff;color:#1e3a8a;box-shadow:none;border:1px solid #c7d2fe}
+.panel{background:rgba(255,255,255,.92);border:1px solid rgba(216,225,239,.95);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;backdrop-filter:blur(10px)}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:900;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+.hero h2{font-size:46px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1px}
+.hero p{font-size:17px;line-height:1.55;color:#334155}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#64748b;font-size:14px;line-height:1.35}
+.poster{min-height:560px;position:relative;overflow:hidden;background:linear-gradient(145deg,#ffffff,#eef6ff)}
+.ladder{position:absolute;left:5%;right:5%;bottom:44px;height:456px}
+.step{position:absolute;height:46px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 14px 28px rgba(15,23,42,.10);display:flex;align-items:center;gap:12px;padding:0 16px;font-weight:1000}
+.step i{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#e0f2fe;color:#075985;font-style:normal}
+.step:nth-child(1){left:0;bottom:0;width:72%}.step:nth-child(2){left:7%;bottom:50px;width:70%}.step:nth-child(3){left:14%;bottom:100px;width:68%}.step:nth-child(4){left:21%;bottom:150px;width:66%}.step:nth-child(5){left:28%;bottom:200px;width:64%}.step:nth-child(6){left:35%;bottom:250px;width:62%}.step:nth-child(7){left:42%;bottom:300px;width:60%}.step:nth-child(8){left:49%;bottom:350px;width:58%}.step:nth-child(9){left:56%;bottom:400px;width:56%;background:#fffbeb;border-color:#fcd34d}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:var(--muted)}
+.progress{height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--cyan),var(--orange));transition:.25s}
+.rooms{display:grid;gap:9px;max-height:560px;overflow:auto;padding-right:4px}
+.room{display:flex;gap:10px;align-items:center;border-radius:18px;padding:10px;background:#fff;border:1px solid var(--line);color:#334155}
+.room .num{min-width:34px;height:34px;border-radius:12px;background:#eff6ff;display:grid;place-items:center;font-weight:1000;color:#1d4ed8}
+.room.active{border-color:#f59e0b;background:#fffbeb}.room.done{border-color:#22c55e;background:#f0fdf4}
+.inventory{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#ecfeff;color:#155e75;border:1px solid #67e8f9;font-weight:900;font-size:12px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:30px;margin:0;letter-spacing:-.4px}
+.mission-head p{color:var(--muted);line-height:1.45;margin:7px 0 0}
+.case{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;margin:14px 0;box-shadow:0 12px 28px rgba(15,23,42,.06)}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#334155}
+.scene-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch}
+.scene-card{border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#eef6fb;min-height:390px;position:relative}
+.scene-card svg{width:100%;height:100%;display:block}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{background:#fff;color:#172033;text-align:left;border:1px solid #dbe3ef;box-shadow:none;min-height:78px;display:flex;gap:12px;align-items:center}
+.choice .ico{font-size:26px}.choice.selected{outline:4px solid rgba(37,99,235,.15)}.choice.good{background:#dcfce7;border-color:#22c55e}.choice.bad{background:#fee2e2;border-color:#ef4444}
+.drop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.drop{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:18px;padding:14px;min-height:112px}
+.drop h4{margin:0 0 8px;font-size:18px}
+.pillbox{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{border:1px solid #dbe3ef;border-radius:999px;padding:9px 11px;background:#fff;color:#0f172a;font-weight:900;cursor:pointer;font-size:14px}
+.pill.selected{background:#e0f2fe;border-color:#38bdf8}
+.drop .pill{display:inline-flex;margin:4px}
+.order-list{display:grid;gap:10px;margin-top:12px}
+.order-item{background:#fff;border:1px solid #dbe3ef;border-radius:17px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.order-actions{display:flex;gap:6px}.order-actions button{padding:8px 10px;border-radius:11px;background:#eef2ff;color:#1e1b4b;box-shadow:none}
+.feedback{display:none;border-radius:20px;padding:16px;margin-top:16px;border:1px solid var(--line);background:#f8fafc}
+.feedback.show{display:block}.feedback.good{background:#ecfdf5;border-color:#86efac}.feedback.bad{background:#fff1f2;border-color:#fecdd3}
+.feedback h3{margin:0 0 8px}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:#f59e0b;margin:0}
+.memo{text-align:left;margin-top:24px}.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}.memo th:last-child,.memo td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:1050px){.hero,.game,.scene-wrap{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.drop-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}.poster{min-height:540px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🧭</div>
+    <div>
+      <h1>Les 9 principes généraux de prévention</h1>
+      <p class="sub">Escape game CSE/SSCT — Cas concret MANGANELLI : nouveau flux logistique audiovisuel</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="secondary" onclick="goHome()">Accueil</button>
+    <button class="secondary" onclick="toggleFacilitator()">Mode formateur</button>
+    <a class="btn secondary" href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033019913" target="_blank">Légifrance L.4121-2</a>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="panel">
+    <span class="badge">🔐 Mission immersive — 60 à 75 minutes</span>
+    <h2>La pyramide prévention de MANGANELLI doit être reconstruite.</h2>
+    <p>MANGANELLI, entreprise d’intégration audiovisuelle, réorganise son atelier : plus de flight-cases, plus de manutention, plus de câbles, un nouveau convoyeur, un nouveau produit de nettoyage et un planning plus tendu. Les élus CSE doivent proposer des mesures cohérentes en utilisant les <b>9 principes généraux de prévention</b>.</p>
+    <div class="rules">
+      <div class="rule"><b>🎯 Objectif</b><span>Comprendre l’utilité réelle de chaque principe.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>QCM, classements, association principe/action, cas final.</span></div>
+      <div class="rule"><b>🛠️ Production</b><span>Transformer un risque en plan d’action argumenté.</span></div>
+    </div>
+    <p class="sources">Référence : article L.4121-2 du Code du travail. Le référentiel SSCT DREETS insiste sur l’identification des dangers, l’évaluation des risques et la construction d’actions de prévention.</p>
+    <button class="gold" onclick="startGame()">Démarrer l’inspection MANGANELLI</button>
+  </div>
+  <div class="panel poster">
+    <div class="ladder">
+      <div class="step"><i>1</i>Éviter les risques</div>
+      <div class="step"><i>2</i>Évaluer les risques</div>
+      <div class="step"><i>3</i>Combattre à la source</div>
+      <div class="step"><i>4</i>Adapter le travail à l’homme</div>
+      <div class="step"><i>5</i>Tenir compte de la technique</div>
+      <div class="step"><i>6</i>Remplacer le dangereux</div>
+      <div class="step"><i>7</i>Planifier la prévention</div>
+      <div class="step"><i>8</i>Priorité protection collective</div>
+      <div class="step"><i>9</i>Instructions appropriées</div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Conseils d’animation</h2>
+  <p>À chaque scellé, demande aux équipes : “Quelle mesure agit le plus en amont ? Est-ce une mesure de prévention, de protection ou seulement une consigne ? Que proposeriez-vous en réunion CSE ?”</p>
+  <div class="rules">
+    <div class="rule"><b>Variante courte</b><span>Joue les scellés 1, 2, 5, 8, 10, 14.</span></div>
+    <div class="rule"><b>Variante débat</b><span>Une équipe défend l’action la plus efficace, l’autre l’action la plus réaliste.</span></div>
+    <div class="rule"><b>Débrief</b><span>Relier au DUERP : risque → principe → action → pilote → délai.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar panel">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Scellé</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/14</div><div class="l">Réussis</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés retrouvées</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+  <section class="panel">
+    <div class="mission-head">
+      <div><h2 id="title"></h2><p id="story"></p></div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="hintBtn" class="ghost" onclick="showHint()">Indice</button>
+      <button id="resetBtn" class="secondary" onclick="resetAnswers()">Réinitialiser</button>
+      <button id="validateBtn" class="blue" onclick="validateRoom()">Valider</button>
+      <button id="retryBtn" class="red hidden" onclick="retryRoom()">Réessayer</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Scellé suivant</button>
+      <button class="secondary" onclick="goHome()">Retour accueil</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="panel end hidden">
+  <h2>Pyramide de prévention reconstituée</h2>
+  <p class="big"><span id="finalScore">0</span>/140</p>
+  <p id="finalMsg"></p>
+  <button class="gold" onclick="restart()">Rejouer</button>
+  <button class="secondary" onclick="goHome()">Accueil</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Utiliser les 9 principes</h2>
+    <table>
+      <tr><th>Principe</th><th>Utilité concrète</th><th>Question réflexe du CSE</th></tr>
+      <tr><td>1. Éviter les risques</td><td>Supprimer le danger ou l’exposition.</td><td>Peut-on ne pas faire cette opération dangereuse ?</td></tr>
+      <tr><td>2. Évaluer les risques non évités</td><td>Objectiver gravité, fréquence, exposition.</td><td>Quel niveau de risque reste-t-il et pour qui ?</td></tr>
+      <tr><td>3. Combattre à la source</td><td>Agir là où le danger naît.</td><td>Peut-on capoter, aspirer, isoler, supprimer la source ?</td></tr>
+      <tr><td>4. Adapter le travail à l’homme</td><td>Adapter poste, rythme, outils, organisation.</td><td>Le poste est-il adapté aux salariés réels ?</td></tr>
+      <tr><td>5. Tenir compte de l’évolution technique</td><td>Rechercher une solution plus sûre disponible.</td><td>Existe-t-il une technologie plus sûre aujourd’hui ?</td></tr>
+      <tr><td>6. Remplacer le dangereux</td><td>Substituer un produit, procédé ou outil dangereux.</td><td>Existe-t-il une alternative moins dangereuse ?</td></tr>
+      <tr><td>7. Planifier la prévention</td><td>Coordonner actions, délais, acteurs, suivi.</td><td>Qui fait quoi, quand, avec quel contrôle ?</td></tr>
+      <tr><td>8. Priorité au collectif</td><td>Protéger tout le monde avant les EPI.</td><td>Peut-on installer un garde-corps, une ventilation, un balisage ?</td></tr>
+      <tr><td>9. Instructions appropriées</td><td>Former, informer, expliquer les règles.</td><td>Les consignes sont-elles claires, connues et applicables ?</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const LEGIFRANCE="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033019913";
+const scenarios=[
+{title:"Scellé 1 — Le bon réflexe",type:"Choix simple",key:"Réflexe amont",story:"MANGANELLI utilise un dégraissant irritant pour nettoyer les pièces de fixation audiovisuelle.",hint:"Le premier réflexe n’est pas l’EPI, mais la suppression du danger ou de l’exposition.",scene:"chemical",question:"Quelle réflexion correspond le mieux à la logique des 9 principes ?",answer:"B",choices:[["A","On commence par ajouter une affiche."],["B","On vérifie d’abord si l’opération dangereuse peut être évitée ou supprimée."],["C","On donne directement des gants et le sujet est clos."],["D","On attend un accident pour agir."]],explain:"Le premier principe est d’éviter les risques. La démarche commence par la suppression du danger ou de l’exposition quand c’est possible."},
+{title:"Scellé 2 — Hiérarchiser les actions",type:"Classement",key:"Hiérarchie",story:"Un câble traverse une zone de passage entre l’atelier et la zone de chargement.",hint:"Classe de la mesure la plus en amont vers la mesure la plus dépendante du comportement individuel.",scene:"cable",order:true,answer:["Supprimer le câble de la zone de passage","Fixer le câble dans une goulotte","Baliser temporairement la zone","Demander aux salariés de faire attention"],explain:"La prévention efficace privilégie la suppression et l’action à la source avant les simples consignes."},
+{title:"Scellé 3 — Les 9 principes dans l’ordre",type:"Classement",key:"Ordre légal",story:"Le coffre demande de remettre 5 principes dans l’ordre logique du Code du travail.",hint:"Le Code commence par éviter, puis évaluer, puis combattre à la source.",scene:"ladder",order:true,answer:["Éviter les risques","Évaluer les risques qui ne peuvent pas être évités","Combattre les risques à la source","Adapter le travail à l’homme","Donner les instructions appropriées"],explain:"L’article L.4121-2 commence par éviter les risques, puis évaluer ceux qui ne peuvent pas être évités, puis combattre à la source."},
+{title:"Scellé 4 — Évaluer sans attendre l’accident",type:"Choix simple",key:"Évaluation",story:"La zone de livraison croise les piétons, les transpalettes et les flight-cases.",hint:"Évaluer ne veut pas dire attendre l’accident.",scene:"traffic",question:"Quel principe est principalement mobilisé ?",answer:"C",choices:[["A","Remplacer ce qui est dangereux."],["B","Donner uniquement des instructions."],["C","Évaluer les risques qui ne peuvent pas être évités."],["D","Ignorer le risque tant qu’il n’y a pas d’accident."]],explain:"Si le risque ne peut pas être immédiatement supprimé, il faut l’évaluer : exposition, probabilité, gravité, maîtrise existante."},
+{title:"Scellé 5 — Combattre à la source",type:"Choix simple",key:"Source",story:"Une machine de conditionnement projette parfois des fragments de film plastique.",hint:"Les lunettes protègent l’individu, mais la source se situe sur la machine.",scene:"machine",question:"Quelle mesure combat le mieux le risque à la source ?",answer:"A",choices:[["A","Installer un capotage ou écran fixe sur la zone de projection."],["B","Rappeler oralement d’être prudent."],["C","Afficher une consigne en salle de pause."],["D","Demander aux salariés de tourner la tête."]],explain:"Combattre à la source signifie agir au point d’émission du danger : capotage, aspiration, suppression de fuite, réduction du bruit à l’émission."},
+{title:"Scellé 6 — Adapter le travail à l’homme",type:"Choix simple",key:"Adapter",story:"Les techniciens manutentionnent des flight-cases lourdes sur une table trop basse.",hint:"Ce principe vise la conception des postes, les équipements et les méthodes de travail.",scene:"ergonomics",question:"Quelle mesure illustre le mieux “adapter le travail à l’homme” ?",answer:"D",choices:[["A","Demander aux salariés d’être plus résistants."],["B","Ne rien changer car le poste a toujours fonctionné ainsi."],["C","Ajouter une note de service."],["D","Installer une table réglable et une aide à la manutention."]],explain:"Adapter le travail à l’homme consiste à modifier le poste pour tenir compte des capacités réelles des travailleurs."},
+{title:"Scellé 7 — Évolution technique",type:"Choix simple",key:"Technique",story:"L’atelier utilise une visseuse vibrante ancienne. Un modèle récent réduit fortement les vibrations.",hint:"Le principe 5 pousse à ne pas rester bloqué sur une ancienne méthode si la technique permet de réduire le risque.",scene:"vibration",question:"Quel principe justifie l’étude du nouvel outil ?",answer:"B",choices:[["A","Éviter toute analyse."],["B","Tenir compte de l’état d’évolution de la technique."],["C","Donner uniquement des instructions."],["D","Remplacer le CSE par un expert."]],explain:"Tenir compte de l’évolution technique pousse à rechercher les solutions disponibles plus sûres."},
+{title:"Scellé 8 — Substitution",type:"Choix simple",key:"Substitution",story:"Un solvant dangereux est utilisé pour retirer des traces de colle sur les supports. Un produit moins dangereux existe.",hint:"Le mot-clé est remplacer.",scene:"chemical2",question:"Quel principe est directement concerné ?",answer:"C",choices:[["A","Planifier la prévention."],["B","Adapter le travail à l’homme."],["C","Remplacer ce qui est dangereux par ce qui ne l’est pas ou ce qui l’est moins."],["D","Faire une réunion préparatoire du CSE."]],explain:"La substitution est un principe central : remplacer un produit, procédé ou équipement dangereux par une solution moins dangereuse."},
+{title:"Scellé 9 — Planifier la prévention",type:"Classement",key:"Planification",story:"Après une inspection CSE, plusieurs risques ont été identifiés dans l’atelier.",hint:"La planification relie diagnostic, priorités, pilote, délai, suivi.",scene:"planning",order:true,answer:["Identifier les risques et les situations de travail","Définir les priorités d’action","Désigner un pilote et une échéance","Suivre l’efficacité des mesures"],explain:"Planifier la prévention, c’est organiser dans la durée : technique, organisation, conditions de travail, relations sociales, facteurs ambiants."},
+{title:"Scellé 10 — Protection collective avant EPI",type:"Choix simple",key:"Collectif",story:"Une mezzanine sert au stockage de matériel audiovisuel. La première proposition est : “mettre un harnais à tout le monde”.",hint:"Le principe 8 donne la priorité aux protections collectives.",scene:"height",question:"Quelle mesure doit être étudiée en priorité ?",answer:"A",choices:[["A","Installer un garde-corps ou supprimer l’accès dangereux."],["B","Distribuer uniquement des harnais."],["C","Demander aux salariés de marcher lentement."],["D","Faire signer une décharge."]],explain:"Les protections collectives protègent tous les travailleurs, indépendamment du comportement individuel. Elles passent avant les EPI."},
+{title:"Scellé 11 — Instructions appropriées",type:"Choix simple",key:"Instructions",story:"Une nouvelle procédure de consignation électrique est mise en place pour les interventions audiovisuelles.",hint:"La consigne est utile si elle est comprise, applicable et accompagnée.",scene:"training",question:"Quelle action correspond au 9e principe ?",answer:"D",choices:[["A","Envoyer un PDF de 40 pages sans explication."],["B","Afficher une phrase vague : soyez prudents."],["C","Laisser chacun deviner la bonne pratique."],["D","Former, expliquer, vérifier la compréhension et l’application."]],explain:"Donner les instructions appropriées signifie fournir une information claire, adaptée au travail réel, et s’assurer que les travailleurs savent quoi faire."},
+{title:"Scellé 12 — La fausse bonne mesure",type:"Choix simple",key:"EPI insuffisant",story:"Des salariés respirent des vapeurs lors d’un collage. L’employeur propose uniquement des masques.",hint:"Cherche la réponse qui remonte plus haut dans la hiérarchie de prévention.",scene:"vapors",question:"Quelle réponse du CSE est la plus pertinente ?",answer:"B",choices:[["A","Les masques suffisent toujours."],["B","Étudier suppression, substitution, captage/ventilation, puis compléter par EPI si besoin."],["C","Demander uniquement une affiche."],["D","Refuser toute mesure de prévention."]],explain:"Les EPI peuvent être nécessaires, mais ils ne doivent pas remplacer les mesures plus en amont : éviter, substituer, combattre à la source, protection collective."},
+{title:"Scellé 13 — Relier principe et action",type:"Classement",key:"Association",story:"Associe chaque action au bon principe dominant.",hint:"Clique une carte puis une catégorie. Cherche le principe le plus directement illustré.",scene:"cards",items:[["Éviter","Faire livrer les flight-cases directement à hauteur pour supprimer une manutention"],["Source","Installer une aspiration au point d’émission des poussières"],["Substitution","Remplacer un solvant dangereux par un produit moins dangereux"],["Collectif","Installer un garde-corps autour de la plateforme"]],explain:"Une même action peut parfois répondre à plusieurs principes, mais l’exercice vise le principe dominant."},
+{title:"Scellé 14 — Cas final MANGANELLI",type:"Choix multiple",key:"Cas final",story:"MANGANELLI prépare un nouveau flux logistique : plus de manutention, plus de circulation, un convoyeur et un nouveau produit chimique.",hint:"Les bonnes réponses construisent une démarche complète, pas une action isolée.",scene:"final",multi:true,answer:["A","B","D","E"],choices:[["A","Analyser les situations de travail avant la mise en service."],["B","Évaluer les risques résiduels et les inscrire dans le DUERP."],["C","Attendre plusieurs accidents pour vérifier si le risque est réel."],["D","Prioriser les actions à la source et les protections collectives."],["E","Prévoir formation, consignes, pilotes, délais et suivi."],["F","Se limiter à distribuer des EPI sans autre mesure."]],explain:"La démarche complète combine anticipation, évaluation, actions à la source, protections collectives, consignes, formation, planification et suivi."}
+];
+
+let current=0, score=0, keys=[], assignments={}, activePill=null, selectedOrder=[];
+
+function goHome(){window.location.href='index.html';}
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("end").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render()}
+function restart(){startGame()}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){
+ document.getElementById("rooms").innerHTML=scenarios.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>Scellé ${i+1}</b><br><span class="sources">${(r.title.split('—')[1]||r.title).trim()}</span></div></div>`).join("");
+ document.getElementById("bar").style.width=(current/scenarios.length*100)+"%";
+ document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/14";
+ document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`;
+}
+function render(){
+ assignments={};activePill=null;selectedOrder=[];
+ const r=scenarios[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;
+ document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";
+ ["validateBtn","hintBtn","resetBtn"].forEach(id=>document.getElementById(id).classList.remove("hidden"));
+ ["retryBtn","nextBtn"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ renderNav();
+ if(r.type==="Choix simple") renderChoice(r,false); else if(r.type==="Choix multiple") renderChoice(r,true); else if(r.order) renderOrder(r); else renderClassify(r);
+}
+function renderChoice(r,multi){
+ document.getElementById("content").innerHTML=`<div class="scene-wrap"><div class="scene-card">${sceneSvg(r.scene)}</div><div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="${multi?`toggleChoice('${k}')`:`selectChoice('${k}')`}"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div></div>`;
+}
+function renderOrder(r){
+ selectedOrder=[...r.answer].sort(()=>Math.random()-.5);
+ document.getElementById("content").innerHTML=`<div class="scene-wrap"><div class="scene-card">${sceneSvg(r.scene)}</div><div class="case"><h3>Remets dans le bon ordre</h3><p>Utilise les flèches pour classer les cartes.</p><div class="order-list" id="orderList"></div></div></div>`;
+ drawOrder();
+}
+function drawOrder(){document.getElementById("orderList").innerHTML=selectedOrder.map((v,i)=>`<div class="order-item"><b>${i+1}. ${v}</b><div class="order-actions"><button onclick="moveItem(${i},-1)">↑</button><button onclick="moveItem(${i},1)">↓</button></div></div>`).join("")}
+function moveItem(i,dir){const j=i+dir;if(j<0||j>=selectedOrder.length)return;[selectedOrder[i],selectedOrder[j]]=[selectedOrder[j],selectedOrder[i]];drawOrder()}
+function renderClassify(r){
+ const shuffled=[...r.items].sort(()=>Math.random()-.5);
+ document.getElementById("content").innerHTML=`<div class="scene-wrap"><div class="scene-card">${sceneSvg(r.scene)}</div><div class="case"><h3>Associe chaque action au bon principe</h3><p>Clique d’abord sur une carte, puis sur une zone.</p><div class="pillbox" id="pillbox">${shuffled.map((it,idx)=>`<span class="pill" id="p-${idx}" onclick="pickPill(${idx})" data-cat="${it[0]}">${it[1]}</span>`).join("")}</div><div class="drop-grid">${dropZone("Éviter","1. Éviter")}${dropZone("Source","3. Combattre à la source")}${dropZone("Substitution","6. Remplacer le dangereux")}${dropZone("Collectif","8. Protection collective")}</div></div></div>`;
+}
+function dropZone(cat,label){return `<div class="drop" onclick="dropHere('${cat}')"><h4>${label}</h4><div id="drop-${cat}"></div></div>`}
+function pickPill(idx){document.querySelectorAll(".pill").forEach(p=>p.classList.remove("selected"));activePill=idx;document.getElementById("p-"+idx).classList.add("selected")}
+function dropHere(cat){if(activePill===null)return;const p=document.getElementById("p-"+activePill);if(!p)return;assignments[activePill]=cat;document.getElementById("drop-"+cat).appendChild(p);p.classList.remove("selected");activePill=null}
+function selectChoice(k){assignments.choice=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleChoice(k){assignments.multi=assignments.multi||[];assignments.multi=assignments.multi.includes(k)?assignments.multi.filter(x=>x!==k):[...assignments.multi,k];document.getElementById("c-"+k).classList.toggle("selected")}
+function arrEq(a,b){return (a||[]).slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){
+ const r=scenarios[current];let ok=false;
+ if(r.type==="Choix simple"){ok=assignments.choice===r.answer;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("good","bad"));document.getElementById("c-"+r.answer)?.classList.add("good");if(assignments.choice&&assignments.choice!==r.answer)document.getElementById("c-"+assignments.choice)?.classList.add("bad")}
+ else if(r.type==="Choix multiple"){ok=arrEq(assignments.multi,r.answer);document.querySelectorAll(".choice").forEach(b=>{const k=b.id.replace("c-","");if(r.answer.includes(k))b.classList.add("good");else if((assignments.multi||[]).includes(k))b.classList.add("bad")})}
+ else if(r.order){ok=arrEq(selectedOrder,r.answer)}
+ else{const pills=[...document.querySelectorAll(".pill")];ok=pills.length===4&&pills.every(p=>assignments[p.id.replace("p-","")]===p.dataset.cat);pills.forEach(p=>{const good=assignments[p.id.replace("p-","")]===p.dataset.cat;p.style.borderColor=good?"#22c55e":"#ef4444";p.style.background=good?"#dcfce7":"#fee2e2"})}
+ showFeedback(ok,r.explain);
+}
+function resetAnswers(){render()}
+function retryRoom(){render()}
+function showHint(){const r=scenarios[current];const fb=document.getElementById("feedback");fb.className="feedback show";fb.innerHTML=`<h3>💡 Indice</h3><p>${r.hint}</p>`}
+function showFeedback(ok,txt){
+ const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");
+ fb.innerHTML=`<h3>${ok?"✅ Scellé ouvert":"🟠 À corriger"}</h3><p>${txt}</p><p><b>Référence :</b> article L.4121-2 du Code du travail — principes généraux de prévention.</p><p><a class="btn secondary" href="${LEGIFRANCE}" target="_blank">Ouvrir l’article sur Légifrance</a></p>`;
+ if(ok){score+=10;if(!keys.includes(scenarios[current].key))keys.push(scenarios[current].key);["validateBtn","hintBtn","resetBtn","retryBtn"].forEach(id=>document.getElementById(id).classList.add("hidden"));document.getElementById("nextBtn").classList.remove("hidden")}
+ else{score=Math.max(0,score-1);document.getElementById("validateBtn").classList.add("hidden");document.getElementById("resetBtn").classList.add("hidden");document.getElementById("retryBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden")}
+ renderNav();
+}
+function nextRoom(){current++;if(current>=scenarios.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");document.getElementById("finalScore").textContent=score;let msg="Mission terminée. Reprends les scellés difficiles pour renforcer la hiérarchie de prévention.";if(score>=120)msg="Excellent : les participants savent utiliser les principes pour choisir des mesures cohérentes.";if(score<80)msg="Révision conseillée : refaire les scellés de hiérarchisation et d’association principe/action.";document.getElementById("finalMsg").textContent=msg}
+function ico(k){return {A:"⚠️",B:"✅",C:"🎯",D:"🛠️",E:"📋",F:"🚫"}[k]||"•"}
+
+function sceneSvg(kind){
+ const common=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dff6ff"/><stop offset="1" stop-color="#f8fafc"/></linearGradient><linearGradient id="floor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbe4ef"/><stop offset="1" stop-color="#94a3b8"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity=".18"/></filter></defs>`;
+ const title={chemical:"Produit / procédé dangereux",chemical2:"Substitution d’un produit",cable:"Câble dans une zone de passage",ladder:"La logique des principes",traffic:"Flux piétons / transpalettes",machine:"Projection sur machine",ergonomics:"Poste de manutention",vibration:"Outil vibrant ancien",planning:"Plan d’actions prévention",height:"Travail en hauteur",training:"Formation et consignes",vapors:"Vapeurs de collage",cards:"Associer actions et principes",final:"Nouveau flux logistique"}[kind]||"Situation MANGANELLI";
+ let body="";
+ if(kind==="chemical"||kind==="chemical2"||kind==="vapors"){body=`<rect y="250" width="600" height="140" fill="url(#floor)"/><rect x="120" y="210" width="360" height="38" rx="8" fill="#475569"/><rect x="250" y="120" width="70" height="100" rx="8" fill="#0891b2"/><rect x="262" y="92" width="45" height="35" rx="5" fill="#0f766e"/><text x="264" y="177" font-size="18" font-weight="900" fill="#fff">DANGER</text><path d="M334 125 C395 86,460 120,510 83" fill="none" stroke="#94a3b8" stroke-width="8" opacity=".7"/><circle cx="115" cy="145" r="19" fill="#8b5a2b"/><rect x="96" y="165" width="42" height="90" rx="14" fill="#2563eb"/>`}
+ else if(kind==="cable"){body=`<rect y="250" width="600" height="140" fill="url(#floor)"/><path d="M80 315 C150 270,210 350,290 305 C365 265,420 350,520 300" fill="none" stroke="#111827" stroke-width="10"/><circle cx="430" cy="145" r="20" fill="#8b5a2b"/><rect x="410" y="165" width="45" height="92" rx="16" fill="#0f766e"/><rect x="397" y="248" width="18" height="65" fill="#1e293b"/><rect x="447" y="248" width="18" height="65" fill="#1e293b"/>`}
+ else if(kind==="traffic"){body=`<rect y="245" width="600" height="145" fill="#cbd5e1"/><path d="M40 310 H560" stroke="#facc15" stroke-width="10" stroke-dasharray="28 18"/><rect x="250" y="160" width="140" height="75" rx="12" fill="#f97316"/><circle cx="275" cy="250" r="18" fill="#111827"/><circle cx="365" cy="250" r="18" fill="#111827"/><circle cx="120" cy="162" r="18" fill="#8b5a2b"/><rect x="101" y="182" width="40" height="75" rx="12" fill="#2563eb"/>`}
+ else if(kind==="machine"){body=`<rect y="245" width="600" height="145" fill="#cbd5e1"/><rect x="185" y="120" width="260" height="135" rx="18" fill="#475569"/><circle cx="250" cy="188" r="42" fill="#94a3b8"/><circle cx="250" cy="188" r="16" fill="#111827"/><path d="M445 165 L530 135 L530 250 L445 220 Z" fill="#fbbf24" opacity=".8"/>`}
+ else if(kind==="ergonomics"){body=`<rect y="255" width="600" height="135" fill="#cbd5e1"/><rect x="240" y="170" width="180" height="35" rx="6" fill="#475569"/><rect x="100" y="220" width="110" height="75" rx="8" fill="#111827"/><circle cx="170" cy="150" r="18" fill="#8b5a2b"/><rect x="150" y="170" width="42" height="90" rx="14" fill="#2563eb"/><path d="M190 192 C215 215,220 235,210 260" stroke="#8b5a2b" stroke-width="10" fill="none"/>`}
+ else if(kind==="vibration"){body=`<rect y="250" width="600" height="140" fill="#cbd5e1"/><circle cx="150" cy="155" r="18" fill="#8b5a2b"/><rect x="130" y="175" width="42" height="85" rx="14" fill="#16a34a"/><rect x="220" y="180" width="140" height="45" rx="18" fill="#475569"/><path d="M380 170 q40 30 0 60 M420 150 q75 50 0 100" fill="none" stroke="#ef4444" stroke-width="8" opacity=".75"/>`}
+ else if(kind==="planning"||kind==="cards"){body=`<rect x="90" y="75" width="420" height="250" rx="24" fill="#fff" stroke="#cbd5e1" filter="url(#shadow)"/><rect x="125" y="120" width="90" height="42" rx="12" fill="#dbeafe"/><rect x="255" y="120" width="90" height="42" rx="12" fill="#ffedd5"/><rect x="385" y="120" width="90" height="42" rx="12" fill="#dcfce7"/><text x="145" y="147" font-size="18" font-weight="900">Risque</text><text x="280" y="147" font-size="18" font-weight="900">Action</text><text x="408" y="147" font-size="18" font-weight="900">Suivi</text>`}
+ else if(kind==="height"){body=`<rect y="290" width="600" height="100" fill="#cbd5e1"/><rect x="120" y="145" width="340" height="35" fill="#64748b"/><line x1="135" y1="145" x2="135" y2="265" stroke="#475569" stroke-width="10"/><line x1="445" y1="145" x2="445" y2="265" stroke="#475569" stroke-width="10"/><circle cx="295" cy="105" r="18" fill="#8b5a2b"/><rect x="275" y="125" width="42" height="80" rx="14" fill="#f97316"/><path d="M455 150 L535 210" stroke="#ef4444" stroke-width="9"/>`}
+ else if(kind==="training"){body=`<rect y="260" width="600" height="130" fill="#cbd5e1"/><rect x="80" y="80" width="260" height="160" rx="20" fill="#fff" stroke="#cbd5e1"/><text x="110" y="130" font-size="24" font-weight="900" fill="#0f172a">Procédure</text><text x="110" y="168" font-size="18" fill="#475569">1. Couper</text><text x="110" y="198" font-size="18" fill="#475569">2. Consigner</text><text x="110" y="228" font-size="18" fill="#475569">3. Vérifier</text><circle cx="455" cy="150" r="20" fill="#8b5a2b"/><rect x="435" y="170" width="45" height="95" rx="16" fill="#2563eb"/>`}
+ else if(kind==="ladder"){body=`<rect y="300" width="600" height="90" fill="#cbd5e1"/><rect x="90" y="270" width="420" height="42" rx="16" fill="#fff" stroke="#cbd5e1"/><rect x="130" y="218" width="380" height="42" rx="16" fill="#fff" stroke="#cbd5e1"/><rect x="170" y="166" width="340" height="42" rx="16" fill="#fff" stroke="#cbd5e1"/><rect x="210" y="114" width="300" height="42" rx="16" fill="#fff" stroke="#cbd5e1"/><rect x="250" y="62" width="260" height="42" rx="16" fill="#fffbeb" stroke="#fcd34d"/>`}
+ else{body=`<rect y="250" width="600" height="140" fill="#cbd5e1"/><rect x="70" y="190" width="440" height="40" rx="20" fill="#475569"/><circle cx="170" cy="210" r="32" fill="#64748b"/><circle cx="390" cy="210" r="32" fill="#64748b"/><rect x="220" y="120" width="120" height="70" rx="12" fill="#f97316"/><circle cx="515" cy="160" r="18" fill="#8b5a2b"/><rect x="495" y="180" width="42" height="85" rx="14" fill="#16a34a"/>`}
+ return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="url(#sky)"/>${body}<text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">${title}</text></svg>`;
+}
+</script>
+</body>
+</html>
