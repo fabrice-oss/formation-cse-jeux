@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Protection du mandat</title>
+<style>
+:root{
+  --bg:#eef4ff; --ink:#101828; --muted:#607086; --line:rgba(255,255,255,.48);
+  --glass:rgba(255,255,255,.52); --glass2:rgba(255,255,255,.34); --darkGlass:rgba(12,18,32,.58);
+  --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759;
+  --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a; --radius:30px;
+  --shadow:0 28px 80px rgba(31, 41, 55, .18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink);background:#eff5ff}
+body{
+  background:
+    radial-gradient(circle at 10% 8%, rgba(0,122,255,.25), transparent 28%),
+    radial-gradient(circle at 92% 18%, rgba(255,45,85,.20), transparent 30%),
+    radial-gradient(circle at 70% 94%, rgba(52,199,89,.19), transparent 28%),
+    linear-gradient(135deg,#f8fbff 0%,#eff5ff 45%,#fff1f6 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.33;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1320px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.38));
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.7);
+  backdrop-filter:blur(26px) saturate(180%);
+  -webkit-backdrop-filter:blur(26px) saturate(180%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:76px;height:76px;border-radius:27px;display:grid;place-items:center;font-size:38px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 20px 60px rgba(0,122,255,.30), inset 0 1px 0 rgba(255,255,255,.38);
+  position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:20px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.62);color:#101828;border:1px solid rgba(255,255,255,.78);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.7);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease, box-shadow .18s ease, filter .18s ease, background .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.85)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.94),rgba(0,199,255,.80));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.red{background:linear-gradient(135deg,rgba(255,59,48,.96),rgba(255,190,180,.85));color:#fff}
+.dark{background:rgba(17,24,39,.76);color:#fff;border-color:rgba(255,255,255,.22)}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;
+  font-size:13px;font-weight:900;background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.78);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);color:#174ea6;
+}
+.hero h2{font-size:48px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72);border-radius:24px;padding:15px;
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.65);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:540px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(1px);opacity:.84}
+.o1{width:220px;height:220px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:250px;height:250px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:300px;height:300px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.phone{
+  width:78%;max-width:420px;border-radius:46px;padding:18px;background:rgba(255,255,255,.34);
+  border:1px solid rgba(255,255,255,.72);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  transform:rotate(-2deg);position:relative;backdrop-filter:blur(22px) saturate(180%);
+}
+.screen{
+  border-radius:34px;background:rgba(15,23,42,.78);padding:24px;color:#fff;min-height:360px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.screen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 30% 20%,rgba(0,199,255,.35),transparent 30%),radial-gradient(circle at 80% 40%,rgba(255,45,85,.28),transparent 28%);pointer-events:none}
+.screen h3{position:relative;font-size:30px;margin:0 0 18px}
+.appicon{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px}
+.appicon:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:350px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.76);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:10px}
+.room{
+  display:flex;gap:12px;align-items:center;border-radius:22px;padding:12px;
+  background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72);color:#344054;
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.66);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:38px;height:38px;border-radius:15px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.76);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.70)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:650px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}
+.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.76);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.75);
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.78);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.58);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.80);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center;
+}
+.choice .ico{font-size:28px}
+.choice:hover{background:rgba(255,255,255,.82);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.88)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.82);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.8);border-radius:19px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;
+  box-shadow:0 10px 26px rgba(15,23,42,.06)
+}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:rgba(239,246,255,.82);color:#1e3a8a;box-shadow:none}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.78);background:rgba(255,255,255,.68);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.86);border-color:rgba(52,199,89,.45)}.feedback.bad{background:rgba(255,241,242,.86);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+input{border:1px solid rgba(255,255,255,.8);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.70);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.70);border-top:1px solid rgba(255,255,255,.78);border-bottom:1px solid rgba(255,255,255,.78);padding:12px;text-align:left}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.78);border-radius:16px 0 0 16px}.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.78);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🛡️</div>
+    <div>
+      <h1>Protection du mandat CSE</h1>
+      <p class="sub">Escape game réaliste — comprendre la protection contre le licenciement et les représailles.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game — Liquid Glass Edition</span>
+    <h2>Un élu CSE reçoit une menace de licenciement. Le dossier doit être sécurisé.</h2>
+    <p>
+      Les participants enquêtent sur plusieurs cas réalistes : entretien préalable, consultation du CSE,
+      demande d’autorisation à l’inspection du travail, faute grave, mise à pied, modification du contrat,
+      candidat aux élections, ancien élu et recours.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Format</b><span>2 à 5 équipes, débat avant validation, idéal en formation CSE / SSCT.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Rassurer : la protection n’empêche pas tout, mais impose des verrous forts.</span></div>
+      <div class="rule"><b>⏱️ Durée</b><span>60 à 90 minutes selon le nombre de débriefs.</span></div>
+    </div>
+    <p class="sources">
+      Sources intégrées : Code du travail, articles L2411-5, L2411-6, L2411-7, L2421-3, R2421-5, R2421-12, R2421-14 ; Service-public sur la modification du contrat du salarié protégé.
+    </p>
+    <button class="primary" onclick="startGame()">Lancer l’enquête</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="phone">
+      <div class="screen">
+        <h3>Dossier protégé</h3>
+        <div class="appicon">🛡️ Autorisation inspecteur</div>
+        <div class="appicon">🗳️ Avis du CSE</div>
+        <div class="appicon">⏳ Délai de 2 mois</div>
+        <div class="appicon">🚫 Silence = rejet</div>
+        <div class="appicon">🔐 Protection 6 mois</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Messages rassurants à faire passer</h2>
+  <div class="rules">
+    <div class="rule"><b>1. Pas d’impunité</b><span>Un élu peut être licencié, mais pas sans procédure spéciale et autorisation administrative.</span></div>
+    <div class="rule"><b>2. Double verrou</b><span>Projet soumis au CSE dans les cas prévus, puis demande à l’inspecteur du travail.</span></div>
+    <div class="rule"><b>3. Rôle du contrôle</b><span>L’inspecteur vérifie notamment que le licenciement n’est pas lié au mandat.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Dossier</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Sécurité</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/9</div><div class="l">Verrous</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Verrous débloqués</b><div id="keys"><span class="sources">Aucun verrou pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider la décision</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Dossier suivant</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Dossier sécurisé</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Débrief final — Ce qui doit rassurer les élus</h2>
+    <table>
+      <tr><th>Situation</th><th>Ce qu’il faut retenir</th></tr>
+      <tr><td>Élu titulaire ou suppléant</td><td>Licenciement seulement après autorisation de l’inspecteur du travail.</td></tr>
+      <tr><td>Ancien élu / ancien représentant syndical</td><td>Protection possible pendant les 6 premiers mois suivant l’expiration du mandat ou la disparition de l’institution.</td></tr>
+      <tr><td>Candidat CSE</td><td>Protection pendant 6 mois à partir de la publication ou de l’envoi de la candidature.</td></tr>
+      <tr><td>Salarié ayant demandé les élections</td><td>Protection de 6 mois dans les conditions prévues par le Code du travail.</td></tr>
+      <tr><td>Procédure</td><td>Projet soumis au CSE pour avis, puis demande d’autorisation à l’inspecteur du travail.</td></tr>
+      <tr><td>Faute grave</td><td>Mise à pied immédiate possible, mais l’employeur doit ensuite respecter les délais de consultation et de demande d’autorisation.</td></tr>
+      <tr><td>Décision de l’inspecteur</td><td>Délai de 2 mois ; silence pendant plus de 2 mois = rejet ; décision motivée et notifiée.</td></tr>
+      <tr><td>Modification du contrat</td><td>Elle ne peut pas être imposée au salarié protégé ; en cas de refus, l’employeur maintient les conditions ou engage la procédure spéciale.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Dossier 1 — Qui est protégé ?", type:"Sélection multiple", key:"Bénéficiaires", story:"La direction pense que seuls les titulaires sont protégés. Le groupe doit corriger cette idée.", kind:"tiles", answer:["A","B","C"], explain:"Le membre élu titulaire ou suppléant et le représentant syndical au CSE bénéficient de la protection : leur licenciement ne peut intervenir qu’après autorisation de l’inspecteur du travail.", tiles:[["A","Membre élu titulaire du CSE"],["B","Membre élu suppléant du CSE"],["C","Représentant syndical au CSE"],["D","Tous les salariés de l’entreprise, sans condition"],["E","Uniquement le secrétaire du CSE"],["F","Uniquement les élus CSSCT"]]},
+{title:"Dossier 2 — Le salarié qui demande les élections", type:"Cas pratique", key:"Demande élections", story:"Avant même l’élection, un salarié demande l’organisation des élections CSE. Deux semaines plus tard, il est convoqué à un entretien préalable.", kind:"choice", answer:"B", explain:"Le salarié ayant demandé à l’employeur d’organiser les élections bénéficie d’une protection de 6 mois dans les conditions prévues. Il ne faut donc pas traiter le dossier comme un licenciement ordinaire.", question:"Quelle analyse est la plus prudente ?", choices:[["A","Il n’est pas élu, donc aucune protection."],["B","Il peut bénéficier d’une protection de 6 mois liée à la demande d’organisation des élections."],["C","Il est protégé seulement si l’employeur est d’accord."],["D","La protection commence uniquement après le premier tour."]]},
+{title:"Dossier 3 — Le candidat CSE", type:"Cas pratique", key:"Candidat", story:"Une candidate au CSE publie sa candidature. L’employeur envisage un licenciement économique trois mois après.", kind:"choice", answer:"A", explain:"Le candidat aux fonctions de membre élu du CSE bénéficie d’une protection pendant 6 mois à partir de la publication ou de l’envoi de sa candidature, selon les cas.", question:"Quel verrou existe ?", choices:[["A","Autorisation de licenciement requise pendant 6 mois."],["B","Aucune protection car elle n’est pas encore élue."],["C","Protection uniquement en cas de faute disciplinaire."],["D","Protection uniquement après installation du CSE."]]},
+{title:"Dossier 4 — Le projet de licenciement d’un élu", type:"Ordre logique", key:"Processus", story:"Un élu titulaire est visé par un projet de licenciement. Replacez les étapes dans l’ordre.", kind:"sort", answer:["Entretien préalable ou engagement de la procédure adaptée","Consultation du CSE pour avis sur le projet","Demande d’autorisation adressée à l’inspecteur du travail compétent","Enquête / instruction par l’inspection du travail","Décision motivée de l’inspecteur du travail","Notification éventuelle du licenciement si autorisation accordée"], explain:"Le projet concernant un élu titulaire ou suppléant est soumis au CSE pour avis, puis la demande d’autorisation est adressée à l’inspecteur du travail. Sans autorisation, pas de licenciement.", items:["Décision motivée de l’inspecteur du travail","Consultation du CSE pour avis sur le projet","Notification éventuelle du licenciement si autorisation accordée","Entretien préalable ou engagement de la procédure adaptée","Demande d’autorisation adressée à l’inspecteur du travail compétent","Enquête / instruction par l’inspection du travail"]},
+{title:"Dossier 5 — Faute grave et mise à pied", type:"Cas pratique", key:"Faute grave", story:"L’employeur reproche une faute grave à un élu et prononce une mise à pied immédiate.", kind:"choice", answer:"C", explain:"En cas de faute grave, l’employeur peut prononcer une mise à pied immédiate dans l’attente de la décision. Mais la consultation du CSE a lieu dans les 10 jours et la demande d’autorisation est présentée dans les 48 heures suivant la délibération du CSE.", question:"Quelle réponse est correcte ?", choices:[["A","La mise à pied suffit à licencier l’élu."],["B","L’employeur peut licencier directement après la mise à pied."],["C","La mise à pied est possible, mais la procédure spéciale reste obligatoire."],["D","Une faute grave supprime toute protection."]]},
+{title:"Dossier 6 — Le silence de l’administration", type:"Code", key:"Délai 2 mois", story:"Le dossier est transmis à l’inspecteur du travail. L’équipe doit trouver le code du délai.", kind:"input", answer:"2", explain:"L’inspecteur du travail prend sa décision dans un délai de deux mois à compter de la réception de la demande. Le silence gardé pendant plus de deux mois vaut rejet.", html:`<div class="case"><h3>Énigme du délai</h3><div class="doc">L’inspecteur du travail prend sa décision dans un délai de __ mois. Le silence gardé au-delà vaut décision de rejet.</div><input id="input" placeholder="Nombre de mois" maxlength="2"></div>`},
+{title:"Dossier 7 — Modification du contrat", type:"Cas pratique", key:"Modification", story:"Un élu CSE apprend que son lieu de travail, ses horaires et ses responsabilités vont changer. L’employeur dit : “Tu es obligé d’accepter.”", kind:"choice", answer:"D", explain:"Aucune modification du contrat de travail ou changement des conditions de travail ne peut être imposé au salarié protégé. S’il refuse, l’employeur doit maintenir les conditions actuelles ou engager la procédure spéciale.", question:"Quel message rassurant donner ?", choices:[["A","Un élu doit accepter toute modification."],["B","La protection ne concerne que le licenciement, jamais les changements de poste."],["C","L’employeur peut imposer le changement si c’est urgent."],["D","Le salarié protégé doit donner son accord ; en cas de refus, l’employeur a deux options encadrées."]]},
+{title:"Dossier 8 — Ancien élu", type:"Cas pratique", key:"Ancien élu", story:"Le mandat d’un élu CSE vient de se terminer. Quatre mois plus tard, l’employeur envisage son licenciement.", kind:"choice", answer:"A", explain:"L’ancien membre élu de la délégation du personnel du CSE bénéficie également de la protection pendant les 6 premiers mois suivant l’expiration de son mandat ou la disparition de l’institution.", question:"Quelle analyse est la plus sécurisée ?", choices:[["A","Il peut encore bénéficier de la protection pendant les 6 premiers mois."],["B","La protection s’arrête toujours immédiatement à la fin du mandat."],["C","La protection ne concerne que les représentants syndicaux."],["D","Il est protégé pendant 10 ans."]]},
+{title:"Dossier 9 — Décision et notification", type:"Sélection multiple", key:"Décision motivée", story:"L’inspecteur du travail rend sa décision. Les participants doivent repérer les garanties.", kind:"tiles", answer:["A","B","C"], explain:"La décision est motivée et notifiée par lettre recommandée avec avis de réception à l’employeur, au salarié et, lorsqu’il s’agit d’un représentant syndical, à l’organisation syndicale intéressée.", tiles:[["A","La décision est motivée"],["B","Elle est notifiée à l’employeur"],["C","Elle est notifiée au salarié"],["D","Elle n’a pas besoin d’être écrite"],["E","Elle est uniquement annoncée oralement"],["F","Elle autorise automatiquement le licenciement si le salarié est absent"]]},
+{title:"Dossier final — Rassurer sans tromper", type:"Code final", key:"Code final", story:"Pour ouvrir le coffre final, retrouvez les 3 chiffres-clés de la protection.", kind:"input", answer:"662", explain:"Code final : 6 mois pour le candidat CSE, 6 mois pour l’ancien élu, 2 mois pour la décision de l’inspecteur du travail.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : durée de protection du candidat CSE + durée de protection de l’ancien élu + délai de décision de l’inspecteur du travail.</div><input id="input" placeholder="Code final" maxlength="3"></div>`}
+];
+let current=0,score=0,keys=[],selected=null,selectedTiles=[],sortOrder=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/9";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucun verrou pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];sortOrder=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r);if(r.kind==="sort")renderSort(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function renderSort(r){sortOrder=[...r.items];document.getElementById("content").innerHTML=`<div class="case"><h3>Replacez les étapes dans l’ordre.</h3><div class="sort-list" id="sortList"></div></div>`;drawSort()}
+function drawSort(){document.getElementById("sortList").innerHTML=sortOrder.map((item,i)=>`<div class="sort-item"><span><b>${i+1}.</b> ${item}</span><span class="sort-actions"><button onclick="move(${i},-1)">↑</button><button onclick="move(${i},1)">↓</button></span></div>`).join("")}
+function move(i,d){let n=i+d;if(n<0||n>=sortOrder.length)return;[sortOrder[i],sortOrder[n]]=[sortOrder[n],sortOrder[i]];drawSort()}
+function ico(k){return {A:"🛡️",B:"🔎",C:"⚖️",D:"✅",E:"🚫",F:"📎"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}if(r.kind==="sort"){ok=sortOrder.join("|")===r.answer.join("|")}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Verrou débloqué":"🟠 Verrou à revoir"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?13:10;if(!keys.includes(rooms[current].key)&&current<9)keys.push(rooms[current].key)}else score+=3;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="La protection est comprise dans ses grandes lignes. Reprends les dossiers sensibles en débrief.";if(final>=80)msg="Excellent : les participants peuvent expliquer la protection du mandat sans dramatiser ni minimiser.";if(final<55)msg="À consolider : refaire un point sur l’autorisation de l’inspecteur, la consultation du CSE, les délais et la modification du contrat.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

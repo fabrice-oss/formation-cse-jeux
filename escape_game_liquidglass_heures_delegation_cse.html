@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Heures de délégation</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.74); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.25), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 74% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1380px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(30px) saturate(185%);-webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.67);color:#101828;border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.92);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:560px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:230px;height:230px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:260px;height:260px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:310px;height:310px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.delPanel{
+  width:90%;max-width:585px;border-radius:44px;padding:18px;background:rgba(255,255,255,.36);
+  border:1px solid rgba(255,255,255,.76);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);transform:rotate(-1.5deg)
+}
+.delScreen{
+  border-radius:34px;background:rgba(15,23,42,.82);padding:25px;color:#fff;min-height:400px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.delScreen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 25% 22%,rgba(0,199,255,.36),transparent 30%),radial-gradient(circle at 82% 40%,rgba(255,45,85,.30),transparent 28%);pointer-events:none}
+.delScreen h3{position:relative;font-size:31px;margin:0 0 18px}
+.clue{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px;transition:.18s}
+.clue:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:372px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:8px}
+.room{
+  display:flex;gap:10px;align-items:center;border-radius:21px;padding:10px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:34px;height:34px;border-radius:13px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:720px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">⏱️</div>
+    <div>
+      <h1>Escape Game — Heures de délégation du CSE</h1>
+      <p class="sub">Savoir utiliser, justifier, reporter, mutualiser et sécuriser son crédit d’heures.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game cas pratiques — Liquid Glass Edition</span>
+    <h2>Le compteur d’heures est bloqué. Les élus doivent décider quoi imputer… ou non.</h2>
+    <p>
+      Les participants analysent des situations concrètes : préparer une réunion, rencontrer des salariés,
+      inspecter un poste, enquêter après accident, se déplacer, utiliser un bon de délégation,
+      reporter des heures, mutualiser avec un suppléant, gérer un forfait jours, répondre à une contestation de l’employeur.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur projette le jeu. Le groupe débat avant validation.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>18 salles : QCM, sélections multiples, codes et cas pratiques.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Savoir quand utiliser les heures, quand le temps n’est pas déduit, et comment éviter les conflits inutiles.</span></div>
+    </div>
+    <p class="sources">Base juridique intégrée : Code du travail L2315-7 à L2315-11, L2315-8/L2315-9, R2314-1, R2315-3 à R2315-7.</p>
+    <button class="primary" onclick="startGame()">Ouvrir le compteur de délégation</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="delPanel">
+      <div class="delScreen">
+        <h3>Compteur CSE</h3>
+        <div class="clue">⏱️ Crédit mensuel</div>
+        <div class="clue">🔁 Report sur 12 mois</div>
+        <div class="clue">🤝 Mutualisation</div>
+        <div class="clue">🚫 Temps non déduit</div>
+        <div class="clue">⚖️ Contestation par le juge</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Messages clés</h2>
+  <div class="rules">
+    <div class="rule"><b>Liberté responsable</b><span>L’élu utilise ses heures pour les besoins de son mandat. Il n’a pas à demander une autorisation, mais il doit informer pour organiser le service.</span></div>
+    <div class="rule"><b>Traçabilité</b><span>Un bon usage consiste à tenir un suivi simple : date, durée, objet général, imputation ou non au crédit d’heures.</span></div>
+    <div class="rule"><b>Limite</b><span>Les heures ne servent pas aux affaires personnelles, ni à une activité sans lien avec le mandat CSE.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/18</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés de délégation</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Compteur de délégation déverrouillé</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Heures de délégation CSE</h2>
+    <table>
+      <tr><th>Thème</th><th>À retenir</th></tr>
+      <tr><td>Bénéficiaires</td><td>Les membres titulaires du CSE disposent d’un crédit d’heures ; les représentants syndicaux au CSE dans les entreprises d’au moins 501 salariés disposent aussi d’un temps de mandat fixé dans la limite de 20 h/mois sauf circonstances exceptionnelles.</td></tr>
+      <tr><td>Minimum légal</td><td>Le crédit ne peut être inférieur à 10 h/mois dans les entreprises de moins de 50 salariés et 16 h/mois dans les autres. Le tableau réglementaire dépend de l’effectif et du nombre de titulaires.</td></tr>
+      <tr><td>Paiement</td><td>Le temps passé en délégation est de plein droit considéré comme temps de travail et payé à l’échéance normale. Si l’employeur conteste, il saisit le juge judiciaire.</td></tr>
+      <tr><td>Usage</td><td>Les heures servent à l’exercice du mandat : préparation, recherche d’informations, rencontre de salariés, analyse de documents, inspection, démarches liées aux attributions CSE, ASC selon les cas.</td></tr>
+      <tr><td>Temps non déduit</td><td>Réunions du CSE, certaines réunions de commissions dans les limites applicables, recherche de mesures préventives en situation d’urgence/grave, enquêtes après AT grave, incidents répétés révélant un risque grave ou maladie professionnelle grave.</td></tr>
+      <tr><td>Report</td><td>Les heures peuvent être utilisées cumulativement dans la limite de 12 mois, sans dépasser 1,5 fois le crédit mensuel dans un mois. Information de l’employeur au plus tard 8 jours avant.</td></tr>
+      <tr><td>Mutualisation</td><td>Les titulaires peuvent répartir chaque mois leurs heures entre eux et avec des suppléants, sans dépasser 1,5 fois le crédit mensuel. Information écrite 8 jours avant avec identité et nombre d’heures.</td></tr>
+      <tr><td>Bons usages</td><td>Informer sans demander autorisation, utiliser un bon de délégation comme outil d’organisation, garder un suivi sobre, éviter de détailler les échanges confidentiels, prévenir suffisamment tôt si l’absence impacte le service.</td></tr>
+      <tr><td>Limites</td><td>Les heures ne couvrent pas une activité personnelle, sans lien avec le mandat, ou un usage abusif. La contestation se fait après paiement et devant le juge.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Le minimum légal", type:"Code", key:"10 / 16", story:"Le coffre demande les deux seuils minimaux du crédit d’heures.", kind:"input", answer:"1016", explain:"Le nombre d’heures de délégation ne peut pas être inférieur à 10 heures par mois dans les entreprises de moins de 50 salariés et à 16 heures dans les autres entreprises.", html:`<div class="case"><h3>Code minimum</h3><div class="doc">Assemblez les deux minimums légaux : moins de 50 salariés + 50 salariés et plus.</div><input id="input" placeholder="Code à 4 chiffres" maxlength="4"></div>`},
+{title:"Salle 2 — Qui a un crédit d’heures ?", type:"Sélection multiple", key:"Bénéficiaires", story:"Le groupe doit identifier qui bénéficie en principe du crédit d’heures CSE.", kind:"tiles", answer:["A","D"], explain:"Les membres titulaires du CSE disposent du crédit d’heures. Les représentants syndicaux au CSE dans les entreprises d’au moins 501 salariés disposent d’un temps nécessaire à l’exercice de leurs fonctions, fixé dans la limite de 20 h/mois sauf circonstances exceptionnelles. Les suppléants n’ont pas de crédit propre sauf dispositions plus favorables, mais peuvent recevoir des heures mutualisées.", tiles:[["A","Membres titulaires de la délégation du personnel au CSE"],["B","Tous les suppléants avec un crédit identique automatique"],["C","Tous les salariés de l’entreprise"],["D","Représentants syndicaux au CSE dans les entreprises d’au moins 501 salariés"],["E","Les invités SSCT extérieurs"],["F","Les prestataires du CSE"]]},
+{title:"Salle 3 — Paiement et contestation", type:"QCM", key:"Paiement", story:"Un manager refuse de payer des heures de délégation tant que l’élu ne justifie pas précisément chaque entretien.", kind:"choice", answer:"B", explain:"Le temps passé en délégation est de plein droit considéré comme temps de travail et payé à l’échéance normale. L’employeur qui entend contester l’utilisation faite des heures doit saisir le juge judiciaire.", question:"Quelle réponse est juridiquement correcte ?", choices:[["A","L’employeur peut bloquer le paiement jusqu’à justification complète."],["B","Les heures sont payées à l’échéance normale ; l’employeur conteste ensuite devant le juge s’il l’estime nécessaire."],["C","Les heures de délégation ne sont jamais rémunérées."],["D","Le salarié doit prendre des congés payés."]]},
+{title:"Salle 4 — Bon de délégation", type:"QCM", key:"Bon usage", story:"L’entreprise utilise un bon de délégation. Un élu pense que cela signifie qu’il doit demander une autorisation.", kind:"choice", answer:"C", explain:"Le bon de délégation est un outil d’information et d’organisation du travail. Bon usage : prévenir de l’absence, indiquer la durée prévisible, sans transformer le bon en autorisation préalable ni exiger le détail confidentiel de la mission.", question:"Quelle est la bonne analyse ?", choices:[["A","Le bon donne à l’employeur un droit de refuser l’heure de délégation."],["B","Le bon oblige l’élu à expliquer le contenu détaillé de tous ses échanges."],["C","Le bon sert à informer et organiser le service, pas à demander une autorisation."],["D","Un bon de délégation interdit toute confidentialité."]]},
+{title:"Salle 5 — Préparer une réunion plénière", type:"QCM", key:"Préparation", story:"Un élu utilise 2 heures pour lire les documents envoyés, préparer des questions et construire une position avec les autres élus.", kind:"choice", answer:"A", explain:"La préparation des réunions et l’analyse des documents relèvent de l’exercice du mandat. Ces heures peuvent être imputées au crédit d’heures, sauf temps de réunion officielle avec l’employeur qui, lui, n’est pas déduit.", question:"Comment qualifier ce temps ?", choices:[["A","Utilisation normale des heures de délégation"],["B","Temps personnel sans lien avec le mandat"],["C","Temps interdit"],["D","Congé sans solde"]]},
+{title:"Salle 6 — Réunion officielle du CSE", type:"QCM", key:"Réunion non déduite", story:"Un titulaire assiste à la réunion plénière mensuelle convoquée par l’employeur.", kind:"choice", answer:"D", explain:"Le temps passé aux réunions du comité avec l’employeur n’est pas déduit du crédit d’heures de délégation. Il est rémunéré comme temps de travail.", question:"Ce temps est-il à imputer sur le crédit d’heures ?", choices:[["A","Oui, toujours"],["B","Oui, mais seulement à moitié"],["C","Oui, sauf si l’élu parle peu"],["D","Non, ce temps n’est pas déduit du crédit d’heures"]]},
+{title:"Salle 7 — Rencontre avec un salarié", type:"QCM", key:"Salariés", story:"Une salariée veut parler à un élu d’un problème de charge de travail et de consignes contradictoires.", kind:"choice", answer:"B", explain:"Rencontrer un salarié pour recueillir une réclamation ou comprendre une situation collective ou individuelle liée au travail peut relever du mandat. Bon usage : préserver la confidentialité et rester dans le champ CSE.", question:"L’élu peut-il utiliser des heures de délégation ?", choices:[["A","Non, il ne peut jamais rencontrer les salariés."],["B","Oui, si l’entretien est lié à l’exercice du mandat CSE."],["C","Oui, même pour une demande purement personnelle sans lien avec le travail."],["D","Seulement si l’employeur écoute l’entretien."]]},
+{title:"Salle 8 — Inspection terrain", type:"Sélection multiple", key:"Terrain", story:"Les élus veulent aller observer un atelier après plusieurs remontées sur la chaleur, le bruit et la manutention.", kind:"tiles", answer:["A","B","C","D"], explain:"Les heures de délégation peuvent servir à exercer les attributions du CSE : observation terrain, préparation d’une inspection, échanges avec les salariés, analyse des risques et préparation de questions ou mesures de prévention. Bon usage : prévenir l’encadrement pour ne pas désorganiser inutilement l’activité, sans demander autorisation de principe.", tiles:[["A","Préparer l’inspection"],["B","Observer les conditions de travail"],["C","Échanger avec les salariés concernés"],["D","Rédiger des constats et préparer des demandes de prévention"],["E","Remplacer le chef d’équipe dans l’organisation du travail"],["F","Bloquer la production sans situation de danger ou cadre légal"]]},
+{title:"Salle 9 — Accident du travail grave", type:"QCM", key:"Enquête AT grave", story:"Un accident grave vient de se produire. Deux élus participent à l’enquête menée après l’accident.", kind:"choice", answer:"C", explain:"Le temps passé aux enquêtes menées après un accident du travail grave ou des incidents répétés ayant révélé un risque grave ou une maladie professionnelle grave n’est pas déduit des heures de délégation.", question:"Comment traiter ce temps ?", choices:[["A","À déduire obligatoirement du crédit d’heures"],["B","À poser en congé"],["C","Non déduit des heures de délégation"],["D","Interdit aux élus"]]},
+{title:"Salle 10 — Situation d’urgence et gravité", type:"Sélection multiple", key:"Urgence grave", story:"Une situation urgente et grave nécessite de rechercher des mesures préventives.", kind:"tiles", answer:["A","B","C"], explain:"Le temps passé à la recherche de mesures préventives dans toute situation d’urgence et de gravité, notamment lors de la mise en œuvre du droit d’alerte DGI, n’est pas déduit du crédit d’heures.", tiles:[["A","Rechercher des mesures préventives"],["B","Alerter et échanger sur le danger"],["C","Participer à l’analyse urgente de la situation"],["D","Organiser une activité ASC sans lien avec l’urgence"],["E","Faire une démarche personnelle"],["F","Préparer une campagne politique extérieure à l’entreprise"]]},
+{title:"Salle 11 — Report d’heures", type:"Code", key:"12 mois", story:"Un élu n’a pas utilisé toutes ses heures ce mois-ci et veut les reporter.", kind:"input", answer:"12", explain:"Les heures peuvent être utilisées cumulativement dans la limite de 12 mois. Cette règle ne peut pas conduire à disposer dans un mois de plus d’une fois et demie le crédit mensuel.", html:`<div class="case"><h3>Code report</h3><div class="doc">Dans quelle limite maximale, en mois, les heures peuvent-elles être utilisées cumulativement ?</div><input id="input" placeholder="Nombre de mois" maxlength="2"></div>`},
+{title:"Salle 12 — Plafond 1,5", type:"QCM", key:"1,5 fois", story:"Un titulaire a 20 h/mois. Il a reporté des heures et veut utiliser 45 h le même mois.", kind:"choice", answer:"B", explain:"Le cumul ne peut pas conduire un membre à disposer, dans le mois, de plus d’une fois et demie son crédit mensuel. Avec 20 h, le plafond mensuel d’utilisation est 30 h.", question:"Quelle limite s’applique ?", choices:[["A","Il peut utiliser 45 h sans limite."],["B","Il ne peut pas dépasser 1,5 fois son crédit mensuel, soit 30 h dans cet exemple."],["C","Il ne peut jamais reporter."],["D","Il doit demander un congé sabbatique."]]},
+{title:"Salle 13 — Information 8 jours", type:"Code", key:"8 jours", story:"Un élu veut utiliser des heures cumulées ou mutualisées.", kind:"input", answer:"8", explain:"Pour l’utilisation d’heures cumulées ou mutualisées, l’employeur doit être informé au plus tard 8 jours avant la date prévue d’utilisation.", html:`<div class="case"><h3>Code information</h3><div class="doc">Combien de jours avant l’utilisation des heures cumulées ou mutualisées l’employeur doit-il être informé ?</div><input id="input" placeholder="Nombre de jours" maxlength="1"></div>`},
+{title:"Salle 14 — Mutualisation avec un suppléant", type:"Sélection multiple", key:"Mutualisation", story:"Un titulaire veut donner des heures à un suppléant qui mène une mission de terrain.", kind:"tiles", answer:["A","B","C","D"], explain:"Les titulaires peuvent répartir chaque mois leur crédit d’heures entre eux et avec les suppléants. Ils informent l’employeur par écrit, au plus tard 8 jours avant, en précisant l’identité des élus concernés et le nombre d’heures mutualisées pour chacun, sans dépasser le plafond de 1,5 fois le crédit mensuel.", tiles:[["A","Mutualisation possible entre titulaires"],["B","Mutualisation possible avec des suppléants"],["C","Information écrite de l’employeur 8 jours avant"],["D","Préciser identité des élus et nombre d’heures réparties"],["E","Le suppléant décide seul de prendre toutes les heures"],["F","Aucun plafond mensuel ne s’applique"]]},
+{title:"Salle 15 — Élu au forfait jours", type:"QCM", key:"Forfait jours", story:"Un élu au forfait jours utilise ses heures de délégation.", kind:"choice", answer:"A", explain:"Sauf accord contraire, pour les salariés au forfait jours, le crédit d’heures est regroupé en demi-journées venant en déduction du nombre annuel de jours travaillés. Une demi-journée correspond à quatre heures de mandat.", question:"Quelle règle faut-il connaître ?", choices:[["A","Une demi-journée correspond à quatre heures de mandat."],["B","Les forfaits jours n’ont jamais d’heures de délégation."],["C","Une demi-journée vaut toujours dix heures."],["D","Le forfait jours doit poser des RTT pour son mandat."]]},
+{title:"Salle 16 — Mission hors de l’entreprise", type:"QCM", key:"Déplacement", story:"Un élu se déplace pour rencontrer un salarié isolé sur un autre site et préparer une alerte sur les conditions de travail.", kind:"choice", answer:"D", explain:"Lorsque le déplacement est nécessaire à l’exercice du mandat CSE, le temps peut relever des heures de délégation. Bon usage : vérifier les pratiques internes, prévenir l’employeur et tracer l’objet général sans révéler les informations confidentielles.", question:"Quelle analyse retenir ?", choices:[["A","Tout déplacement est interdit."],["B","Le déplacement est toujours personnel."],["C","Le déplacement n’est possible que si l’employeur accompagne l’élu."],["D","Possible si le déplacement est justifié par l’exercice du mandat CSE."]]},
+{title:"Salle 17 — Limites et abus", type:"Sélection multiple", key:"Limites", story:"Le coffre propose plusieurs usages. Il faut repérer ceux qui ne relèvent pas des heures de délégation CSE.", kind:"tiles", answer:["B","D","E"], explain:"Les heures doivent être utilisées pour l’exercice du mandat. Des démarches personnelles, une activité sans lien avec le CSE ou une activité extérieure au mandat ne relèvent pas du crédit d’heures. En revanche, rencontrer un salarié sur une difficulté de travail, préparer une réunion ou analyser un risque peut être légitime.", tiles:[["A","Préparer des questions pour une réunion CSE"],["B","Faire ses démarches administratives personnelles"],["C","Analyser des documents transmis au CSE"],["D","Faire une activité commerciale personnelle"],["E","Participer à une réunion sans lien avec le mandat CSE"],["F","Recueillir une réclamation liée aux conditions de travail"]]},
+{title:"Salle 18 — Contestation par l’employeur", type:"QCM", key:"Juge", story:"L’employeur estime que certaines heures ont été mal utilisées.", kind:"choice", answer:"C", explain:"L’employeur paie les heures à l’échéance normale. S’il veut contester leur utilisation, il saisit le juge judiciaire. Les élus doivent néanmoins adopter un usage sérieux, proportionné et traçable.", question:"Quelle procédure est correcte ?", choices:[["A","L’employeur retient immédiatement le salaire."],["B","Le manager annule les heures dans le logiciel."],["C","L’employeur paie puis saisit le juge judiciaire s’il conteste."],["D","Le CSE juge lui-même l’employeur."]]},
+{title:"Salle finale — Code du compteur", type:"Code final", key:"Coffre final", story:"Pour ouvrir la porte finale, retrouvez les chiffres clés des heures de délégation.", kind:"input", answer:"1016128154", explain:"Code final : 10 h minimum sous 50 salariés, 16 h minimum à partir de 50, report sur 12 mois, information 8 jours, plafond 1,5 fois, forfait jours 4 h par demi-journée.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : 10 + 16 + 12 + 8 + 15 + 4.</div><input id="input" placeholder="Code final" maxlength="10"></div>`}
+];
+
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/18";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"⏱️",B:"🧾",C:"⚖️",D:"✅",E:"⚠️",F:"🚫"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Clé obtenue":"🟠 Point à reprendre"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?10:5;if(!keys.includes(rooms[current].key)&&current<18)keys.push(rooms[current].key)}else score+=1;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="Le compteur est déverrouillé. Reprends les salles les moins maîtrisées en débrief.";if(final>=80)msg="Excellent : les participants savent utiliser les heures de délégation avec méthode, sécurité et discernement.";if(final<55)msg="À consolider : refaire un point sur paiement, report, mutualisation, temps non déduit et contestation.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

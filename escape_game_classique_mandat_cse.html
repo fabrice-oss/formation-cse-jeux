@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Le Mandat sous Scellés</title>
+<style>
+:root{
+  --bg:#eef3fb; --ink:#142033; --muted:#64748b; --card:#ffffff;
+  --navy:#111827; --blue:#2563eb; --cyan:#06b6d4; --gold:#f59e0b; --green:#16a34a;
+  --red:#dc2626; --purple:#7c3aed; --pink:#db2777; --line:#d8e1ef;
+  --shadow:0 20px 55px rgba(15,23,42,.13); --radius:28px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+body{
+  background:
+    radial-gradient(circle at 8% 10%, rgba(37,99,235,.16), transparent 28%),
+    radial-gradient(circle at 90% 20%, rgba(245,158,11,.18), transparent 28%),
+    radial-gradient(circle at 65% 92%, rgba(6,182,212,.17), transparent 28%),
+    linear-gradient(135deg,#f8fbff,#eef3fb 50%,#fdf2f8);
+}
+.app{max-width:1280px;margin:0 auto;padding:28px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:74px;height:74px;border-radius:26px;background:
+    linear-gradient(135deg,#111827,#1e3a8a 55%,#7c3aed);
+  color:#fff;display:grid;place-items:center;font-size:38px;box-shadow:var(--shadow);position:relative;
+}
+.logo:after{content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.35);border-radius:20px}
+h1{font-size:34px;line-height:1.04;margin:0;letter-spacing:-.7px}
+.sub{color:var(--muted);margin:7px 0 0;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;font-size:15px;
+  background:var(--navy);color:#fff;box-shadow:0 12px 25px rgba(15,23,42,.16);transition:.16s transform,.16s filter,.16s opacity
+}
+button:hover{transform:translateY(-1px);filter:brightness(1.04)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button.secondary{background:#fff;color:var(--navy);border:1px solid var(--line);box-shadow:none}
+button.blue{background:var(--blue)} button.green{background:var(--green)}
+button.gold{background:linear-gradient(135deg,#f59e0b,#fde68a);color:#111827}
+button.red{background:var(--red)}
+.panel{
+  background:rgba(255,255,255,.88);border:1px solid rgba(216,225,239,.95);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;backdrop-filter:blur(10px)
+}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  font-size:13px;font-weight:900;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe
+}
+.hero h2{font-size:46px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1px}
+.hero p{font-size:17px;line-height:1.55;color:#334155}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#64748b;font-size:14px;line-height:1.35}
+.poster{min-height:520px;display:grid;place-items:center;position:relative;overflow:hidden;background:
+  linear-gradient(145deg,rgba(255,255,255,.85),rgba(255,255,255,.55))}
+.board{
+  width:84%;max-width:480px;border-radius:34px;background:#111827;color:#fff;padding:28px;box-shadow:0 30px 70px rgba(15,23,42,.28);
+  transform:rotate(-2deg);position:relative;border:1px solid rgba(255,255,255,.15)
+}
+.board:before{content:"";position:absolute;inset:16px;border:1px dashed rgba(255,255,255,.25);border-radius:24px}
+.board h3{font-size:34px;margin:0 0 18px;color:#fde68a;position:relative}
+.clue{position:relative;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:13px;margin:10px 0;font-weight:800}
+.float{position:absolute;font-size:38px;filter:drop-shadow(0 14px 14px rgba(0,0,0,.16))}
+.f1{left:8%;top:18%}.f2{right:8%;top:16%}.f3{left:12%;bottom:14%}.f4{right:12%;bottom:16%}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:var(--muted)}
+.progress{height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--gold));transition:.25s}
+.rooms{display:grid;gap:10px}
+.room{display:flex;gap:12px;align-items:center;border-radius:20px;padding:12px;background:#fff;border:1px solid var(--line);color:#334155}
+.room .num{min-width:38px;height:38px;border-radius:14px;background:#eff6ff;display:grid;place-items:center;font-weight:1000;color:#1d4ed8}
+.room.active{border-color:#f59e0b;background:#fffbeb}.room.done{border-color:#22c55e;background:#f0fdf4}
+.inventory{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#fffbeb;color:#92400e;border:1px solid #fcd34d;font-weight:900;font-size:12px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:30px;margin:0;letter-spacing:-.4px}
+.mission-head p{color:var(--muted);line-height:1.45;margin:7px 0 0}
+.case{
+  background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;margin:14px 0;box-shadow:0 12px 28px rgba(15,23,42,.06)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#334155}
+.doc{background:#fff8e1;border:1px solid #f5d477;border-radius:18px;padding:15px;margin:12px 0;color:#422006}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:#fff;color:#172033;text-align:left;border:1px solid #dbe3ef;box-shadow:none;min-height:82px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice.selected{outline:4px solid rgba(37,99,235,.15)}.choice.good{background:#dcfce7;border-color:#22c55e}.choice.bad{background:#fee2e2;border-color:#ef4444}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{background:#fff;border:1px solid #dbe3ef;border-radius:18px;padding:14px;cursor:pointer;min-height:112px}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:#eff6ff;border-color:#60a5fa}.tile.good{background:#dcfce7;border-color:#22c55e}.tile.bad{background:#fee2e2;border-color:#ef4444}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:#fff;border:1px solid #dbe3ef;border-radius:17px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:11px;background:#eef2ff;color:#1e1b4b;box-shadow:none}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+input{border:1px solid #cbd5e1;border-radius:15px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px}
+.feedback{display:none;border-radius:20px;padding:16px;margin-top:16px;border:1px solid var(--line);background:#f8fafc}
+.feedback.show{display:block}.feedback.good{background:#ecfdf5;border-color:#86efac}.feedback.bad{background:#fff1f2;border-color:#fecdd3}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:#f59e0b;margin:0}
+.memo{text-align:left;margin-top:24px}.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px;text-align:left}
+.memo th:first-child,.memo td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}.memo th:last-child,.memo td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.panel,.case{box-shadow:none;background:#fff}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🕵️</div>
+    <div>
+      <h1>Le Mandat sous Scellés</h1>
+      <p class="sub">Escape game pédagogique — comprendre le mandat des élus du CSE.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="secondary" onclick="toggleFacilitator()">Mode formateur</button>
+    <button class="secondary" onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="panel">
+    <span class="badge">🔐 Escape game classique — 60 à 75 minutes</span>
+    <h2>Le dossier du mandat CSE a été placé sous scellés.</h2>
+    <p>
+      Les participants doivent ouvrir 8 enveloppes pour reconstituer les règles essentielles du mandat :
+      durée, fin du mandat, titulaire/suppléant, heures de délégation, temps non déduit, protection,
+      formation SSCT et première organisation du CSE.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Format</b><span>2 à 5 équipes, idéal en présentiel ou à distance avec partage d’écran.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>Énigmes, choix argumentés, classement, code final et débrief.</span></div>
+      <div class="rule"><b>🎯 Production</b><span>Chaque équipe formule les “7 réflexes du mandat CSE”.</span></div>
+    </div>
+    <p class="sources">
+      Sources intégrées dans le jeu : Code du travail, articles L2314-33 à L2314-37, L2315-7 à L2315-20, L2411-1 et L2411-5, vérifiés en 2026.
+    </p>
+    <button class="gold" onclick="startGame()">Ouvrir le premier scellé</button>
+  </div>
+  <div class="panel poster">
+    <div class="board">
+      <h3>DOSSIER MANDAT</h3>
+      <div class="clue">⏳ Durée</div>
+      <div class="clue">🧭 Heures</div>
+      <div class="clue">🛡️ Protection</div>
+      <div class="clue">🎓 Formation</div>
+    </div>
+    <div class="float f1">📜</div><div class="float f2">🗝️</div><div class="float f3">⚖️</div><div class="float f4">🧩</div>
+  </div>
+</section>
+
+<section id="facilitator" class="panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Conseils d’animation</h2>
+  <p>Projette le jeu. Pour chaque scellé, laisse 2 à 5 minutes de discussion. Avant de valider, demande : “Sur quelle règle vous vous appuyez ? Qu’est-ce que cela change concrètement pour l’élu ?”</p>
+  <div class="rules">
+    <div class="rule"><b>Variante courte</b><span>Joue les scellés 1, 2, 4, 6 et final.</span></div>
+    <div class="rule"><b>Variante active</b><span>Une équipe lit la situation, une autre contredit, une troisième arbitre.</span></div>
+    <div class="rule"><b>Débrief</b><span>Fais relier chaque règle à une situation réelle de mandat.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar panel">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Scellé</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/8</div><div class="l">Ouverts</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés pédagogiques</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="panel">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="blue hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Scellé suivant</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="panel end hidden">
+  <h2>Dossier du mandat reconstitué</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="gold" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale</h2>
+    <table>
+      <tr><th>Thème</th><th>Règle à retenir</th></tr>
+      <tr><td>Durée</td><td>Le mandat est en principe de 4 ans ; un accord de branche, groupe ou entreprise peut prévoir une durée entre 2 et 4 ans.</td></tr>
+      <tr><td>Fin du mandat</td><td>Décès, démission, rupture du contrat, perte des conditions d’éligibilité. Le changement de catégorie professionnelle ne met pas fin au mandat.</td></tr>
+      <tr><td>Composition</td><td>La délégation comporte un nombre égal de titulaires et de suppléants ; le suppléant assiste aux réunions en l’absence du titulaire.</td></tr>
+      <tr><td>Heures</td><td>Les titulaires disposent d’heures de délégation ; le minimum légal ne peut être inférieur à 10 h/mois dans les entreprises de moins de 50 salariés et 16 h/mois dans les autres.</td></tr>
+      <tr><td>Temps non déduit</td><td>Certaines activités sont payées comme temps de travail effectif sans être déduites des heures : notamment recherche de mesures préventives en urgence, réunions selon limites applicables, enquêtes après accident grave ou MP grave.</td></tr>
+      <tr><td>Protection</td><td>Le licenciement d’un élu titulaire ou suppléant, ou d’un représentant syndical au CSE, nécessite l’autorisation de l’inspecteur du travail.</td></tr>
+      <tr><td>Formation SSCT</td><td>Les membres de la délégation du personnel et le référent harcèlement bénéficient de la formation SSCT ; durée minimale de 5 jours lors du premier mandat.</td></tr>
+      <tr><td>Moyens matériels</td><td>L’employeur met à disposition le local nécessaire pour permettre l’accomplissement de la mission et notamment les réunions.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Scellé 1 — La durée du mandat", type:"Code chiffré", key:"Durée", story:"Une enveloppe indique : “Le mandat n’est pas éternel. Trouvez le bon intervalle.”", kind:"input", answer:"24", explain:"Le mandat est en principe de 4 ans. Un accord de branche, de groupe ou d’entreprise peut fixer une durée comprise entre 2 et 4 ans. Code : 24.", html:`<div class="case"><h3>Énigme</h3><div class="doc">Le mandat normal dure 4 ans, mais un accord peut fixer une durée comprise entre __ et __ ans.</div><p>Entrez les deux chiffres collés.</p><input id="input" placeholder="Ex : 99" maxlength="2"></div>`},
+{title:"Scellé 2 — La fin du mandat", type:"Sélection multiple", key:"Fin du mandat", story:"Un élu change de poste et devient technicien. D’autres élus quittent l’entreprise. Qu’est-ce qui met fin au mandat ?", kind:"tiles", answer:["A","B","C","D"], explain:"Les fonctions prennent fin par décès, démission, rupture du contrat ou perte des conditions d’éligibilité. Le changement de catégorie professionnelle ne met pas fin au mandat.", tiles:[["A","Décès de l’élu"],["B","Démission du mandat"],["C","Rupture du contrat de travail"],["D","Perte des conditions d’éligibilité"],["E","Changement de catégorie professionnelle"],["F","Désaccord avec l’employeur"]]},
+{title:"Scellé 3 — Titulaire et suppléant", type:"QCM", key:"Suppléant", story:"Le suppléant veut assister à toutes les réunions, même quand le titulaire est présent.", kind:"choice", answer:"B", explain:"La délégation du personnel comporte un nombre égal de titulaires et de suppléants. Le suppléant assiste aux réunions en l’absence du titulaire, sauf dispositions particulières plus favorables.", question:"Quelle réponse est juridiquement la plus sûre ?", choices:[["A","Le suppléant assiste toujours automatiquement à toutes les réunions."],["B","Le suppléant assiste aux réunions en l’absence du titulaire."],["C","Le suppléant ne peut jamais assister aux réunions."],["D","Le suppléant remplace uniquement le président du CSE."]]},
+{title:"Scellé 4 — Les heures de délégation", type:"QCM", key:"Heures", story:"Un manager affirme que les heures de délégation sont “du temps personnel”.", kind:"choice", answer:"C", explain:"L’employeur laisse aux titulaires le temps nécessaire à l’exercice de leurs fonctions. Le nombre d’heures est fixé selon l’effectif et ne peut être inférieur à 10 h/mois dans les entreprises de moins de 50 salariés et 16 h/mois dans les autres.", question:"Quel principe faut-il rappeler ?", choices:[["A","Les heures sont toujours bénévoles."],["B","Les heures sont accordées seulement avec autorisation du manager."],["C","Les titulaires disposent du temps nécessaire, avec un minimum légal selon l’effectif."],["D","Les heures ne concernent que le secrétaire."]]},
+{title:"Scellé 5 — Ce qui n’est pas déduit", type:"Sélection multiple", key:"Temps utile", story:"Les élus doivent savoir ce qui consomme ou non le crédit d’heures.", kind:"tiles", answer:["A","B","C"], explain:"Le temps passé à la recherche de mesures préventives en urgence et gravité, à certaines réunions, et aux enquêtes après accident grave ou maladie professionnelle grave est payé comme temps de travail effectif et n’est pas déduit des heures de délégation.", tiles:[["A","Recherche de mesures préventives en situation d’urgence et de gravité"],["B","Réunions du comité et de ses commissions selon les limites applicables"],["C","Enquêtes après accident du travail grave ou maladie professionnelle grave"],["D","Toute discussion informelle à la pause café"],["E","Toute réunion personnelle sans lien avec le mandat"],["F","Temps de transport privé sans lien avec la mission"]]},
+{title:"Scellé 6 — La protection", type:"QCM", key:"Protection", story:"Un élu titulaire reçoit une convocation à un entretien préalable au licenciement. La direction pense pouvoir notifier le licenciement directement.", kind:"choice", answer:"A", explain:"Le licenciement d’un membre élu titulaire ou suppléant de la délégation du personnel du CSE, ou d’un représentant syndical au CSE, ne peut intervenir qu’après autorisation de l’inspecteur du travail.", question:"Quel verrou juridique protège l’élu ?", choices:[["A","Autorisation préalable de l’inspecteur du travail."],["B","Accord obligatoire du maire."],["C","Vote des salariés clients de l’entreprise."],["D","Aucune règle particulière."]]},
+{title:"Scellé 7 — La formation SSCT", type:"Code chiffré", key:"Formation", story:"Le coffre de la formation demande la durée minimale du premier mandat.", kind:"input", answer:"5", explain:"Les membres de la délégation du personnel au CSE et le référent harcèlement bénéficient de la formation SSCT. Lors du premier mandat, la durée minimale est de 5 jours.", html:`<div class="case"><h3>Énigme</h3><div class="doc">Lors du premier mandat des membres de la délégation du personnel, la formation SSCT est d’une durée minimale de __ jours.</div><input id="input" placeholder="Nombre de jours" maxlength="2"></div>`},
+{title:"Scellé 8 — Le local du CSE", type:"QCM", key:"Local", story:"Les élus demandent un espace pour se réunir et accomplir leur mission.", kind:"choice", answer:"D", explain:"L’employeur met à disposition des membres de la délégation du personnel le local nécessaire pour leur permettre d’accomplir leur mission, notamment de se réunir.", question:"Quelle réponse sécurise le mandat ?", choices:[["A","Aucun local n’est prévu."],["B","Le local est réservé uniquement à l’employeur."],["C","Le local est possible seulement au-delà de 500 salariés."],["D","L’employeur doit mettre à disposition le local nécessaire à la mission."]]},
+{title:"Scellé final — Le code du mandat", type:"Code final", key:"Code final", story:"Le coffre final demande les chiffres-clés du mandat.", kind:"input", answer:"425", explain:"Code final : 4 ans de durée normale, 2 ans minimum possible par accord, 5 jours de formation SSCT minimale au premier mandat.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : durée normale du mandat + durée minimale possible par accord + durée minimale de formation SSCT au premier mandat.</div><input id="input" placeholder="Code final" maxlength="3"></div>`}
+];
+let current=0, score=0, keys=[], selected=null, selectedTiles=[], sorted=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/8";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`;}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input") document.getElementById("content").innerHTML=r.html;if(r.kind==="choice") renderChoice(r);if(r.kind==="tiles") renderTiles(r);}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`;}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`;}
+function ico(k){return {A:"⚖️",B:"🧩",C:"🧭",D:"✅",E:"🚫",F:"📎"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected");}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected");}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input"){ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer)}if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain);}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad");}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad");});}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Scellé ouvert":"🟠 Scellé à revoir"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?16:11;if(!keys.includes(rooms[current].key)&&current<8)keys.push(rooms[current].key)}else score+=3;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav();}
+function nextRoom(){current++;if(current>=rooms.length) endGame(); else render();}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="Le dossier du mandat est reconstitué. Reprends les scellés les moins maîtrisés en débrief.";if(final>=80)msg="Excellent : les participants maîtrisent les grands repères du mandat CSE.";if(final<55)msg="Le mandat reste fragile : refaire un point sur durée, heures, protection et formation.";document.getElementById("finalMsg").textContent=msg;}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden");}
+</script>
+</body>
+</html>

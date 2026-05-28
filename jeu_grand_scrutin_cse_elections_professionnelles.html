@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Le Grand Scrutin — Jeu CSE</title>
+<style>
+:root{
+  --night:#111827;
+  --ink:#162033;
+  --paper:#fffaf0;
+  --gold:#f4c95d;
+  --blue:#2f6fed;
+  --cyan:#3bd8ff;
+  --pink:#ff5c8a;
+  --green:#22c55e;
+  --orange:#fb923c;
+  --purple:#8b5cf6;
+  --red:#ef4444;
+  --muted:#65758b;
+  --line:rgba(255,255,255,.22);
+  --shadow:0 24px 70px rgba(15,23,42,.26);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#fff;background:#0b1020;}
+body{
+  background:
+    radial-gradient(circle at 12% 8%, rgba(59,216,255,.35), transparent 26%),
+    radial-gradient(circle at 90% 12%, rgba(255,92,138,.25), transparent 24%),
+    radial-gradient(circle at 72% 88%, rgba(244,201,93,.26), transparent 30%),
+    linear-gradient(135deg,#08111f 0%,#161638 42%,#27113a 100%);
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;
+  background-image:
+    linear-gradient(30deg, transparent 48%, rgba(255,255,255,.8) 49%, transparent 50%),
+    linear-gradient(150deg, transparent 48%, rgba(255,255,255,.6) 49%, transparent 50%);
+  background-size:80px 80px;
+}
+.app{max-width:1240px;margin:0 auto;padding:28px}
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px;
+}
+.brand{display:flex;align-items:center;gap:16px}
+.emblem{
+  width:72px;height:72px;border-radius:24px;display:grid;place-items:center;
+  background:conic-gradient(from 210deg,var(--gold),var(--cyan),var(--pink),var(--gold));
+  box-shadow:0 18px 50px rgba(244,201,93,.25);
+  font-size:38px;position:relative;
+}
+.emblem:after{content:"";position:absolute;inset:7px;border-radius:19px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:38px;margin:0;line-height:1.02;letter-spacing:-.9px}
+.sub{margin:6px 0 0;color:#dbeafe;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:0;border-radius:18px;padding:13px 17px;font-weight:900;cursor:pointer;
+  color:#08111f;background:#fff;box-shadow:0 14px 30px rgba(0,0,0,.20);
+  transition:.18s transform,.18s filter,.18s opacity;
+  font-size:15px;
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.03)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,var(--gold),#fff0a6)}
+.blue{background:linear-gradient(135deg,var(--cyan),#92efff)}
+.pink{background:linear-gradient(135deg,var(--pink),#ffc2d1)}
+.green{background:linear-gradient(135deg,#34d399,#bbf7d0)}
+.ghost{background:rgba(255,255,255,.10);color:#fff;border:1px solid var(--line);box-shadow:none;backdrop-filter:blur(10px)}
+.panel{
+  background:rgba(255,255,255,.10);
+  border:1px solid var(--line);
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  backdrop-filter: blur(14px);
+  padding:26px;
+}
+.hero{
+  min-height:590px;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:stretch;
+}
+.hero-card{position:relative;overflow:hidden}
+.hero-card:before{
+  content:"";position:absolute;right:-120px;top:-120px;width:350px;height:350px;border-radius:50%;
+  background:radial-gradient(circle,rgba(244,201,93,.55),transparent 70%);
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;
+  background:rgba(244,201,93,.16);border:1px solid rgba(244,201,93,.45);color:#fff6cd;
+  font-weight:900;font-size:13px
+}
+.hero h2{font-size:42px;line-height:1.02;margin:18px 0 14px;letter-spacing:-.8px}
+.hero p{font-size:17px;line-height:1.55;color:#e5edff;max-width:720px}
+.mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.mini{
+  padding:15px;border-radius:22px;background:rgba(255,255,255,.11);border:1px solid var(--line)
+}
+.mini b{display:block;color:#fff;margin-bottom:5px}
+.mini span{color:#cbd5e1;font-size:14px;line-height:1.35}
+.poster{
+  position:relative;min-height:500px;overflow:hidden;
+  display:grid;place-items:center;
+}
+.voting-box{
+  width:82%;max-width:440px;aspect-ratio:1/1.08;border-radius:42px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,255,255,.58)),
+    linear-gradient(135deg,var(--cyan),var(--pink));
+  box-shadow:0 35px 90px rgba(0,0,0,.35);
+  position:relative;transform:rotate(-3deg);
+}
+.voting-box:before{
+  content:"";position:absolute;left:50%;top:18%;transform:translateX(-50%);
+  width:58%;height:18px;border-radius:999px;background:#111827;
+}
+.ballot{
+  position:absolute;left:26%;top:-9%;width:48%;height:38%;border-radius:18px;
+  background:var(--paper);box-shadow:0 18px 50px rgba(0,0,0,.24);transform:rotate(8deg);
+  display:grid;place-items:center;color:#111827;font-size:52px;font-weight:900;
+}
+.orbit{position:absolute;border:1px dashed rgba(255,255,255,.35);border-radius:50%}
+.o1{width:490px;height:490px}.o2{width:340px;height:340px;transform:rotate(24deg)}
+.icon-float{position:absolute;font-size:34px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.25))}
+.f1{left:14%;top:20%}.f2{right:13%;top:28%}.f3{left:18%;bottom:24%}.f4{right:19%;bottom:18%}
+.hidden{display:none!important}
+.game-grid{display:grid;grid-template-columns: 330px 1fr;gap:22px;align-items:start}
+.map{
+  display:grid;gap:12px;position:sticky;top:18px;
+}
+.stage{
+  border-radius:24px;padding:15px;display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.10);border:1px solid var(--line);color:#dbeafe;
+}
+.stage .num{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.16);font-weight:900}
+.stage.active{background:linear-gradient(135deg,rgba(59,216,255,.22),rgba(244,201,93,.18));border-color:rgba(244,201,93,.75);color:#fff}
+.stage.done{border-color:rgba(34,197,94,.7)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{
+  background:rgba(255,255,255,.12);border:1px solid var(--line);border-radius:22px;padding:14px;text-align:center
+}
+.stat .n{font-size:30px;font-weight:1000;color:#fff}
+.stat .l{font-size:12px;color:#cbd5e1}
+.card-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+.card-title h2{font-size:28px;margin:0}
+.mission{
+  background:rgba(255,255,255,.92);color:#172033;border-radius:28px;padding:24px;box-shadow:0 24px 50px rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.55);
+}
+.mission p{font-size:18px;line-height:1.55;color:#25344e}
+.quest{
+  border-left:8px solid var(--gold);padding-left:15px;margin:10px 0 18px
+}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:#fff;color:#172033;text-align:left;border:1px solid #dbe3ef;box-shadow:none;
+  min-height:76px;display:flex;align-items:center;gap:12px;
+}
+.choice .emoji{font-size:28px}
+.choice.good{background:#dcfce7;border-color:#22c55e}
+.choice.bad{background:#fee2e2;border-color:#ef4444}
+.feedback{
+  margin-top:16px;border-radius:22px;padding:16px;display:none;color:#172033;
+  background:#f8fafc;border:1px solid #dbe3ef;
+}
+.feedback.show{display:block}
+.feedback.good{background:#ecfdf5;border-color:#86efac}
+.feedback.bad{background:#fff1f2;border-color:#fecdd3}
+.sort-list{display:grid;gap:10px;margin-top:14px}
+.sort-item{
+  padding:15px;border-radius:18px;background:#fff;border:1px solid #dbe3ef;color:#172033;
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+}
+.sort-actions{display:flex;gap:7px}
+.sort-actions button{padding:8px 10px;border-radius:12px;box-shadow:none;background:#eef2ff;color:#1e1b4b}
+.timeline{display:grid;gap:10px}
+.dropzone{
+  border:2px dashed rgba(255,255,255,.45);border-radius:24px;padding:16px;min-height:72px;
+  background:rgba(255,255,255,.08)
+}
+.pill-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.pill{
+  border-radius:999px;padding:10px 13px;background:rgba(255,255,255,.14);border:1px solid var(--line);
+  cursor:pointer;font-weight:900;
+}
+.pill.selected{background:var(--gold);color:#08111f}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.role{
+  border-radius:24px;padding:16px;background:#fff;color:#172033;border:1px solid #dbe3ef;
+  min-height:180px;
+}
+.role h3{margin:0 0 8px}
+.role p{font-size:14px;color:#475569}
+.role .drop{
+  min-height:50px;border:2px dashed #cbd5e1;border-radius:16px;padding:10px;background:#f8fafc
+}
+.token{
+  display:inline-flex;margin:6px 6px 0 0;padding:8px 10px;border-radius:999px;
+  background:#eef2ff;color:#1e1b4b;font-weight:900;cursor:pointer
+}
+.end{
+  text-align:center;
+}
+.big-score{font-size:78px;font-weight:1000;color:var(--gold);margin:0}
+.correction table{width:100%;border-collapse:separate;border-spacing:0 8px;color:#172033}
+.correction th,.correction td{padding:12px;background:#fff;text-align:left;border-top:1px solid #dbe3ef;border-bottom:1px solid #dbe3ef}
+.correction th:first-child,.correction td:first-child{border-left:1px solid #dbe3ef;border-radius:14px 0 0 14px}
+.correction th:last-child,.correction td:last-child{border-right:1px solid #dbe3ef;border-radius:0 14px 14px 0}
+.note{color:#dbeafe;font-size:13px;line-height:1.4}
+@media(max-width:980px){
+  .hero,.game-grid{grid-template-columns:1fr}
+  .map{position:static}
+  .choices,.role-grid,.mini-grid,.stats{grid-template-columns:1fr}
+  h1{font-size:30px}.hero h2{font-size:34px}
+  .header{flex-direction:column;align-items:flex-start}
+}
+@media print{
+  body{background:#fff;color:#000}
+  .actions,button,.poster,.map{display:none!important}
+  .panel,.mission{box-shadow:none;background:#fff;color:#000;border:1px solid #ddd}
+  .game-grid,.hero{display:block}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <div class="emblem">🗳️</div>
+      <div>
+        <h1>Le Grand Scrutin du CSE</h1>
+        <p class="sub">Un atelier-jeu collaboratif pour comprendre les élections professionnelles.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="ghost" onclick="toggleFacilitator()">Mode formateur</button>
+      <button class="ghost" onclick="window.print()">Imprimer / PDF</button>
+    </div>
+  </header>
+
+  <section id="intro" class="hero">
+    <div class="panel hero-card">
+      <span class="badge">✨ Atelier participatif — 45 à 60 min</span>
+      <h2>Votre mission : faire naître un CSE, sans faire dérailler l’élection.</h2>
+      <p>
+        Les participants avancent ensemble dans les grandes étapes des élections professionnelles :
+        conditions de mise en place, information des salariés, invitation des syndicats, PAP,
+        électorat, éligibilité, scrutin, second tour, PV et installation du CSE.
+      </p>
+      <div class="mini-grid">
+        <div class="mini"><b>👥 Animation</b><span>Classe entière, équipes ou sous-groupes.</span></div>
+        <div class="mini"><b>🎯 Objectif</b><span>Comprendre la logique du processus électoral.</span></div>
+        <div class="mini"><b>🧠 Mécanique</b><span>Défis, votes, classement, association, décisions.</span></div>
+        <div class="mini"><b>🏆 Score</b><span>Chaque bonne décision fait progresser le collectif.</span></div>
+      </div>
+      <p class="note">
+        Conseil : projette le jeu à l’écran. Fais voter les équipes avant de cliquer. Demande toujours : “Quel indice vous permet de répondre ?”
+      </p>
+      <button class="primary" onclick="startGame()">Lancer le jeu</button>
+    </div>
+    <div class="panel poster">
+      <div class="orbit o1"></div><div class="orbit o2"></div>
+      <div class="voting-box"><div class="ballot">CSE</div></div>
+      <div class="icon-float f1">📣</div>
+      <div class="icon-float f2">🤝</div>
+      <div class="icon-float f3">📜</div>
+      <div class="icon-float f4">✅</div>
+    </div>
+  </section>
+
+  <section id="facilitator" class="panel hidden" style="margin-top:22px">
+    <h2>Mode formateur — Conseils d’animation</h2>
+    <p>
+      Fais jouer les participants en équipes. À chaque étape, laisse 45 à 90 secondes de discussion, puis demande à une équipe de justifier.
+      Le jeu est volontairement pédagogique : il simplifie les notions pour favoriser la compréhension avant l’approfondissement juridique.
+    </p>
+    <div class="mini-grid">
+      <div class="mini"><b>Débrief clé</b><span>Une élection CSE est un processus : seuil, initiative, négociation, vote, PV, installation.</span></div>
+      <div class="mini"><b>Erreur fréquente</b><span>Confondre “avoir 11 salariés à un moment donné” avec “11 salariés pendant 12 mois consécutifs”.</span></div>
+      <div class="mini"><b>Question utile</b><span>“Que faut-il vérifier avant de lancer les élections ?”</span></div>
+      <div class="mini"><b>Lien SSCT</b><span>Sans CSE, les relais collectifs de prévention sont affaiblis.</span></div>
+    </div>
+  </section>
+
+  <main id="game" class="game-grid hidden">
+    <aside class="map panel">
+      <div class="stats">
+        <div class="stat"><div class="n" id="stepNum">1</div><div class="l">Étape</div></div>
+        <div class="stat"><div class="n" id="score">0</div><div class="l">Points</div></div>
+        <div class="stat"><div class="n" id="timer">90</div><div class="l">Secondes</div></div>
+      </div>
+      <div id="stages"></div>
+      <p class="note">Chaque étape représente un moment du processus électoral. L’objectif est d’obtenir au moins 80 points.</p>
+    </aside>
+
+    <section class="panel">
+      <div class="card-title">
+        <h2 id="missionTitle">Mission</h2>
+        <span class="badge" id="missionType">Défi</span>
+      </div>
+      <div class="mission" id="missionArea"></div>
+      <div id="feedback" class="feedback"></div>
+      <button id="validateBtn" class="blue hidden" onclick="validateCurrent()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextStep()">Étape suivante</button>
+    </section>
+  </main>
+
+  <section id="end" class="panel end hidden">
+    <h2>Résultat du Grand Scrutin</h2>
+    <p class="big-score"><span id="finalScore">0</span>/100</p>
+    <p id="finalMessage"></p>
+    <button class="primary" onclick="restart()">Rejouer</button>
+    <div class="correction">
+      <h2 style="text-align:left">Débrief express à faire avec les participants</h2>
+      <table>
+        <tr><th>Étape</th><th>Idée essentielle</th></tr>
+        <tr><td>Seuil</td><td>Le CSE est mis en place à partir d’au moins 11 salariés pendant 12 mois consécutifs.</td></tr>
+        <tr><td>Initiative</td><td>L’employeur organise les élections et informe les salariés.</td></tr>
+        <tr><td>Syndicats</td><td>Les organisations syndicales concernées sont invitées à négocier le PAP et à présenter des listes.</td></tr>
+        <tr><td>PAP</td><td>Le protocole d’accord préélectoral fixe les règles concrètes du scrutin.</td></tr>
+        <tr><td>Électeur / candidat</td><td>Voter : 16 ans et 3 mois d’ancienneté. Être candidat : 18 ans et 1 an d’ancienneté, sous réserve des exceptions.</td></tr>
+        <tr><td>Scrutin</td><td>Premier tour réservé aux listes syndicales ; second tour possible dans certains cas.</td></tr>
+        <tr><td>Après l’élection</td><td>PV, proclamation, installation du CSE, première réunion et exercice du mandat.</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+const stages = [
+  "Le seuil d’entrée",
+  "La ligne de départ",
+  "Les invitations",
+  "Le PAP",
+  "Électeurs & candidats",
+  "Le scrutin",
+  "Le second tour",
+  "Après l’élection"
+];
+
+const missions = [
+  {
+    type:"QCM",
+    title:"Mission 1 — Le seuil d’entrée",
+    question:"Une entreprise doit organiser des élections CSE lorsque l’effectif atteint :",
+    choices:[
+      ["A","5 salariés pendant 6 mois"],
+      ["B","11 salariés pendant 12 mois consécutifs"],
+      ["C","20 salariés dès le premier mois"],
+      ["D","50 salariés uniquement"]
+    ],
+    answer:"B",
+    explain:"Le seuil de mise en place du CSE est d’au moins 11 salariés pendant 12 mois consécutifs."
+  },
+  {
+    type:"Décision collective",
+    title:"Mission 2 — La ligne de départ",
+    question:"Qui a l’initiative d’organiser les élections professionnelles du CSE lorsque les conditions sont réunies ?",
+    choices:[
+      ["A","Les salariés uniquement"],
+      ["B","L’inspection du travail"],
+      ["C","L’employeur"],
+      ["D","Le futur secrétaire du CSE"]
+    ],
+    answer:"C",
+    explain:"C’est l’employeur qui doit organiser les élections. Il informe le personnel et engage le processus électoral."
+  },
+  {
+    type:"Association",
+    title:"Mission 3 — Les invitations",
+    question:"Sélectionnez les acteurs qui doivent être invités ou informés pour négocier le protocole d’accord préélectoral.",
+    multi:true,
+    choices:[
+      ["A","Les organisations syndicales représentatives"],
+      ["B","Les syndicats affiliés à une organisation représentative au niveau national et interprofessionnel"],
+      ["C","Les clients principaux de l’entreprise"],
+      ["D","Les organisations syndicales ayant constitué une section syndicale"]
+    ],
+    answer:["A","B","D"],
+    explain:"Les organisations syndicales concernées sont invitées à négocier le PAP et à établir leurs listes. Les clients ne participent pas au processus électoral."
+  },
+  {
+    type:"Remise en ordre",
+    title:"Mission 4 — Le PAP",
+    sort:true,
+    question:"Remettez ces étapes dans l’ordre logique.",
+    items:[
+      "Informer les salariés de l’organisation des élections",
+      "Inviter les organisations syndicales concernées",
+      "Négocier le protocole d’accord préélectoral",
+      "Organiser le scrutin",
+      "Proclamer les résultats"
+    ],
+    explain:"Le processus commence par l’information, se poursuit avec les invitations et le PAP, puis vient le vote et la proclamation."
+  },
+  {
+    type:"Double choix",
+    title:"Mission 5 — Électeurs & candidats",
+    role:true,
+    question:"Classez les conditions dans la bonne catégorie.",
+    tokens:["16 ans minimum","3 mois d’ancienneté","18 ans minimum","1 an d’ancienneté"],
+    columns:[
+      ["electeur","Pour voter"],
+      ["candidat","Pour être candidat"]
+    ],
+    answer:{electeur:["16 ans minimum","3 mois d’ancienneté"], candidat:["18 ans minimum","1 an d’ancienneté"]},
+    explain:"Les conditions pour être candidat sont plus exigeantes que les conditions pour voter."
+  },
+  {
+    type:"QCM",
+    title:"Mission 6 — Le scrutin",
+    question:"Au premier tour des élections CSE, les listes sont en principe présentées par :",
+    choices:[
+      ["A","Les organisations syndicales"],
+      ["B","L’employeur"],
+      ["C","Les managers uniquement"],
+      ["D","Les clients de l’entreprise"]
+    ],
+    answer:"A",
+    explain:"Le premier tour est réservé aux listes présentées par les organisations syndicales concernées."
+  },
+  {
+    type:"Situation",
+    title:"Mission 7 — Le second tour",
+    question:"Dans quelle situation un second tour peut-il être organisé ?",
+    choices:[
+      ["A","Si le quorum n’est pas atteint"],
+      ["B","Si tous les sièges ne sont pas pourvus"],
+      ["C","Si aucune liste syndicale n’a été présentée"],
+      ["D","Toutes ces situations"]
+    ],
+    answer:"D",
+    explain:"Un second tour peut être organisé dans ces différentes hypothèses. Il permet notamment des candidatures libres."
+  },
+  {
+    type:"Final",
+    title:"Mission 8 — Après l’élection",
+    question:"Après les élections, quel document officialise les résultats et permet de tracer le déroulement du scrutin ?",
+    choices:[
+      ["A","Le procès-verbal des élections"],
+      ["B","Le règlement intérieur du CSE"],
+      ["C","Le DUERP"],
+      ["D","Le programme annuel de prévention"]
+    ],
+    answer:"A",
+    explain:"Le procès-verbal des élections formalise les résultats. En cas d’absence de candidats, on peut avoir un PV de carence."
+  }
+];
+
+let current=0, score=0, selected=null, selectedMulti=[], timer=90, interval=null, sortOrder=[], roleDrops={};
+const letters = ["A","B","C","D","E"];
+
+function toggleFacilitator(){document.getElementById('facilitator').classList.toggle('hidden')}
+function startGame(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  current=0;score=0;renderStages();renderMission();
+}
+function renderStages(){
+  const box=document.getElementById('stages');
+  box.innerHTML=stages.map((s,idx)=>`<div class="stage ${idx===current?'active':''} ${idx<current?'done':''}">
+    <div class="num">${idx+1}</div><div><b>${s}</b></div>
+  </div>`).join('');
+}
+function startTimer(){
+  clearInterval(interval);
+  timer=90; document.getElementById('timer').textContent=timer;
+  interval=setInterval(()=>{
+    timer--; document.getElementById('timer').textContent=timer;
+    if(timer<=0){clearInterval(interval); showFeedback(false,"Temps écoulé. Le groupe peut quand même discuter de la correction.");}
+  },1000);
+}
+function renderMission(){
+  selected=null; selectedMulti=[]; sortOrder=[]; roleDrops={electeur:[],candidat:[]};
+  document.getElementById('stepNum').textContent=current+1;
+  document.getElementById('score').textContent=score;
+  document.getElementById('missionTitle').textContent=missions[current].title;
+  document.getElementById('missionType').textContent=missions[current].type;
+  const fb=document.getElementById('feedback'); fb.className='feedback'; fb.innerHTML='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('validateBtn').classList.add('hidden');
+  const m=missions[current];
+  if(m.sort){renderSort(m)}
+  else if(m.role){renderRole(m)}
+  else {renderChoices(m)}
+  renderStages();
+  startTimer();
+}
+function renderChoices(m){
+  document.getElementById('missionArea').innerHTML=`<div class="quest"><p>${m.question}</p></div>
+  <div class="choices">${m.choices.map(([k,v])=>`<button class="choice" id="choice-${k}" onclick="${m.multi?`toggleMulti('${k}')`:`choose('${k}')`}">
+    <span class="emoji">${emojiFor(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join('')}</div>
+  ${m.multi?'<p style="color:#475569">Plusieurs réponses sont possibles.</p>':''}`;
+  if(m.multi) document.getElementById('validateBtn').classList.remove('hidden');
+}
+function emojiFor(k){return {A:"📣",B:"🤝",C:"🧩",D:"✅",E:"📜"}[k]||"•"}
+function choose(k){
+  selected=k;
+  document.querySelectorAll('.choice').forEach(b=>b.classList.remove('good','bad'));
+  validateCurrent();
+}
+function toggleMulti(k){
+  if(selectedMulti.includes(k)) selectedMulti=selectedMulti.filter(x=>x!==k);
+  else selectedMulti.push(k);
+  const btn=document.getElementById('choice-'+k);
+  btn.classList.toggle('good');
+}
+function renderSort(m){
+  sortOrder=[...m.items];
+  document.getElementById('missionArea').innerHTML=`<div class="quest"><p>${m.question}</p></div>
+  <div class="sort-list" id="sortList"></div>
+  <p style="color:#475569">Utilisez les flèches pour déplacer les étapes.</p>`;
+  document.getElementById('validateBtn').classList.remove('hidden');
+  drawSort();
+}
+function drawSort(){
+  document.getElementById('sortList').innerHTML=sortOrder.map((item,idx)=>`<div class="sort-item">
+    <span><b>${idx+1}.</b> ${item}</span>
+    <span class="sort-actions">
+      <button onclick="moveItem(${idx},-1)">↑</button><button onclick="moveItem(${idx},1)">↓</button>
+    </span></div>`).join('');
+}
+function moveItem(idx,dir){
+  const n=idx+dir;if(n<0||n>=sortOrder.length)return;
+  [sortOrder[idx],sortOrder[n]]=[sortOrder[n],sortOrder[idx]];
+  drawSort();
+}
+function renderRole(m){
+  roleDrops={electeur:[],candidat:[]};
+  document.getElementById('missionArea').innerHTML=`<div class="quest"><p>${m.question}</p></div>
+  <div class="pill-row" id="tokens">${m.tokens.map(t=>`<span class="token" onclick="pickToken('${t}')">${t}</span>`).join('')}</div>
+  <div class="role-grid">
+    ${m.columns.map(([id,title])=>`<div class="role" onclick="dropHere('${id}')"><h3>${title}</h3><p>Cliquez un jeton, puis cliquez ici.</p><div class="drop" id="drop-${id}"></div></div>`).join('')}
+  </div>`;
+  document.getElementById('validateBtn').classList.remove('hidden');
+}
+let pickedToken=null;
+function pickToken(t){
+  pickedToken=t;
+  document.querySelectorAll('.token').forEach(el=>el.classList.toggle('selected',el.textContent===t));
+}
+function dropHere(id){
+  if(!pickedToken)return;
+  Object.keys(roleDrops).forEach(k=>roleDrops[k]=roleDrops[k].filter(x=>x!==pickedToken));
+  roleDrops[id].push(pickedToken);
+  pickedToken=null;
+  document.querySelectorAll('.token').forEach(el=>el.classList.remove('selected'));
+  drawDrops();
+}
+function drawDrops(){
+  Object.keys(roleDrops).forEach(id=>{
+    document.getElementById('drop-'+id).innerHTML=roleDrops[id].map(t=>`<span class="token" onclick="removeToken('${id}','${t}')">${t}</span>`).join('');
+  });
+}
+function removeToken(id,t){roleDrops[id]=roleDrops[id].filter(x=>x!==t);drawDrops()}
+function arraysSame(a,b){return a.slice().sort().join('|')===b.slice().sort().join('|')}
+function validateCurrent(){
+  clearInterval(interval);
+  const m=missions[current];
+  let ok=false;
+  if(m.multi) ok=arraysSame(selectedMulti,m.answer);
+  else if(m.sort) ok=sortOrder.join('|')===m.items.join('|');
+  else if(m.role) ok=arraysSame(roleDrops.electeur,m.answer.electeur) && arraysSame(roleDrops.candidat,m.answer.candidat);
+  else ok=selected===m.answer;
+  showFeedback(ok,m.explain);
+}
+function showFeedback(ok,text){
+  const m=missions[current];
+  if(ok) score += 12 + Math.max(0, Math.floor(timer/30)); 
+  document.getElementById('score').textContent=score;
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(ok?'good':'bad');
+  let ans="";
+  if(m.answer && !Array.isArray(m.answer) && typeof m.answer==="string") ans=`<p><b>Réponse attendue :</b> ${m.answer}</p>`;
+  fb.innerHTML=`<h3>${ok?'✅ Bonne décision collective':'🟠 Décision à corriger'}</h3>${ans}<p>${text}</p>`;
+  if(!m.sort && !m.role){
+    document.querySelectorAll('.choice').forEach(btn=>{
+      const id=btn.id.replace('choice-','');
+      if(Array.isArray(m.answer) ? m.answer.includes(id) : id===m.answer) btn.classList.add('good');
+      else if(selected===id || selectedMulti.includes(id)) btn.classList.add('bad');
+      btn.disabled=true;
+    });
+  }
+  document.getElementById('validateBtn').classList.add('hidden');
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+function nextStep(){
+  current++;
+  if(current>=missions.length){endGame()} else renderMission();
+}
+function endGame(){
+  clearInterval(interval);
+  const final=Math.min(100,score);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('end').classList.remove('hidden');
+  document.getElementById('finalScore').textContent=final;
+  let msg="Le processus électoral est compris dans ses grandes lignes. Reprenez les étapes fragiles en débrief.";
+  if(final>=80) msg="Bravo : le groupe maîtrise la logique générale des élections professionnelles du CSE.";
+  if(final<55) msg="Le groupe doit consolider les bases : seuil, PAP, premier tour, second tour et conditions électorales.";
+  document.getElementById('finalMessage').textContent=msg;
+}
+function restart(){
+  document.getElementById('end').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Négociations collectives et place du CSE</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.74); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.25), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 74% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1380px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(30px) saturate(185%);-webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.67);color:#101828;border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.92);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:560px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:230px;height:230px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:260px;height:260px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:310px;height:310px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.negPanel{
+  width:90%;max-width:585px;border-radius:44px;padding:18px;background:rgba(255,255,255,.36);
+  border:1px solid rgba(255,255,255,.76);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);transform:rotate(-1.5deg)
+}
+.negScreen{
+  border-radius:34px;background:rgba(15,23,42,.82);padding:25px;color:#fff;min-height:400px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.negScreen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 25% 22%,rgba(0,199,255,.36),transparent 30%),radial-gradient(circle at 82% 40%,rgba(255,45,85,.30),transparent 28%);pointer-events:none}
+.negScreen h3{position:relative;font-size:31px;margin:0 0 18px}
+.clue{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px;transition:.18s}
+.clue:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:372px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:8px}
+.room{
+  display:flex;gap:10px;align-items:center;border-radius:21px;padding:10px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:34px;height:34px;border-radius:13px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:720px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:rgba(255,255,255,.64);border:1px solid rgba(255,255,255,.82);border-radius:19px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:rgba(239,246,255,.82);color:#1e3a8a;box-shadow:none}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🤝</div>
+    <div>
+      <h1>Escape Game — Négociations collectives et place du CSE</h1>
+      <p class="sub">Identifier qui négocie selon la taille de l’entreprise, la présence d’un délégué syndical et le rôle possible des élus CSE.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game — Liquid Glass Edition</span>
+    <h2>La salle des accords collectifs est verrouillée.</h2>
+    <p>
+      Les participants doivent retrouver qui peut négocier et valider un accord selon la taille de l’entreprise :
+      moins de 11 salariés, 11 à 20 sans CSE, 11 à 49 avec ou sans élus CSE, 50 salariés et plus sans délégué syndical,
+      entreprises avec délégué syndical, accords majoritaires et référendum.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur partage l’écran. Le groupe débat, puis valide ensemble.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>15 salles : QCM, sélections multiples, codes et cas pratiques.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Savoir repérer quand le CSE consulte, quand les élus négocient, et quand les salariés votent.</span></div>
+    </div>
+    <p class="sources">Sources intégrées : Code du travail L2232-12, L2232-21 à L2232-26, L2232-23-1, à jour 2026.</p>
+    <button class="primary" onclick="startGame()">Entrer dans la salle des accords</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="negPanel">
+      <div class="negScreen">
+        <h3>Carte des négociations</h3>
+        <div class="clue">🏢 Avec délégué syndical</div>
+        <div class="clue">👥 Élus CSE titulaires</div>
+        <div class="clue">🗳️ Référendum salariés</div>
+        <div class="clue">📏 Moins de 11 / 11-49 / 50+</div>
+        <div class="clue">🔐 Majorité & validité</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Messages à faire passer</h2>
+  <div class="rules">
+    <div class="rule"><b>Point clé</b><span>Le CSE comme institution n’est pas automatiquement négociateur. Ce sont certains élus titulaires qui peuvent négocier dans les cas prévus.</span></div>
+    <div class="rule"><b>Réflexe</b><span>Avant de répondre : y a-t-il un délégué syndical ? Quel effectif ? Y a-t-il des élus CSE ? Les élus sont-ils mandatés ?</span></div>
+    <div class="rule"><b>Référendum</b><span>Le référendum n’est pas un sondage : il peut conditionner la validité d’un accord dans certains cas.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/15</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés de négociation</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Salle des accords déverrouillée</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Négociation collective et place du CSE</h2>
+    <table>
+      <tr><th>Entreprise</th><th>Qui négocie / valide ?</th><th>Place du CSE</th></tr>
+      <tr><td>Avec délégué syndical</td><td>Employeur + organisations syndicales représentatives. Validité en principe : signature > 50 %, ou accord 30 % + consultation des salariés.</td><td>Le CSE est surtout consulté sur ses attributions ; il ne remplace pas le délégué syndical comme négociateur.</td></tr>
+      <tr><td>Moins de 11 salariés sans DS</td><td>L’employeur peut proposer un projet d’accord aux salariés. Consultation après délai minimum de 15 jours. Validité si approbation aux 2/3 du personnel.</td><td>Pas de CSE obligatoire ; validation directe par les salariés.</td></tr>
+      <tr><td>11 à 20 salariés sans élu CSE</td><td>Application du régime des moins de 11 : projet proposé aux salariés et approbation selon les règles applicables.</td><td>Pas d’élu CSE pour négocier ; validation directe.</td></tr>
+      <tr><td>11 à moins de 50 sans DS</td><td>Accord possible avec salariés mandatés par organisations syndicales ou avec membres titulaires du CSE.</td><td>Les titulaires CSE peuvent négocier, conclure, réviser ou dénoncer des accords.</td></tr>
+      <tr><td>11 à moins de 50 avec CSE</td><td>Si accord avec membres CSE mandatés ou non : signature par des membres CSE représentant la majorité des suffrages exprimés en faveur des membres du CSE. Si salarié mandaté non élu : approbation par les salariés à la majorité des suffrages exprimés.</td><td>Le poids électoral des titulaires CSE est décisif pour la validité.</td></tr>
+      <tr><td>50 salariés et plus sans DS</td><td>Priorité aux membres titulaires CSE mandatés par organisations syndicales. L’accord doit être approuvé par les salariés à la majorité des suffrages exprimés.</td><td>Les titulaires mandatés négocient ; le référendum valide.</td></tr>
+      <tr><td>50 salariés et plus sans mandaté</td><td>Des titulaires CSE non mandatés peuvent négocier certains accords, limités aux mesures dont la mise en œuvre est subordonnée par la loi à un accord collectif, hors exceptions.</td><td>Validité si signature par titulaires CSE représentant la majorité des suffrages exprimés en faveur des membres CSE.</td></tr>
+      <tr><td>Référendum</td><td>Consultation directe des salariés selon les cas : accord minoritaire, salarié mandaté non élu, élu mandaté 50+, petites entreprises, etc.</td><td>À distinguer de la consultation du CSE : le référendum valide l’accord, il ne constitue pas un avis du CSE.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Le bon réflexe", type:"Sélection multiple", key:"Diagnostic", story:"Avant de savoir si le CSE a sa place dans la négociation, il faut poser les bonnes questions.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Le bon diagnostic commence par : effectif habituel, présence d’un délégué syndical, existence d’élus CSE, mandat syndical éventuel, et mode de validation prévu.", tiles:[["A","Quel est l’effectif habituel de l’entreprise ?"],["B","Y a-t-il un délégué syndical ?"],["C","Y a-t-il des élus titulaires CSE ?"],["D","Les élus ou salariés sont-ils mandatés par une organisation syndicale ?"],["E","Quel mode de validation est prévu : signature, majorité, référendum ?"],["F","Quelle est la couleur du logo de l’entreprise ?"]]},
+{title:"Salle 2 — Avec délégué syndical", type:"QCM", key:"DS prioritaire", story:"Entreprise de 120 salariés avec deux délégués syndicaux. L’employeur veut négocier directement avec les élus du CSE.", kind:"choice", answer:"B", explain:"Dans les entreprises pourvues d’un ou plusieurs délégués syndicaux, les accords sont négociés entre l’employeur et les organisations syndicales représentatives. Le CSE n’a pas vocation à remplacer les délégués syndicaux.", question:"Quelle réponse sécurise le cadre ?", choices:[["A","Les élus CSE remplacent toujours les délégués syndicaux."],["B","La négociation se fait avec les organisations syndicales représentatives via les délégués syndicaux."],["C","Les salariés votent directement sans négociation."],["D","Le CSE rend un avis qui vaut accord collectif."]]},
+{title:"Salle 3 — Accord majoritaire", type:"QCM", key:"50%", story:"Un accord est signé dans une entreprise avec DS. Le groupe doit vérifier sa validité.", kind:"choice", answer:"C", explain:"En présence de délégués syndicaux, l’accord est valide s’il est signé par une ou plusieurs organisations syndicales représentatives ayant recueilli plus de 50 % des suffrages exprimés au premier tour des dernières élections titulaires CSE.", question:"Quel seuil de signature valide directement l’accord ?", choices:[["A","10 %"],["B","30 % dans tous les cas"],["C","Plus de 50 % des suffrages exprimés en faveur d’organisations représentatives"],["D","Unanimité de tous les salariés"]]},
+{title:"Salle 4 — Accord minoritaire et référendum", type:"Sélection multiple", key:"30% + référendum", story:"Un accord est signé par des syndicats représentatifs ayant recueilli plus de 30 %, mais pas plus de 50 %.", kind:"tiles", answer:["A","B","C","D"], explain:"Un accord signé à plus de 30 % mais sans atteindre 50 % peut être soumis à consultation des salariés dans les conditions prévues. L’accord est valide s’il est approuvé par les salariés à la majorité des suffrages exprimés ; sinon il est réputé non écrit.", tiles:[["A","Des organisations signataires à plus de 30 % peuvent demander une consultation des salariés"],["B","L’employeur peut ensuite demander l’organisation de cette consultation dans les conditions prévues"],["C","L’accord est valide s’il est approuvé par les salariés à la majorité des suffrages exprimés"],["D","Faute d’approbation, l’accord est réputé non écrit"],["E","Le CSE peut valider seul l’accord minoritaire"],["F","L’accord minoritaire est toujours valable sans condition"]]},
+{title:"Salle 5 — Moins de 11 salariés", type:"QCM", key:"Moins de 11", story:"Entreprise de 8 salariés, sans délégué syndical. L’employeur veut adapter les horaires par accord collectif.", kind:"choice", answer:"A", explain:"Dans les entreprises sans délégué syndical et de moins de 11 salariés, l’employeur peut proposer un projet d’accord aux salariés. La consultation du personnel intervient après un délai minimum de 15 jours à compter de la communication du projet.", question:"Quel mécanisme est possible ?", choices:[["A","Projet proposé par l’employeur puis consultation directe des salariés"],["B","Négociation obligatoire avec un CSE inexistant"],["C","Signature par le médecin du travail"],["D","Validation par les clients de l’entreprise"]]},
+{title:"Salle 6 — Validation moins de 11", type:"Code", key:"Deux tiers", story:"Le projet d’accord est soumis aux salariés dans une entreprise de 8 salariés.", kind:"input", answer:"23", explain:"Le projet est considéré comme un accord valide s’il est approuvé à la majorité des deux tiers du personnel.", html:`<div class="case"><h3>Code de validation</h3><div class="doc">Entrez la fraction de validation en deux chiffres : deux tiers = ?</div><input id="input" placeholder="Ex : 12" maxlength="2"></div>`},
+{title:"Salle 7 — Délai minimum avant vote", type:"Code", key:"15 jours", story:"Dans une petite entreprise, les salariés viennent de recevoir le projet d’accord.", kind:"input", answer:"15", explain:"La consultation du personnel est organisée à l’issue d’un délai minimum de 15 jours à compter de la communication du projet d’accord à chaque salarié.", html:`<div class="case"><h3>Code du délai</h3><div class="doc">Quel délai minimum, en jours, doit courir après la communication du projet avant la consultation du personnel ?</div><input id="input" placeholder="Nombre de jours" maxlength="2"></div>`},
+{title:"Salle 8 — 11 à 20 sans élu CSE", type:"QCM", key:"11-20 sans CSE", story:"Entreprise de 16 salariés, aucun membre élu de la délégation du personnel du CSE. L’employeur veut conclure un accord.", kind:"choice", answer:"D", explain:"Dans les entreprises de 11 à 20 salariés sans membre élu de la délégation du personnel du CSE, le régime des entreprises de moins de 11 salariés s’applique : projet d’accord proposé aux salariés et validation par consultation.", question:"Quel régime faut-il appliquer ?", choices:[["A","Négociation obligatoire avec des élus inexistants"],["B","Signature automatique par l’employeur"],["C","Négociation avec le conseil municipal"],["D","Régime de proposition aux salariés et consultation du personnel"]]},
+{title:"Salle 9 — 11 à moins de 50 sans DS", type:"Sélection multiple", key:"11-49 acteurs", story:"Entreprise de 35 salariés, pas de délégué syndical, un CSE existe. Qui peut négocier ?", kind:"tiles", answer:["A","B"], explain:"Dans les entreprises de 11 à moins de 50 salariés sans délégué syndical, les accords peuvent être négociés soit par un ou plusieurs salariés mandatés par des organisations syndicales, membres ou non du CSE, soit par des membres titulaires du CSE.", tiles:[["A","Un ou plusieurs salariés expressément mandatés par une organisation syndicale représentative"],["B","Un ou des membres titulaires de la délégation du personnel du CSE"],["C","Tous les salariés pris au hasard sans mandat ni vote"],["D","Le prestataire paie"],["E","Le suppléant non titulaire dans tous les cas"],["F","Le client principal de l’entreprise"]]},
+{title:"Salle 10 — 11 à moins de 50 : validité avec élus CSE", type:"QCM", key:"Majorité CSE", story:"Dans une entreprise de 35 salariés sans DS, un accord est conclu avec des titulaires CSE.", kind:"choice", answer:"B", explain:"La validité des accords conclus avec des membres de la délégation du personnel du CSE, mandatés ou non, est subordonnée à leur signature par des membres du CSE représentant la majorité des suffrages exprimés en faveur des membres du CSE aux dernières élections.", question:"Quelle condition de validité doit être vérifiée ?", choices:[["A","Signature d’un seul élu, quel que soit son score"],["B","Signature par des membres CSE représentant la majorité des suffrages exprimés en faveur des membres du CSE"],["C","Approbation par le maire"],["D","Accord oral en réunion"]]},
+{title:"Salle 11 — Salarié mandaté non élu", type:"QCM", key:"Mandaté non élu", story:"Dans une entreprise de 35 salariés sans DS, l’accord est négocié par un salarié mandaté qui n’est pas membre du CSE.", kind:"choice", answer:"C", explain:"Lorsque l’accord est conclu avec un ou plusieurs salariés mandatés qui ne sont pas membres de la délégation du personnel du CSE, sa validité est subordonnée à l’approbation des salariés à la majorité des suffrages exprimés.", question:"Comment l’accord devient-il valide ?", choices:[["A","Il est valide sans vote"],["B","Il doit être signé par le trésorier du CSE"],["C","Il doit être approuvé par les salariés à la majorité des suffrages exprimés"],["D","Il est validé par l’inspection du travail avant signature"]]},
+{title:"Salle 12 — 50 et plus sans DS : élus mandatés", type:"Sélection multiple", key:"50+ mandatés", story:"Entreprise de 80 salariés sans délégué syndical. Des titulaires CSE sont mandatés par une organisation syndicale.", kind:"tiles", answer:["A","B","C","D"], explain:"Dans les entreprises d’au moins 50 salariés sans DS, des membres titulaires CSE peuvent négocier s’ils sont expressément mandatés par des organisations syndicales représentatives. Les organisations syndicales de la branche ou nationales/interprofessionnelles sont informées. La validité est subordonnée à l’approbation des salariés à la majorité des suffrages exprimés.", tiles:[["A","Les titulaires CSE peuvent négocier s’ils sont expressément mandatés"],["B","Une même organisation ne peut mandater qu’un seul salarié"],["C","Les organisations syndicales concernées doivent être informées par l’employeur de l’ouverture des négociations"],["D","L’accord doit être approuvé par les salariés à la majorité des suffrages exprimés"],["E","Les élus mandatés signent et l’accord est toujours valable sans vote"],["F","Le CSE en tant qu’instance signe seul"]]},
+{title:"Salle 13 — 50 et plus : élus non mandatés", type:"Sélection multiple", key:"50+ non mandatés", story:"Entreprise de 80 salariés sans DS. Aucun membre CSE mandaté. Des titulaires non mandatés veulent négocier.", kind:"tiles", answer:["A","B","C"], explain:"À défaut de membre CSE mandaté, les titulaires CSE non mandatés peuvent négocier certains accords, mais seulement les accords relatifs à des mesures dont la mise en œuvre est subordonnée par la loi à un accord collectif, hors exceptions. La validité exige la signature par des membres CSE représentant la majorité des suffrages exprimés en faveur des membres CSE.", tiles:[["A","Les titulaires CSE non mandatés peuvent négocier dans ce cas subsidiaire"],["B","Le champ est limité aux mesures dont la mise en œuvre est subordonnée par la loi à un accord collectif, hors exceptions"],["C","La validité exige une signature majoritaire en poids électoral CSE"],["D","Ils peuvent négocier tous les thèmes sans limite"],["E","Ils doivent obligatoirement faire approuver l’accord par référendum"],["F","Les suppléants non titulaires signent seuls"]]},
+{title:"Salle 14 — Place du CSE : consulter ou négocier ?", type:"QCM", key:"Rôle CSE", story:"Les participants confondent avis du CSE, signature d’un accord et référendum.", kind:"choice", answer:"A", explain:"Il faut distinguer trois situations : le CSE comme instance consultée rend un avis ; certains élus titulaires du CSE peuvent négocier et signer dans les entreprises sans DS selon l’effectif ; le référendum est une consultation directe des salariés pour valider un accord dans certains cas.", question:"Quelle phrase est la plus juste ?", choices:[["A","Le CSE peut être consulté comme instance, mais seuls certains élus titulaires peuvent négocier dans les cas prévus, et le référendum valide parfois l’accord par vote des salariés."],["B","Tout avis du CSE vaut accord collectif."],["C","Tout accord collectif est signé par le secrétaire du CSE."],["D","Le référendum est une réunion ordinaire du CSE."]]},
+{title:"Salle 15 — Carte des tailles", type:"Sélection multiple", key:"Carte tailles", story:"Le coffre final intermédiaire demande de relier taille d’entreprise et place possible du CSE.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Moins de 11 : proposition de l’employeur et vote des salariés. 11 à 20 sans élu CSE : même régime. 11 à moins de 50 sans DS : salariés mandatés ou titulaires CSE. 50+ sans DS : titulaires CSE mandatés puis référendum, ou non mandatés dans un champ limité. Avec DS : négociation avec organisations syndicales représentatives.", tiles:[["A","Moins de 11 : vote direct des salariés"],["B","11 à 20 sans élu CSE : régime de proposition aux salariés"],["C","11 à moins de 50 sans DS : titulaires CSE peuvent négocier"],["D","50+ sans DS : titulaires CSE mandatés ou, subsidiairement, non mandatés dans un champ limité"],["E","Avec DS : négociation avec organisations syndicales représentatives"],["F","Dans toutes les entreprises, le CSE signe toujours seul tous les accords"]]},
+{title:"Salle finale — Code de validation", type:"Code final", key:"Coffre final", story:"Pour ouvrir la porte finale, retrouvez les chiffres clés de la négociation collective avec ou sans CSE.", kind:"input", answer:"1150301523", explain:"Code final : 11 salariés, seuil 50, 30 % accord minoritaire, 15 jours minimum avant consultation dans les petites entreprises, et deux tiers du personnel. Le code assemble : 11 + 50 + 30 + 15 + 23.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : seuil CSE 11 + seuil 50 + seuil d’accord minoritaire 30 + délai minimum 15 jours + deux tiers sous forme 23.</div><input id="input" placeholder="Code final" maxlength="10"></div>`}
+];
+
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/15";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"🤝",B:"🗳️",C:"📌",D:"✅",E:"⚖️",F:"🚫"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Clé obtenue":"🟠 Point à reprendre"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?10:6;if(!keys.includes(rooms[current].key)&&current<15)keys.push(rooms[current].key)}else score+=2;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="La salle des accords est déverrouillée. Reprends les seuils et cas de négociation les moins maîtrisés en débrief.";if(final>=80)msg="Excellent : les participants savent identifier la place du CSE dans les négociations collectives selon la taille de l’entreprise.";if(final<55)msg="À consolider : refaire un point sur DS, moins de 11, 11-49, 50+, élus mandatés/non mandatés et référendum.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

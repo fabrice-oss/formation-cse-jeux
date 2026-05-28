@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Consultations, avis et experts</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.74); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.25), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 74% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1380px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(30px) saturate(185%);-webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.67);color:#101828;border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.92);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:560px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:230px;height:230px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:260px;height:260px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:310px;height:310px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.consultPanel{
+  width:90%;max-width:585px;border-radius:44px;padding:18px;background:rgba(255,255,255,.36);
+  border:1px solid rgba(255,255,255,.76);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);transform:rotate(-1.5deg)
+}
+.consultScreen{
+  border-radius:34px;background:rgba(15,23,42,.82);padding:25px;color:#fff;min-height:400px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.consultScreen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 25% 22%,rgba(0,199,255,.36),transparent 30%),radial-gradient(circle at 82% 40%,rgba(255,45,85,.30),transparent 28%);pointer-events:none}
+.consultScreen h3{position:relative;font-size:31px;margin:0 0 18px}
+.clue{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px;transition:.18s}
+.clue:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:372px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:8px}
+.room{
+  display:flex;gap:10px;align-items:center;border-radius:21px;padding:10px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:34px;height:34px;border-radius:13px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:720px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:rgba(255,255,255,.64);border:1px solid rgba(255,255,255,.82);border-radius:19px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:rgba(239,246,255,.82);color:#1e3a8a;box-shadow:none}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🧭</div>
+    <div>
+      <h1>Escape Game — Consultations, avis et experts du CSE</h1>
+      <p class="sub">Maîtriser le cycle complet : informer, consulter, expertiser, rédiger l’avis, sécuriser les délais.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game long — Liquid Glass Edition</span>
+    <h2>Le dossier de consultation est incomplet. Le CSE doit sauver son avis.</h2>
+    <p>
+      Les participants explorent toutes les étapes : consultations récurrentes, consultations ponctuelles, BDESE,
+      délais, avis motivé, expert-comptable, expert habilité, financement, contestations, questions de l’expert,
+      réponses de l’employeur, rapport, consultation réputée rendue et stratégie de rédaction.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur partage l’écran. Le groupe débat, puis valide collectivement.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>22 salles, codes, QCM, sélections multiples, classement et situations pratiques.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Que chaque participant sache quoi demander, quand désigner un expert, et comment rendre un avis utile.</span></div>
+    </div>
+    <p class="sources">Base juridique intégrée : Code du travail L2312-8 à L2312-84, L2315-78 à L2315-95 et R2312-5/R2312-6, R2315-45 à R2315-50.</p>
+    <button class="primary" onclick="startGame()">Entrer dans le labyrinthe des consultations</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="consultPanel">
+      <div class="consultScreen">
+        <h3>Consultation CSE</h3>
+        <div class="clue">📌 3 consultations récurrentes</div>
+        <div class="clue">⚡ Consultations ponctuelles</div>
+        <div class="clue">📝 Avis motivé</div>
+        <div class="clue">🔎 Expertises</div>
+        <div class="clue">⏱️ Délais & réponses</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Débriefs clés</h2>
+  <div class="rules">
+    <div class="rule"><b>Avant l’avis</b><span>Faire vérifier : obligation de consulter, informations suffisantes, délai applicable, besoin éventuel d’expert.</span></div>
+    <div class="rule"><b>Qualité de l’avis</b><span>Un avis utile n’est pas “favorable/défavorable” seul : il doit être motivé, circonstancié, avec réserves et demandes.</span></div>
+    <div class="rule"><b>Expertise</b><span>L’expert aide le CSE à comprendre et formuler, mais ne décide pas à la place des élus.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/22</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés de consultation</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Labyrinthe des consultations terminé</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Consultations, avis et experts du CSE</h2>
+    <table>
+      <tr><th>Thème</th><th>À retenir</th></tr>
+      <tr><td>Principe</td><td>Les décisions de l’employeur sont précédées de la consultation du CSE quand le Code du travail le prévoit. La consultation doit être utile et préalable.</td></tr>
+      <tr><td>3 consultations récurrentes</td><td>Orientations stratégiques ; situation économique et financière ; politique sociale, conditions de travail et emploi. À défaut d’accord, elles sont annuelles.</td></tr>
+      <tr><td>Accord possible</td><td>Un accord peut définir contenu, périodicité, modalités, informations, niveaux de consultation et délais ; la périodicité ne peut pas être supérieure à 3 ans.</td></tr>
+      <tr><td>Consultations ponctuelles</td><td>Projets importants modifiant l’organisation, la gestion, les conditions de travail, restructurations, licenciements collectifs, OPA, procédures collectives, garanties collectives, etc.</td></tr>
+      <tr><td>Délais</td><td>À défaut d’accord : 1 mois ; 2 mois en cas d’expertise ; 3 mois en cas d’expertise avec consultation au niveau CSE central et établissement(s). À expiration, le CSE est réputé consulté et avoir rendu un avis négatif.</td></tr>
+      <tr><td>Avis</td><td>Un avis doit être motivé : constat, analyse, points d’alerte, réserves, demandes, conditions, vote et suites attendues.</td></tr>
+      <tr><td>Expert</td><td>Le CSE peut recourir à un expert-comptable ou à un expert habilité selon les cas prévus. L’expert éclaire le CSE mais ne vote pas à sa place.</td></tr>
+      <tr><td>Délais expert</td><td>L’expert demande les informations complémentaires dans les 3 jours de sa désignation ; l’employeur répond dans les 5 jours ; l’expert notifie coût/étendue/durée dans les 10 jours.</td></tr>
+      <tr><td>Contestation</td><td>L’employeur dispose de 10 jours pour contester certains points de l’expertise devant le juge ; la saisine peut suspendre la décision du CSE et les délais de consultation jusqu’au jugement.</td></tr>
+      <tr><td>Financement</td><td>Certaines expertises sont prises en charge par l’employeur, d’autres cofinancées employeur/CSE. Toujours identifier la base légale.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Le principe de départ", type:"QCM", key:"Principe préalable", story:"La direction annonce un projet déjà décidé et demande un avis pour “information”.", kind:"choice", answer:"B", explain:"La consultation doit précéder la décision de l’employeur lorsqu’elle est obligatoire. Le CSE doit pouvoir rendre un avis utile avant que la décision soit arrêtée.", question:"Quelle règle faut-il rappeler ?", choices:[["A","Le CSE est consulté uniquement après la décision."],["B","Les décisions de l’employeur sont précédées de la consultation du CSE lorsque le Code le prévoit."],["C","L’avis du CSE remplace la décision de l’employeur."],["D","Le CSE ne rend jamais d’avis."]]},
+{title:"Salle 2 — Les trois récurrentes", type:"Sélection multiple", key:"3 récurrentes", story:"Le coffre demande les trois grandes consultations récurrentes.", kind:"tiles", answer:["A","B","C"], explain:"À défaut d’accord, le CSE est consulté chaque année sur les orientations stratégiques, la situation économique et financière, et la politique sociale, les conditions de travail et l’emploi.", tiles:[["A","Orientations stratégiques de l’entreprise"],["B","Situation économique et financière"],["C","Politique sociale, conditions de travail et emploi"],["D","Choix du fournisseur de café"],["E","Toutes les commandes de papeterie"],["F","Nomination du manager de proximité sans impact collectif"]]},
+{title:"Salle 3 — Périodicité par accord", type:"Code", key:"Périodicité", story:"Un accord veut organiser les consultations récurrentes tous les 5 ans.", kind:"input", answer:"3", explain:"Un accord peut définir la périodicité des consultations récurrentes, mais cette périodicité ne peut pas être supérieure à trois ans.", html:`<div class="case"><h3>Code de périodicité</h3><div class="doc">Quel est le nombre maximal d'années entre deux consultations récurrentes lorsque la périodicité est fixée par accord ?</div><input id="input" placeholder="Nombre d'années" maxlength="1"></div>`},
+{title:"Salle 4 — Orientations stratégiques", type:"QCM", key:"Stratégie", story:"La direction présente une stratégie IA, fermeture partielle d’un service et externalisation progressive.", kind:"choice", answer:"C", explain:"La consultation sur les orientations stratégiques porte sur les grandes trajectoires de l’entreprise et leurs conséquences sur l’activité, l’emploi, les métiers, les compétences, l’organisation, la formation et les enjeux environnementaux.", question:"Quelle consultation récurrente est prioritairement concernée ?", choices:[["A","Alerte DGI"],["B","Politique sociale uniquement"],["C","Consultation sur les orientations stratégiques"],["D","Consultation sur le règlement intérieur du CSE"]]},
+{title:"Salle 5 — Situation économique et financière", type:"QCM", key:"Éco-financière", story:"Les élus reçoivent comptes annuels, marge, endettement, investissement et crédit impôt recherche.", kind:"choice", answer:"B", explain:"Ces éléments relèvent de la consultation annuelle sur la situation économique et financière de l’entreprise, qui porte notamment sur la recherche et développement et l’utilisation du crédit d’impôt recherche.", question:"De quelle consultation s’agit-il ?", choices:[["A","Politique sociale"],["B","Situation économique et financière"],["C","Droit d’alerte DGI"],["D","Collèges électoraux"]]},
+{title:"Salle 6 — Politique sociale / conditions de travail / emploi", type:"Sélection multiple", key:"Politique sociale", story:"Le CSE doit identifier les thèmes de la consultation sociale.", kind:"tiles", answer:["A","B","C","D","E"], explain:"La consultation sur la politique sociale, les conditions de travail et l’emploi couvre notamment emploi, qualifications, formation, durée du travail, égalité professionnelle, santé-sécurité et conditions de travail.", tiles:[["A","Emploi et évolution des effectifs"],["B","Formation et plan de développement des compétences"],["C","Durée du travail"],["D","Égalité professionnelle"],["E","Santé, sécurité et conditions de travail"],["F","Vie privée des dirigeants sans lien avec l’entreprise"]]},
+{title:"Salle 7 — La BDESE", type:"Sélection multiple", key:"BDESE", story:"Les élus cherchent les informations nécessaires aux consultations.", kind:"tiles", answer:["A","B","C","D"], explain:"La BDESE rassemble les informations nécessaires aux consultations et informations récurrentes du CSE. Elle doit permettre aux élus d’exercer utilement leurs compétences. Elle intègre aussi des conséquences environnementales.", tiles:[["A","Support d’informations nécessaires aux consultations récurrentes"],["B","Accès permettant d’exercer utilement les compétences du CSE"],["C","Données économiques, sociales et environnementales"],["D","Base pouvant être organisée par accord"],["E","Document secret réservé à l’employeur uniquement"],["F","Simple catalogue d’activités sociales"]]},
+{title:"Salle 8 — Consultation ponctuelle ou récurrente ?", type:"QCM", key:"Ponctuelle", story:"La direction veut déménager un service, modifier les horaires, changer les outils numériques et transformer l’organisation.", kind:"choice", answer:"D", explain:"Un projet important modifiant l’organisation, la gestion, les conditions d’emploi, de travail ou la durée du travail relève d’une consultation ponctuelle du CSE.", question:"Quelle qualification est la plus juste ?", choices:[["A","Aucune consultation car c’est un choix de direction"],["B","Consultation récurrente seulement dans 3 ans"],["C","Consultation sur les ASC"],["D","Consultation ponctuelle sur un projet important modifiant l’organisation ou les conditions de travail"]]},
+{title:"Salle 9 — Liste des ponctuelles", type:"Sélection multiple", key:"Situations ponctuelles", story:"Le coffre mélange des vrais cas de consultation ponctuelle et des sujets ordinaires.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Les consultations ponctuelles peuvent porter sur des projets importants, restructurations, licenciements collectifs économiques, OPA, procédures collectives, ou mise en place/modification de garanties collectives.", tiles:[["A","Projet important modifiant les conditions de travail"],["B","Restructuration et compression des effectifs"],["C","Licenciement collectif économique"],["D","Offre publique d’acquisition"],["E","Mise en place ou modification d’une garantie collective"],["F","Choix de la marque des stylos sans enjeu collectif"]]},
+{title:"Salle 10 — Le contenu d’un avis", type:"Sélection multiple", key:"Avis motivé", story:"Les élus veulent écrire seulement : “avis défavorable”.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Un avis utile doit être motivé : rappel du projet, informations examinées, analyse, réserves, demandes, conditions éventuelles, vote et suites attendues. Un avis peut être favorable, défavorable, favorable sous réserves ou assorti de recommandations.", tiles:[["A","Rappel du projet soumis"],["B","Documents et informations examinés"],["C","Analyse des impacts sur les salariés, l’emploi, la santé, les conditions de travail et l’environnement"],["D","Réserves, demandes et recommandations"],["E","Résultat du vote et position finale"],["F","Une phrase sans justification : “on n’aime pas”"]]},
+{title:"Salle 11 — Avis favorable sous réserves", type:"QCM", key:"Réserves", story:"Le projet est globalement utile, mais les élus identifient des risques de charge de travail et demandent un suivi à 3 mois.", kind:"choice", answer:"C", explain:"Le CSE peut rendre un avis favorable sous réserves ou assorti de recommandations, en demandant des garanties, mesures de suivi et indicateurs.", question:"Quel type d’avis est le plus adapté ?", choices:[["A","Avis favorable sans aucune mention"],["B","Refus de rendre un avis"],["C","Avis favorable sous réserves, avec demandes précises de suivi et de prévention"],["D","Avis hors sujet sur les élections CSE"]]},
+{title:"Salle 12 — Délai de consultation sans accord", type:"Code", key:"Délai 1 mois", story:"Aucun accord ne fixe les délais. Il n’y a pas d’expert.", kind:"input", answer:"1", explain:"À défaut d’accord, le délai de consultation du CSE est d’un mois, sauf dispositions spéciales.", html:`<div class="case"><h3>Code du délai simple</h3><div class="doc">À défaut d’accord et sans expert, quel est le délai de consultation du CSE, en mois ?</div><input id="input" placeholder="Nombre de mois" maxlength="1"></div>`},
+{title:"Salle 13 — Délai avec expert", type:"QCM", key:"Délai 2 mois", story:"Le CSE désigne un expert dans le cadre d’une consultation ordinaire où le délai n’est pas fixé par accord.", kind:"choice", answer:"B", explain:"À défaut d’accord, le délai est porté à deux mois en cas d’intervention d’un expert.", question:"Quel délai s’applique généralement ?", choices:[["A","15 jours"],["B","2 mois"],["C","6 mois"],["D","Aucun délai"]]},
+{title:"Salle 14 — CSE central + établissements", type:"Code", key:"Délai 3 mois", story:"La consultation se déroule au niveau du CSE central et de plusieurs CSE d’établissement avec expertise.", kind:"input", answer:"3", explain:"À défaut d’accord, le délai est porté à trois mois en cas d’expertise dans une consultation se déroulant à la fois au niveau central et au niveau d’un ou plusieurs établissements.", html:`<div class="case"><h3>Code du délai complexe</h3><div class="doc">Quel délai, en mois, s’applique à défaut d’accord avec expertise au niveau central + établissements ?</div><input id="input" placeholder="Nombre de mois" maxlength="1"></div>`},
+{title:"Salle 15 — Avis non rendu à temps", type:"QCM", key:"Réputé consulté", story:"Le délai expire. Les élus n’ont pas rendu d’avis.", kind:"choice", answer:"D", explain:"À l’expiration du délai de consultation, le CSE est réputé avoir été consulté et avoir rendu un avis négatif, sauf règles particulières.", question:"Que se passe-t-il ?", choices:[["A","Le délai repart à zéro automatiquement"],["B","L’employeur ne pourra jamais décider"],["C","L’avis est réputé favorable"],["D","Le CSE est réputé consulté et avoir rendu un avis négatif"]]},
+{title:"Salle 16 — Quand recourir à un expert ?", type:"Sélection multiple", key:"Cas experts", story:"Le CSE doit choisir dans quels cas un expert peut être utile ou prévu.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Le CSE peut recourir à un expert-comptable pour les consultations récurrentes sur orientations stratégiques, situation économique et financière, politique sociale ; ainsi que dans certaines opérations ponctuelles. Il peut recourir à un expert habilité pour risque grave ou projet important modifiant les conditions de santé, sécurité ou travail.", tiles:[["A","Orientations stratégiques"],["B","Situation économique et financière"],["C","Politique sociale, conditions de travail et emploi"],["D","Projet important modifiant les conditions de santé, sécurité ou travail"],["E","Risque grave identifié et actuel"],["F","Désaccord personnel entre deux élus sans lien avec une mission du CSE"]]},
+{title:"Salle 17 — Expert-comptable ou expert habilité ?", type:"QCM", key:"Type expert", story:"Un projet d’implantation de robots modifie les postes, les gestes, les cadences et la sécurité.", kind:"choice", answer:"C", explain:"Un projet important modifiant les conditions de santé et sécurité ou les conditions de travail peut justifier une expertise par un expert habilité.", question:"Quel expert est le plus adapté ?", choices:[["A","Expert-comptable pour certification des comptes du CSE uniquement"],["B","Médecin personnel des élus"],["C","Expert habilité pour analyser les impacts santé-sécurité et conditions de travail"],["D","Commissaire aux comptes de l’employeur uniquement"]]},
+{title:"Salle 18 — Désignation de l’expert", type:"Sélection multiple", key:"Délibération expert", story:"Le CSE veut désigner un expert mais n’a rien formalisé.", kind:"tiles", answer:["A","B","C","D"], explain:"Le recours à expertise doit être décidé par délibération du CSE. La délibération doit identifier le cadre légal, la mission, le projet ou la consultation concernée, l’expert choisi et, idéalement, les questions à traiter.", tiles:[["A","Délibération du CSE"],["B","Base légale de l’expertise"],["C","Nom de l’expert désigné"],["D","Mission ou questions confiées à l’expert"],["E","Décision orale d’un seul élu"],["F","Désignation par le manager RH sans vote du CSE"]]},
+{title:"Salle 19 — Questions de l’expert à l’employeur", type:"Code", key:"3 jours expert", story:"L’expert est désigné et veut demander des informations complémentaires.", kind:"input", answer:"3", explain:"L’expert demande à l’employeur, au plus tard dans les trois jours de sa désignation, toutes les informations complémentaires nécessaires.", html:`<div class="case"><h3>Code expert — demande d’informations</h3><div class="doc">Dans quel délai maximal, en jours, l’expert demande-t-il à l’employeur les informations complémentaires nécessaires ?</div><input id="input" placeholder="Nombre de jours" maxlength="1"></div>`},
+{title:"Salle 20 — Réponse de l’employeur à l’expert", type:"Code", key:"5 jours employeur", story:"L’expert a envoyé sa demande d’informations dans les délais.", kind:"input", answer:"5", explain:"L’employeur répond à la demande d’informations complémentaires de l’expert dans les cinq jours.", html:`<div class="case"><h3>Code employeur — réponse aux questions</h3><div class="doc">Dans quel délai, en jours, l’employeur répond-il à la demande de l’expert ?</div><input id="input" placeholder="Nombre de jours" maxlength="1"></div>`},
+{title:"Salle 21 — Coût, étendue et durée", type:"Code", key:"10 jours notification", story:"L’expert doit notifier son coût prévisionnel, l’étendue et la durée de sa mission.", kind:"input", answer:"10", explain:"L’expert notifie à l’employeur le coût prévisionnel, l’étendue et la durée d’expertise dans un délai de dix jours à compter de sa désignation.", html:`<div class="case"><h3>Code notification expert</h3><div class="doc">Dans quel délai, en jours, l’expert notifie-t-il coût prévisionnel, étendue et durée ?</div><input id="input" placeholder="Nombre de jours" maxlength="2"></div>`},
+{title:"Salle 22 — Contestation de l’expertise", type:"Sélection multiple", key:"Contestation", story:"L’employeur conteste l’expertise. Le CSE doit savoir ce qui peut être contesté et sous quel délai.", kind:"tiles", answer:["A","B","C","D","E"], explain:"L’employeur peut saisir le juge dans un délai de dix jours pour contester la nécessité de l’expertise, le choix de l’expert, le coût prévisionnel, l’étendue, la durée ou le coût final selon les cas. Le juge statue rapidement et cette saisine peut suspendre l’exécution de la décision du CSE ainsi que les délais de consultation jusqu’à la notification du jugement.", tiles:[["A","Nécessité de l’expertise"],["B","Choix de l’expert"],["C","Coût prévisionnel"],["D","Étendue ou durée de l’expertise"],["E","Coût final"],["F","Existence même du CSE après chaque réunion"]]},
+{title:"Salle 23 — Financement des expertises", type:"Sélection multiple", key:"Financement", story:"Le groupe doit éviter de dire : “l’expert est toujours gratuit pour le CSE”.", kind:"tiles", answer:["A","B","C","D"], explain:"Le financement dépend du type d’expertise. Certaines sont prises en charge par l’employeur, d’autres sont cofinancées entre employeur et budget de fonctionnement du CSE. Il faut toujours vérifier la base légale avant de voter.", tiles:[["A","Certaines expertises sont prises en charge par l’employeur"],["B","Certaines expertises sont cofinancées employeur/CSE"],["C","Le CSE doit vérifier la base légale avant de désigner"],["D","Le budget de fonctionnement peut être concerné selon le cas"],["E","Toutes les expertises sont toujours personnelles aux élus"],["F","L’expert est toujours choisi et payé par l’employeur seul"]]},
+{title:"Salle 24 — L’avis final", type:"Sélection multiple", key:"Avis final", story:"Le CSE doit rendre un avis sur une réorganisation avec risques de surcharge, formation insuffisante, impacts environnementaux incertains et manque d’indicateurs de suivi.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Un avis solide doit reprendre les points analysés, les informations insuffisantes, les réserves, les demandes concrètes, les mesures de prévention, les indicateurs de suivi, et la position finale du CSE.", tiles:[["A","Rappeler les informations reçues et celles manquantes"],["B","Analyser les impacts sur emploi, santé, charge et conditions de travail"],["C","Formuler des réserves et demandes concrètes"],["D","Demander des indicateurs de suivi et un calendrier de bilan"],["E","Voter et mentionner clairement la position du CSE"],["F","Rédiger uniquement : “avis défavorable, point final”"]]},
+{title:"Salle finale — Le grand code des consultations", type:"Code final", key:"Coffre final", story:"Pour sortir du labyrinthe, retrouvez les chiffres-clés.", kind:"input", answer:"1233510", explain:"Code final : 1 mois sans expert, 2 mois avec expert, 3 mois central + établissements avec expertise, 3 jours pour les demandes d’informations de l’expert, 5 jours pour la réponse de l’employeur, 10 jours pour la notification coût/étendue/durée.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : délai sans expert + délai avec expert + délai central/établissements + délai demande expert + délai réponse employeur + délai notification coût/étendue/durée.</div><input id="input" placeholder="Code final" maxlength="7"></div>`}
+];
+
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/22";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"📌",B:"🧾",C:"🔎",D:"✅",E:"⚠️",F:"🚫"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Clé obtenue":"🟠 Point à reprendre"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?4:4;if(!keys.includes(rooms[current].key)&&current<24)keys.push(rooms[current].key)}else score+=1;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="Le labyrinthe est terminé. Reprends les salles les moins maîtrisées en débrief.";if(final>=80)msg="Excellent : les participants maîtrisent le cycle consultation → expertise → avis → délais.";if(final<55)msg="À consolider : refaire un point sur les trois consultations récurrentes, les délais et l’expertise.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

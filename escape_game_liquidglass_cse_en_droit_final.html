@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game — Le CSE en droit</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.72); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.23), transparent 30%),
+    radial-gradient(circle at 91% 14%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 72% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1320px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.85);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);
+  position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.66);color:#101828;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.9);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.red{background:linear-gradient(135deg,rgba(255,59,48,.96),rgba(255,160,150,.80));color:#fff}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:540px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:220px;height:220px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:250px;height:250px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:300px;height:300px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.safe{
+  width:82%;max-width:460px;border-radius:44px;padding:18px;background:rgba(255,255,255,.36);
+  border:1px solid rgba(255,255,255,.76);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);transform:rotate(-2deg)
+}
+.safeScreen{
+  border-radius:34px;background:rgba(15,23,42,.80);padding:25px;color:#fff;min-height:370px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.safeScreen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 30% 20%,rgba(0,199,255,.35),transparent 30%),radial-gradient(circle at 80% 40%,rgba(255,45,85,.28),transparent 28%);pointer-events:none}
+.safeScreen h3{position:relative;font-size:31px;margin:0 0 18px}
+.clue{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px;transition:.18s}
+.clue:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:350px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:10px}
+.room{
+  display:flex;gap:12px;align-items:center;border-radius:22px;padding:12px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:38px;height:38px;border-radius:15px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:680px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:rgba(255,255,255,.64);border:1px solid rgba(255,255,255,.82);border-radius:19px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:rgba(239,246,255,.82);color:#1e3a8a;box-shadow:none}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🗝️</div>
+    <div>
+      <h1>Escape Game — Le CSE en droit</h1>
+      <p class="sub">Reconstituer l’identité juridique du comité social et économique.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game classique — Liquid Glass Edition</span>
+    <h2>Le coffre juridique du CSE est verrouillé.</h2>
+    <p>
+      Pour l’ouvrir, les participants doivent résoudre 9 énigmes et comprendre ce qu’est le CSE en droit :
+      une instance, des personnes qui siègent, un seuil d’existence, un seuil de personnalité civile,
+      un patrimoine, des rôles internes et des obligations.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur partage l’écran, le groupe débat, puis valide ensemble.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>QCM, codes, sélections multiples, classement et coffre final.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Savoir expliquer simplement : “Le CSE, juridiquement, c’est quoi ?”</span></div>
+    </div>
+    <p class="sources">
+      Base juridique intégrée : Code du travail L2311-2, L2312-1, L2315-3, L2315-23. Sources officielles vérifiées en 2026.
+    </p>
+    <button class="primary" onclick="startGame()">Entrer dans le coffre juridique</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="safe">
+      <div class="safeScreen">
+        <h3>Coffre CSE</h3>
+        <div class="clue">👤 Personne physique</div>
+        <div class="clue">🏢 Personne morale</div>
+        <div class="clue">🗳️ Instance représentative</div>
+        <div class="clue">🧾 Patrimoine</div>
+        <div class="clue">🔒 Obligations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Comment exploiter le jeu</h2>
+  <div class="rules">
+    <div class="rule"><b>À distance</b><span>Garde tous les participants dans la même salle Zoom. Fais voter oralement ou dans le chat avant de cliquer.</span></div>
+    <div class="rule"><b>Question clé</b><span>Après chaque énigme : “Qu’est-ce que cela change concrètement pour les élus ?”</span></div>
+    <div class="rule"><b>Trace finale</b><span>Demande à chaque participant de formuler une phrase : “Le CSE en droit, c’est…”</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/9</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés juridiques</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Coffre juridique ouvert</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Le CSE en droit</h2>
+    <table>
+      <tr><th>Notion</th><th>Ce qu’il faut retenir</th></tr>
+      <tr><td>Personne physique</td><td>Un être humain, sujet de droits et d’obligations.</td></tr>
+      <tr><td>Personne morale</td><td>Une entité reconnue par le droit, distincte des personnes qui la composent.</td></tr>
+      <tr><td>Seuil d’existence</td><td>Le CSE est mis en place dans les entreprises d’au moins 11 salariés ; obligation si ce seuil est atteint pendant 12 mois consécutifs.</td></tr>
+      <tr><td>CSE ≥ 50 salariés</td><td>Dans les entreprises d’au moins 50 salariés, le CSE est doté de la personnalité civile et gère son patrimoine.</td></tr>
+      <tr><td>Président</td><td>Le CSE est présidé par l’employeur ou son représentant, éventuellement assisté de trois collaborateurs ayant voix consultative.</td></tr>
+      <tr><td>Secrétaire / trésorier</td><td>Le CSE désigne, parmi ses membres titulaires, un secrétaire et un trésorier.</td></tr>
+      <tr><td>Attributions</td><td>Les attributions du CSE dépendent de l’effectif de l’entreprise.</td></tr>
+      <tr><td>Obligations</td><td>Les membres du CSE doivent respecter le secret professionnel et l’obligation de discrétion pour les informations confidentielles présentées comme telles.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Le faux départ", type:"Code", key:"11/12", story:"Le premier verrou demande les deux chiffres qui déclenchent la mise en place du CSE.", kind:"input", answer:"1112", explain:"Le CSE est mis en place dans les entreprises d’au moins 11 salariés. Sa mise en place devient obligatoire si cet effectif est atteint pendant 12 mois consécutifs.", html:`<div class="case"><h3>Énigme du seuil</h3><div class="doc">Assemblez les deux nombres : seuil minimum de salariés + durée consécutive requise.</div><input id="input" placeholder="Code à 4 chiffres" maxlength="4"></div>`},
+{title:"Salle 2 — Personne physique", type:"QCM", key:"Personne physique", story:"Une carte indique : “Je suis un sujet de droits et d’obligations, mais je suis un individu.”", kind:"choice", answer:"A", explain:"Une personne physique est un être humain. Un élu, un salarié, un employeur en tant qu’individu sont des personnes physiques.", question:"Quel exemple correspond le mieux à une personne physique ?", choices:[["A","Un salarié élu au CSE"],["B","Une société commerciale"],["C","Une association"],["D","Un CSE doté de la personnalité civile"]]},
+{title:"Salle 3 — Personne morale", type:"Sélection multiple", key:"Personne morale", story:"Le coffre affiche plusieurs entités. Il faut identifier celles qui peuvent être des personnes morales.", kind:"tiles", answer:["B","C","D"], explain:"Une personne morale est une entité reconnue par le droit, distincte des personnes physiques qui la composent. Une société, une association et un CSE doté de personnalité civile peuvent être des personnes morales.", tiles:[["A","Un salarié pris individuellement"],["B","Une société commerciale"],["C","Une association déclarée"],["D","Un CSE doté de la personnalité civile"],["E","Un électeur aux élections CSE"],["F","Le président du CSE en tant qu’individu"]]},
+{title:"Salle 4 — Le CSE n’est pas seulement une réunion", type:"QCM", key:"Instance", story:"Un participant affirme : “Le CSE, c’est juste des gens autour d’une table.”", kind:"choice", answer:"C", explain:"Le CSE est l’instance de représentation du personnel. Il ne se réduit pas à la réunion : il a une existence et des attributions définies par le Code du travail.", question:"Quelle réponse permet de corriger cette idée ?", choices:[["A","Oui, le CSE est uniquement une réunion informelle."],["B","Le CSE est seulement le président."],["C","Le CSE est une instance de représentation du personnel, avec des attributions définies par le Code du travail."],["D","Le CSE est une administration publique."]]},
+{title:"Salle 5 — Le seuil de personnalité civile", type:"Code", key:"50 salariés", story:"Une porte demande le seuil à partir duquel le CSE est doté de la personnalité civile.", kind:"input", answer:"50", explain:"Dans les entreprises d’au moins 50 salariés, le CSE est doté de la personnalité civile et gère son patrimoine.", html:`<div class="case"><h3>Énigme de la personnalité civile</h3><div class="doc">À partir de combien de salariés le CSE est-il doté de la personnalité civile et gère-t-il son patrimoine ?</div><input id="input" placeholder="Nombre" maxlength="2"></div>`},
+{title:"Salle 6 — Le patrimoine du CSE", type:"QCM", key:"Patrimoine", story:"Les élus découvrent que le CSE peut gérer de l’argent, des biens et des contrats.", kind:"choice", answer:"D", explain:"La personnalité civile permet au CSE d’être une entité juridique distincte, de gérer son patrimoine et de prendre des décisions dans son champ de compétence. Les budgets ne sont pas l’argent personnel des élus.", question:"Quelle formulation est la plus juste ?", choices:[["A","Le budget du CSE appartient personnellement au secrétaire."],["B","Le président devient propriétaire des biens du CSE."],["C","Les élus peuvent utiliser les fonds sans règle, puisqu’ils représentent les salariés."],["D","Le CSE doté de personnalité civile gère son patrimoine comme une entité juridique distincte."]]},
+{title:"Salle 7 — Qui siège et qui décide ?", type:"Sélection multiple", key:"Rôles", story:"Il faut replacer les acteurs de la réunion plénière du CSE.", kind:"tiles", answer:["A","B","C","D"], explain:"Le CSE est présidé par l’employeur ou son représentant. Il peut être assisté de trois collaborateurs ayant voix consultative. Le comité désigne un secrétaire et un trésorier parmi ses membres titulaires.", tiles:[["A","L’employeur ou son représentant préside le CSE"],["B","Le président peut être assisté de trois collaborateurs avec voix consultative"],["C","Le secrétaire est désigné parmi les membres titulaires"],["D","Le trésorier est désigné parmi les membres titulaires"],["E","Les collaborateurs du président votent comme les élus"],["F","Le secrétaire remplace automatiquement l’employeur"]]},
+{title:"Salle 8 — Attributions selon l’effectif", type:"QCM", key:"Effectif", story:"Une entreprise de 34 salariés veut appliquer automatiquement toutes les règles du CSE de 200 salariés.", kind:"choice", answer:"B", explain:"Les attributions du CSE sont définies en fonction de l’effectif de l’entreprise. Il faut distinguer les entreprises de moins de 50 salariés et celles d’au moins 50 salariés.", question:"Quelle réponse sécurise l’analyse ?", choices:[["A","Tous les CSE ont exactement les mêmes attributions."],["B","Les attributions du CSE dépendent de l’effectif de l’entreprise."],["C","Le CSE n’existe jamais sous 50 salariés."],["D","Le CSE de moins de 50 salariés a automatiquement les mêmes budgets qu’un CSE de 200 salariés."]]},
+{title:"Salle 9 — Le secret du coffre", type:"Sélection multiple", key:"Obligations", story:"Un élu veut diffuser toutes les informations reçues en réunion. Le coffre demande les limites à rappeler.", kind:"tiles", answer:["A","B","D"], explain:"Les membres du CSE et représentants syndicaux sont soumis à une obligation de discrétion pour les informations confidentielles présentées comme telles par l’employeur. Ils sont aussi tenus au secret professionnel dans les cas prévus, notamment les procédés de fabrication.", tiles:[["A","Obligation de discrétion pour les informations confidentielles présentées comme telles"],["B","Secret professionnel dans les cas prévus"],["C","Liberté absolue de diffuser toutes les informations sans limite"],["D","Informer les salariés reste possible, mais dans le respect du cadre"],["E","La confidentialité concerne uniquement le président"],["F","Les élus ne peuvent jamais parler aux salariés"]]},
+{title:"Salle finale — La phrase-clé", type:"Code final", key:"Coffre final", story:"Pour ouvrir le coffre final, retrouvez le code des trois chiffres essentiels.", kind:"input", answer:"11503", explain:"Code final : 11 pour le seuil de mise en place, 50 pour la personnalité civile du CSE, 3 pour le nombre de collaborateurs qui peuvent assister le président avec voix consultative.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : seuil de mise en place du CSE + seuil de personnalité civile + nombre maximal de collaborateurs pouvant assister le président avec voix consultative.</div><input id="input" placeholder="Code final" maxlength="5"></div>`}
+];
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/9";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"👤",B:"🏢",C:"⚖️",D:"✅",E:"🚫",F:"📎"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Coffre déverrouillé":"🟠 Verrou à revoir"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?13:10;if(!keys.includes(rooms[current].key)&&current<9)keys.push(rooms[current].key)}else score+=3;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="Le coffre juridique est ouvert. Reprends les salles les moins maîtrisées en débrief.";if(final>=80)msg="Excellent : les participants savent expliquer ce qu’est le CSE en droit avec les bons repères.";if(final<55)msg="À consolider : refaire un point sur 11 salariés, 50 salariés, personnalité civile, patrimoine et obligations.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

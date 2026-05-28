@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — La Table Plénière</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.74); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.24), transparent 30%),
+    radial-gradient(circle at 91% 14%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 72% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1340px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(30px) saturate(185%);
+  -webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);
+  position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.67);color:#101828;border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.92);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:560px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:230px;height:230px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:260px;height:260px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:310px;height:310px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.tableWrap{width:92%;max-width:580px;aspect-ratio:1.18/1;position:relative}
+.table{
+  position:absolute;inset:15% 11%;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.90),rgba(255,255,255,.40)),linear-gradient(135deg,rgba(0,122,255,.18),rgba(175,82,222,.14));
+  border:1px solid rgba(255,255,255,.82);box-shadow:0 32px 80px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.9);
+  display:grid;place-items:center;font-size:36px;font-weight:1000;color:#174ea6;text-align:center;
+}
+.seat{
+  position:absolute;width:126px;min-height:74px;border-radius:24px;padding:10px;display:grid;place-items:center;text-align:center;
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);box-shadow:0 16px 38px rgba(15,23,42,.12);
+  font-size:13px;font-weight:900;transition:.18s
+}
+.seat:hover{transform:translateY(-5px) scale(1.03);background:rgba(255,255,255,.86)}
+.s1{left:50%;top:1%;transform:translateX(-50%)}.s2{right:1%;top:21%}.s3{right:0;bottom:24%}.s4{left:50%;bottom:1%;transform:translateX(-50%)}.s5{left:0;bottom:24%}.s6{left:1%;top:21%}.s7{left:20%;top:5%}.s8{right:20%;top:5%}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:9px}
+.room{
+  display:flex;gap:12px;align-items:center;border-radius:22px;padding:11px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:700px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:rgba(255,255,255,.64);border:1px solid rgba(255,255,255,.82);border-radius:19px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:rgba(239,246,255,.82);color:#1e3a8a;box-shadow:none}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}.seat{position:static;margin:8px}.tableWrap{display:grid;gap:8px;aspect-ratio:auto}.table{position:static;height:170px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🗝️</div>
+    <div>
+      <h1>Escape Game — La Table Plénière du CSE</h1>
+      <p class="sub">Identifier qui peut siéger, qui vote, qui conseille, qui limite quoi.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game classique — Liquid Glass Edition</span>
+    <h2>La réunion plénière est verrouillée : chacun doit retrouver sa vraie place.</h2>
+    <p>
+      Les participants doivent découvrir les rôles, prérogatives et limites des acteurs présents ou invités à la table du CSE :
+      président, titulaires, suppléants, secrétaire, représentant syndical, personnes qualifiées, acteurs SSCT, médecin du travail,
+      inspection du travail, Carsat/Cramif/CGSS, OPPBTP, collèges électoraux, collège délibératif et représentants au conseil d’administration ou de surveillance.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur partage l’écran. Le groupe débat, puis valide collectivement.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>Codes, QCM, sélections multiples, classement et coffre final.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Savoir dire qui participe, qui vote, qui conseille, qui doit être invité et quelles limites respecter.</span></div>
+    </div>
+    <p class="sources">Base juridique intégrée : Code du travail et Code de la sécurité sociale, vérifiés en 2026.</p>
+    <button class="primary" onclick="startGame()">Entrer dans la salle plénière</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="tableWrap">
+      <div class="table">CSE<br>PLÉNIÈRE</div>
+      <div class="seat s1">👤 Président</div>
+      <div class="seat s2">🗳️ Titulaires</div>
+      <div class="seat s3">🧾 Secrétaire</div>
+      <div class="seat s4">🛡️ SSCT</div>
+      <div class="seat s5">⚕️ Médecin</div>
+      <div class="seat s6">⚖️ Inspection</div>
+      <div class="seat s7">🤝 RS</div>
+      <div class="seat s8">🏛️ CA / CS</div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Déroulé conseillé</h2>
+  <div class="rules">
+    <div class="rule"><b>Question récurrente</b><span>Après chaque salle : “A-t-il une voix délibérative ou seulement consultative ?”</span></div>
+    <div class="rule"><b>Point vigilance</b><span>Fais distinguer collèges électoraux, collège délibératif et collège consultatif.</span></div>
+    <div class="rule"><b>Synthèse finale</b><span>Demande au groupe de reconstruire la table : présents permanents, invités SSCT, invités ponctuels, représentants au CA/CS.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/11</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés de rôle</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>La table plénière est reconstituée</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Qui fait quoi autour de la table ?</h2>
+    <table>
+      <tr><th>Acteur / notion</th><th>Prérogatives</th><th>Limites</th></tr>
+      <tr><td>Président du CSE</td><td>Employeur ou représentant : convoque, préside, co-établit l’ordre du jour avec le secrétaire, organise les débats.</td><td>Ne dirige pas le CSE comme son organe de gestion ; peut être assisté de 3 collaborateurs maximum, sans dépasser le nombre de titulaires.</td></tr>
+      <tr><td>Élus titulaires</td><td>Siègent, débattent, votent, adoptent avis, résolutions et décisions du CSE.</td><td>Agissent dans le cadre des attributions du CSE ; doivent respecter confidentialité et secret professionnel.</td></tr>
+      <tr><td>Suppléants</td><td>Remplacent les titulaires absents ; peuvent être présents si accord plus favorable.</td><td>En principe, ils assistent aux réunions seulement en l’absence du titulaire.</td></tr>
+      <tr><td>Représentant syndical au CSE</td><td>Assiste aux réunions avec voix consultative, exprime la position syndicale.</td><td>Ne prend pas part aux votes du collège délibératif.</td></tr>
+      <tr><td>Secrétaire du CSE</td><td>Co-établit l’ordre du jour ; établit les procès-verbaux ; contribue à l’organisation du travail du comité.</td><td>Ne décide pas seul de l’ordre du jour ordinaire ; n’est pas le “chef” du CSE.</td></tr>
+      <tr><td>Collège délibératif</td><td>Regroupe les membres qui participent aux décisions et votes du CSE.</td><td>Les personnes consultatives n’y votent pas.</td></tr>
+      <tr><td>Collèges électoraux</td><td>Servent à organiser l’élection des élus selon les catégories de personnel.</td><td>Ne pas confondre avec le collège délibératif de la réunion.</td></tr>
+      <tr><td>Acteurs SSCT invités</td><td>Médecin du travail, responsable sécurité, inspection du travail, Carsat/Cramif/CGSS, OPPBTP selon les réunions et sujets.</td><td>Ils apportent une expertise et une voix consultative ; ils ne décident pas à la place du CSE.</td></tr>
+      <tr><td>Personne qualifiée</td><td>Peut être appelée ponctuellement et consultativement par le comité.</td><td>Concours occasionnel ; pas de pouvoir de vote.</td></tr>
+      <tr><td>Représentants au CA/CS</td><td>Participent avec voix consultative, reçoivent les documents, peuvent transmettre les vœux du CSE.</td><td>Ils ne votent pas au conseil d’administration ou de surveillance.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Le plan de table", type:"Sélection multiple", key:"Composition", story:"La porte d’entrée demande d’identifier les membres ou participants récurrents de la plénière.", kind:"tiles", answer:["A","B","C"], explain:"Participent aux réunions : l’employeur ou son représentant comme président, les élus titulaires, les représentants syndicaux avec voix consultative. Les suppléants n’assistent en principe qu’en l’absence du titulaire, sauf accord plus favorable.", tiles:[["A","L’employeur ou son représentant"],["B","Les élus titulaires du CSE"],["C","Les représentants syndicaux au CSE"],["D","Tous les salariés de l’entreprise"],["E","Tous les suppléants dans tous les cas"],["F","Les clients importants de l’entreprise"]]},
+{title:"Salle 2 — Le président ne fait pas tout", type:"QCM", key:"Président", story:"Le président affirme : “Je fixe seul l’ordre du jour et je décide de tout.”", kind:"choice", answer:"C", explain:"Le président préside la réunion, peut convoquer et organiser les débats, mais l’ordre du jour de chaque réunion est établi conjointement par le président et le secrétaire. Le président ne gère pas le CSE à la place des élus.", question:"Quelle réponse est la plus juste ?", choices:[["A","Il a raison : le président décide seul de tout."],["B","Il peut voter à la place des élus titulaires."],["C","Il préside et organise, mais l’ordre du jour est établi avec le secrétaire et il ne dirige pas la gestion du CSE."],["D","Il ne peut jamais parler en réunion."]]},
+{title:"Salle 3 — Titulaire ou suppléant ?", type:"QCM", key:"Titulaires / suppléants", story:"Un suppléant souhaite siéger systématiquement à toutes les réunions comme le titulaire.", kind:"choice", answer:"B", explain:"La délégation comporte un nombre égal de titulaires et de suppléants. En principe, le suppléant assiste aux réunions en l’absence du titulaire. Un accord d’entreprise peut prévoir une présence plus large.", question:"Quelle règle faut-il rappeler ?", choices:[["A","Le suppléant vote toujours en plus du titulaire."],["B","Le suppléant assiste en principe aux réunions en l’absence du titulaire, sauf accord plus favorable."],["C","Le suppléant ne sert jamais à rien."],["D","Le suppléant remplace automatiquement le président."]]},
+{title:"Salle 4 — Le représentant syndical", type:"QCM", key:"Représentant syndical", story:"Le représentant syndical prend la parole puis souhaite participer au vote de l’avis du CSE.", kind:"choice", answer:"A", explain:"Le représentant syndical au CSE assiste aux réunions avec voix consultative. Il peut s’exprimer, mais ne participe pas aux votes délibératifs du CSE.", question:"Quelle est sa vraie place ?", choices:[["A","Il a voix consultative : il débat mais ne vote pas."],["B","Il a deux voix délibératives."],["C","Il remplace le secrétaire."],["D","Il préside la réunion si le sujet est syndical."]]},
+{title:"Salle 5 — Le secrétaire, gardien des traces", type:"Sélection multiple", key:"Secrétaire", story:"Le coffre du PV demande les missions du secrétaire.", kind:"tiles", answer:["A","B","D"], explain:"Le secrétaire co-établit l’ordre du jour avec le président et établit le procès-verbal. Dans les entreprises d’au moins 50 salariés, il est désigné parmi les membres titulaires du CSE. Il n’est pas l’employeur et ne décide pas seul des consultations ordinaires.", tiles:[["A","Co-établir l’ordre du jour avec le président"],["B","Établir les procès-verbaux"],["C","Diriger seul le CSE comme un supérieur hiérarchique"],["D","Être désigné parmi les membres titulaires dans les CSE d’au moins 50 salariés"],["E","Autoriser seul les licenciements"],["F","Remplacer automatiquement l’inspection du travail"]]},
+{title:"Salle 6 — Collège délibératif ou consultatif ?", type:"Sélection multiple", key:"Délibératif / consultatif", story:"La réunion doit voter un avis. Il faut distinguer ceux qui votent et ceux qui conseillent.", kind:"tiles", answer:["A","B","D"], explain:"Le collège délibératif correspond aux membres appelés à voter les avis, résolutions et décisions du CSE, principalement les élus titulaires. Le président ne participe pas au vote lorsqu’il consulte les membres élus comme délégation du personnel. Les représentants syndicaux, experts et invités SSCT ont une voix consultative.", tiles:[["A","Les élus titulaires appartiennent au cœur du collège délibératif"],["B","Le représentant syndical a une voix consultative"],["C","Le médecin du travail vote les avis du CSE"],["D","Les invités SSCT apportent un éclairage sans décider à la place du CSE"],["E","Les collaborateurs du président votent comme les titulaires"],["F","Une personne qualifiée ponctuelle peut imposer sa décision"]]},
+{title:"Salle 7 — Les collèges électoraux", type:"QCM", key:"Collèges électoraux", story:"Un participant confond collèges électoraux et collège délibératif.", kind:"choice", answer:"C", explain:"Les collèges électoraux servent à organiser les élections : ouvriers/employés, ingénieurs-chefs de service-techniciens-agents de maîtrise et assimilés, et éventuellement un troisième collège lorsque les conditions sont réunies.", question:"À quoi servent les collèges électoraux ?", choices:[["A","À décider qui parle en premier dans la réunion."],["B","À donner une voix consultative au médecin du travail."],["C","À organiser l’élection des représentants selon les catégories de personnel."],["D","À remplacer le règlement intérieur du CSE."]]},
+{title:"Salle 8 — Réunion SSCT : qui doit être invité ?", type:"Sélection multiple", key:"Invités SSCT", story:"Une réunion porte sur un accident grave et les conditions de travail. Qui doit être pensé comme invité ou participant SSCT ?", kind:"tiles", answer:["A","B","C","D","E"], explain:"Pour les réunions portant sur la santé, sécurité et conditions de travail, peuvent ou doivent être associés selon les cas : médecin du travail ou membre compétent de l’équipe pluridisciplinaire, responsable interne sécurité, agent de contrôle de l’inspection du travail, agents Carsat/Cramif/CGSS et, dans le BTP, OPPBTP. Ils apportent une expertise et une voix consultative.", tiles:[["A","Médecin du travail ou membre délégué de l’équipe pluridisciplinaire"],["B","Responsable interne du service de sécurité ou agent chargé de la sécurité"],["C","Agent de contrôle de l’inspection du travail"],["D","Agents des services de prévention Carsat/Cramif/CGSS"],["E","OPPBTP lorsque le contexte BTP le justifie"],["F","Le fournisseur de café de l’entreprise"]]},
+{title:"Salle 9 — Personne qualifiée", type:"QCM", key:"Personne qualifiée", story:"Le CSE souhaite entendre un ergonome interne sur un problème d’aménagement de poste.", kind:"choice", answer:"D", explain:"Le CSE peut faire appel, à titre consultatif et occasionnel, au concours de toute personne de l’entreprise qui lui paraît qualifiée. Cette personne éclaire le débat mais ne vote pas.", question:"Quelle est la bonne limite ?", choices:[["A","La personne qualifiée remplace les élus."],["B","Elle devient membre permanent du CSE."],["C","Elle vote l’avis à la place des titulaires."],["D","Elle intervient ponctuellement, à titre consultatif, pour éclairer le comité."]]},
+{title:"Salle 10 — Conseil d’administration ou de surveillance", type:"Sélection multiple", key:"CA / CS", story:"Le CSE doit envoyer ses représentants au conseil d’administration ou de surveillance. Il faut retrouver leurs droits et limites.", kind:"tiles", answer:["A","B","C","D"], explain:"Les représentants du CSE au CA/CS ont voix consultative, reçoivent les mêmes documents que les membres du conseil pour les réunions et peuvent transmettre les vœux du CSE. Le conseil doit donner un avis motivé sur ces vœux. Dans les sociétés avec trois collèges électoraux, la délégation est portée à quatre membres.", tiles:[["A","Ils ont voix consultative"],["B","Ils reçoivent les documents remis aux membres du CA/CS"],["C","Ils peuvent soumettre les vœux du CSE"],["D","Avec trois collèges électoraux, la délégation est portée à quatre membres"],["E","Ils disposent automatiquement d’un droit de vote au CA/CS"],["F","Ils peuvent annuler seuls une décision du conseil"]]},
+{title:"Salle 11 — Code de la sécurité sociale", type:"QCM", key:"Carsat / Cramif / CGSS", story:"Un élu pense que la Carsat vient pour sanctionner comme l’inspection du travail.", kind:"choice", answer:"B", explain:"Les services prévention des Carsat/Cramif/CGSS, avec ingénieurs-conseils et contrôleurs de sécurité, contribuent à la diminution des risques professionnels, conseillent et soutiennent les acteurs de l’entreprise. Leur rôle n’est pas de voter au CSE.", question:"Quelle formulation est la plus juste ?", choices:[["A","La Carsat vote les décisions du CSE."],["B","La Carsat/Cramif/CGSS apporte une expertise de prévention des risques professionnels, notamment par ses ingénieurs-conseils et contrôleurs de sécurité."],["C","La Carsat remplace le médecin du travail."],["D","La Carsat choisit les élus titulaires."]]},
+{title:"Salle finale — Le code de la table", type:"Code final", key:"Coffre final", story:"Pour ouvrir la porte finale, retrouvez les chiffres qui structurent la table.", kind:"input", answer:"3324", explain:"Code final : 3 collaborateurs maximum pouvant assister le président du CSE ; 3 collèges électoraux possibles lorsque les conditions sont réunies ; 2 représentants au CA/CS en principe ; 4 représentants au CA/CS en présence de trois collèges électoraux.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : nombre maximal de collaborateurs pouvant assister le président + nombre maximal de collèges électoraux courants + nombre de représentants au CA/CS en principe + nombre en cas de trois collèges électoraux.</div><input id="input" placeholder="Code final" maxlength="4"></div>`}
+];
+
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/11";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"👤",B:"🗳️",C:"⚖️",D:"✅",E:"🛡️",F:"🚫"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Rôle identifié":"🟠 Rôle à clarifier"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?10:8;if(!keys.includes(rooms[current].key)&&current<11)keys.push(rooms[current].key)}else score+=3;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="La table plénière est reconstituée. Reprends les rôles les moins maîtrisés en débrief.";if(final>=80)msg="Excellent : les participants savent distinguer membres, invités, voix délibérative, voix consultative et limites de chaque acteur.";if(final<55)msg="À consolider : refaire un point sur titulaires/suppléants, représentant syndical, acteurs SSCT, collèges électoraux et CA/CS.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

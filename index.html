@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Formation CSE — Espace Jeux & Escape Games</title>
+<style>
+:root{
+  --ink:#101828;--muted:#667085;--blue:#007aff;--cyan:#00c7ff;
+  --purple:#af52de;--pink:#ff2d55;--green:#34c759;--orange:#ff9500;
+  --red:#ff3b30;--yellow:#ffd60a;--teal:#30d158;
+  --line:rgba(255,255,255,.74);--shadow:0 30px 90px rgba(31,41,55,.18);--radius:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 6% 6%,  rgba(0,122,255,.22),  transparent 32%),
+    radial-gradient(circle at 94% 8%,  rgba(175,82,222,.18), transparent 30%),
+    radial-gradient(circle at 50% 50%, rgba(0,199,255,.10),  transparent 55%),
+    radial-gradient(circle at 10% 90%, rgba(52,199,89,.16),  transparent 32%),
+    radial-gradient(circle at 90% 88%, rgba(255,45,85,.14),  transparent 30%),
+    linear-gradient(135deg,#f0f6ff 0%,#edf3ff 40%,#fdf0ff 70%,#fff1f5 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49%) 0 0/110px 110px,
+    radial-gradient(circle,rgba(255,255,255,.9) 1px,transparent 1.5px) 0 0/40px 40px;
+}
+
+/* ── Layout ─────────────────────────────── */
+.app{max-width:1320px;margin:0 auto;padding:32px 24px 60px;position:relative}
+
+/* ── Glass util ──────────────────────────── */
+.glass{
+  background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,255,255,.44));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.88);
+  backdrop-filter:blur(32px) saturate(190%);-webkit-backdrop-filter:blur(32px) saturate(190%);
+  border-radius:var(--radius);
+}
+
+/* ── Header ──────────────────────────────── */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;padding:22px 28px;margin-bottom:36px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:18px}
+.logo-wrap{
+  width:72px;height:72px;border-radius:24px;display:grid;place-items:center;
+  font-size:36px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.8) 44%,rgba(175,82,222,.9));
+  box-shadow:0 18px 54px rgba(0,122,255,.30),inset 0 1px 0 rgba(255,255,255,.40);
+  position:relative;overflow:hidden;
+}
+.logo-wrap::after{content:"";position:absolute;inset:7px;border-radius:17px;border:1px solid rgba(255,255,255,.45)}
+.brand-text h1{font-size:24px;font-weight:900;letter-spacing:-.6px;line-height:1.1}
+.brand-text p{color:var(--muted);font-size:14px;margin-top:4px}
+.header-meta{display:flex;gap:10px;flex-wrap:wrap}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;
+  font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);color:#1d4ed8;
+}
+.pill.green{color:#065f46}
+.pill.purple{color:#6b21a8}
+
+/* ── Hero banner ─────────────────────────── */
+.hero{
+  padding:42px 40px;margin-bottom:40px;
+  background:linear-gradient(135deg,rgba(255,255,255,.70) 0%,rgba(255,255,255,.38) 100%);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:40px;flex-wrap:wrap;
+}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+.ho1{width:320px;height:320px;background:rgba(0,122,255,.12);top:-80px;right:5%}
+.ho2{width:240px;height:240px;background:rgba(175,82,222,.10);bottom:-60px;right:20%}
+.ho3{width:280px;height:280px;background:rgba(52,199,89,.09);top:10%;left:-60px}
+.hero-text{flex:1;min-width:260px;position:relative}
+.hero-text h2{font-size:42px;font-weight:900;letter-spacing:-1.2px;line-height:1.08;margin-bottom:14px}
+.hero-text h2 span{
+  background:linear-gradient(135deg,#007aff,#00c7ff 40%,#af52de);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-text p{font-size:17px;line-height:1.6;color:#344054;max-width:540px}
+.hero-stats{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+.stat{
+  padding:12px 18px;border-radius:18px;text-align:center;min-width:90px;
+  background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+.stat-n{font-size:28px;font-weight:900;letter-spacing:-.5px;color:var(--blue)}
+.stat-l{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+.hero-img{
+  width:200px;height:200px;border-radius:50%;display:grid;place-items:center;font-size:90px;
+  background:linear-gradient(135deg,rgba(0,122,255,.10),rgba(175,82,222,.10));
+  border:1px solid rgba(255,255,255,.72);flex-shrink:0;
+  box-shadow:0 24px 64px rgba(0,122,255,.15);
+  position:relative;
+}
+
+/* ── Author badge fixe ───────────────────── */
+.author-badge{
+  position:fixed;top:16px;left:16px;z-index:999;
+  display:inline-flex;align-items:center;gap:9px;
+  padding:9px 16px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.58));
+  border:1px solid rgba(255,255,255,.88);
+  box-shadow:0 8px 28px rgba(15,23,42,.13),inset 0 1px 0 rgba(255,255,255,.90);
+  backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%);
+  font-size:13px;font-weight:800;color:#101828;letter-spacing:.1px;
+  pointer-events:none;
+}
+.author-badge-dot{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-size:14px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(0,122,255,.90),rgba(175,82,222,.80));
+  box-shadow:0 4px 12px rgba(0,122,255,.28);color:#fff;
+}
+
+/* ── Cat nav ─────────────────────────────── */
+.day-nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.day-btn{
+  padding:10px 20px;border-radius:999px;border:none;cursor:pointer;
+  font-size:14px;font-weight:700;transition:all .2s ease;
+  background:rgba(255,255,255,.60);color:#344054;
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 4px 14px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(16px);
+}
+.day-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,23,42,.12)}
+.day-btn.active{color:#fff}
+.day-btn[data-day="1"].active{background:linear-gradient(135deg,#007aff,#00c7ff)}
+.day-btn[data-day="2"].active{background:linear-gradient(135deg,#af52de,#ff2d55)}
+.day-btn[data-day="3"].active{background:linear-gradient(135deg,#ff9500,#ffd60a);color:#3b2600}
+.day-btn[data-day="4"].active{background:linear-gradient(135deg,#34c759,#30d158)}
+.day-btn[data-day="5"].active{background:linear-gradient(135deg,#ff2d55,#af52de)}
+.day-btn[data-day="all"].active{background:linear-gradient(135deg,#101828,#344054)}
+
+/* ── Section ─────────────────────────────── */
+.section{margin-bottom:44px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.section-icon{
+  width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:22px;flex-shrink:0;
+  box-shadow:0 8px 24px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.50);
+}
+.section-header h3{font-size:22px;font-weight:900;letter-spacing:-.4px}
+.section-header p{color:var(--muted);font-size:14px;margin-top:3px}
+.section-tag{
+  margin-left:auto;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800;
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.82);color:var(--muted);
+}
+
+/* ── Grid ────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+/* ── Card ────────────────────────────────── */
+.card{
+  background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(255,255,255,.42));
+  border:1px solid rgba(255,255,255,.76);
+  box-shadow:0 10px 36px rgba(15,23,42,.10),inset 0 1px 0 rgba(255,255,255,.88);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-radius:24px;padding:24px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:transform .22s ease,box-shadow .22s ease;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:24px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 60%);
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(15,23,42,.16),inset 0 1px 0 rgba(255,255,255,.92)}
+.card-top{display:flex;align-items:flex-start;gap:14px}
+.card-icon{
+  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;
+  font-size:26px;flex-shrink:0;
+  box-shadow:0 6px 20px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.50);
+}
+.card-meta{flex:1}
+.card-type{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.card-title{font-size:17px;font-weight:800;letter-spacing:-.3px;line-height:1.2}
+.card-desc{font-size:14px;color:#4b5563;line-height:1.5;flex:1}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.card-info{display:flex;gap:8px;flex-wrap:wrap}
+.tag{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;
+  font-size:12px;font-weight:700;
+  background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.82);
+}
+.btn-launch{
+  display:inline-flex;align-items:center;gap:6px;padding:10px 18px;
+  border-radius:14px;border:none;cursor:pointer;font-size:14px;font-weight:800;
+  color:#fff;transition:all .2s ease;text-decoration:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.22);
+}
+.btn-launch:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 14px 36px rgba(0,0,0,.20)}
+.btn-launch:active{transform:scale(.98)}
+.btn-launch svg{width:14px;height:14px;flex-shrink:0}
+
+/* Color themes */
+.t-blue  .card-icon,.t-blue  .section-icon{background:linear-gradient(135deg,rgba(0,122,255,.88),rgba(0,199,255,.72))}
+.t-blue  .card-type{color:#1d4ed8}
+.t-blue  .btn-launch{background:linear-gradient(135deg,#007aff,#00c7ff)}
+.t-blue  .section-icon{background:linear-gradient(135deg,rgba(0,122,255,.80),rgba(0,199,255,.65))}
+
+.t-purple .card-icon,.t-purple .section-icon{background:linear-gradient(135deg,rgba(175,82,222,.88),rgba(255,45,85,.72))}
+.t-purple .card-type{color:#6b21a8}
+.t-purple .btn-launch{background:linear-gradient(135deg,#af52de,#ff2d55)}
+
+.t-orange .card-icon,.t-orange .section-icon{background:linear-gradient(135deg,rgba(255,149,0,.92),rgba(255,214,10,.80))}
+.t-orange .card-type{color:#92400e}
+.t-orange .btn-launch{background:linear-gradient(135deg,#ff9500,#ffd60a);color:#3b2600}
+
+.t-green  .card-icon,.t-green  .section-icon{background:linear-gradient(135deg,rgba(52,199,89,.88),rgba(48,209,88,.72))}
+.t-green  .card-type{color:#065f46}
+.t-green  .btn-launch{background:linear-gradient(135deg,#34c759,#30d158);color:#052e16}
+
+.t-red    .card-icon,.t-red    .section-icon{background:linear-gradient(135deg,rgba(255,59,48,.88),rgba(255,45,85,.72))}
+.t-red    .card-type{color:#9b1c1c}
+.t-red    .btn-launch{background:linear-gradient(135deg,#ff3b30,#af52de)}
+
+/* ── Search ──────────────────────────────── */
+.search-wrap{position:relative;max-width:420px;margin-bottom:32px}
+.search-wrap input{
+  width:100%;padding:13px 18px 13px 46px;border-radius:18px;border:1px solid rgba(255,255,255,.82);
+  background:rgba(255,255,255,.65);backdrop-filter:blur(20px);
+  font-size:15px;color:var(--ink);outline:none;
+  box-shadow:0 4px 18px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.80);
+  transition:box-shadow .2s;
+}
+.search-wrap input:focus{box-shadow:0 0 0 3px rgba(0,122,255,.18),0 4px 18px rgba(15,23,42,.08)}
+.search-wrap input::placeholder{color:#9ca3af}
+.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.45;pointer-events:none}
+
+/* ── Footer ──────────────────────────────── */
+.footer{
+  padding:22px 28px;margin-top:20px;text-align:center;
+  font-size:13px;color:var(--muted);
+}
+.footer strong{color:var(--ink)}
+
+/* ── Hidden ──────────────────────────────── */
+.hidden{display:none!important}
+
+/* ── Responsive ──────────────────────────── */
+@media(max-width:700px){
+  .hero{padding:28px 22px}
+  .hero-text h2{font-size:30px}
+  .hero-img{width:120px;height:120px;font-size:58px}
+  .header{padding:18px 20px}
+  .brand-text h1{font-size:18px}
+  .grid{grid-template-columns:1fr}
+  .app{padding:18px 14px 50px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Badge auteur fixe ── -->
+<div class="author-badge">
+  <div class="author-badge-dot">FA</div>
+  Fabrice AVRILA
+</div>
+
+<div class="app">
+
+  <!-- ── Header ── -->
+  <header class="glass header">
+    <div class="brand">
+      <div class="logo-wrap">⚖️</div>
+      <div class="brand-text">
+        <h1>Formation CSE — SSCT</h1>
+        <p>Espace interactif · Jeux &amp; Escape Games pédagogiques</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="pill green">🎮 18 jeux disponibles</span>
+      <span class="pill purple">🏆 Escape Games</span>
+      <span class="pill">⚖️ Droit du travail</span>
+    </div>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="glass hero">
+    <div class="hero-orb ho1"></div>
+    <div class="hero-orb ho2"></div>
+    <div class="hero-orb ho3"></div>
+    <div class="hero-text">
+      <h2>Apprenez en jouant,<br><span>maîtrisez le CSE</span></h2>
+      <p>Bienvenue dans votre espace de jeux pédagogiques. Chaque activité est conçue pour consolider vos connaissances sur les droits, les obligations et le fonctionnement du Comité Social et Économique.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">18</div><div class="stat-l">Jeux &amp; Escape Games</div></div>
+        <div class="stat"><div class="stat-n">5</div><div class="stat-l">Thématiques CSE</div></div>
+        <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Rejouable à volonté</div></div>
+      </div>
+    </div>
+    <div class="hero-img">⚖️</div>
+  </section>
+
+  <!-- ── Search + Filter ── -->
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div class="search-wrap">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Rechercher un jeu…" oninput="filterCards()"/>
+    </div>
+    <div class="day-nav" id="dayNav">
+      <button class="day-btn active" data-day="all" onclick="filterDay('all',this)">Tous les jeux</button>
+      <button class="day-btn" data-day="1" onclick="filterDay('1',this)">🗳️ Élections &amp; Mandats</button>
+      <button class="day-btn" data-day="2" onclick="filterDay('2',this)">📋 Fonctionnement</button>
+      <button class="day-btn" data-day="3" onclick="filterDay('3',this)">🛡️ Droits &amp; Moyens</button>
+      <button class="day-btn" data-day="4" onclick="filterDay('4',this)">⚖️ Attributions</button>
+      <button class="day-btn" data-day="5" onclick="filterDay('5',this)">🦺 Santé &amp; Sécurité</button>
+    </div>
+  </div>
+
+  <section class="section" data-day="1">
+    <div class="section-header">
+      <div class="section-icon t-blue" style="background:linear-gradient(135deg,rgba(0,122,255,.85),rgba(0,199,255,.70))">🗳️</div>
+      <div>
+        <h3>Élections &amp; Mandats</h3>
+        <p>Protocole électoral, scrutin, mandat et représentativité</p>
+      </div>
+      <span class="section-tag">3 jeux</span>
+    </div>
+    <div class="grid">
+
+      <div class="card t-blue" data-day="1" data-keywords="scrutin verrouillé élections vote">
+        <div class="card-top">
+          <div class="card-icon">🗳️</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Le Scrutin Verrouillé</div>
+          </div>
+        </div>
+        <p class="card-desc">Déverrouillez les mystères du protocole électoral CSE. Collèges, listes syndicales, premier et second tour — résolvez les énigmes pour valider les élections.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_cse_scrutin_verrouille.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-blue" data-day="1" data-keywords="grand scrutin élections professionnelles quiz">
+        <div class="card-top">
+          <div class="card-icon">🏛️</div>
+          <div class="card-meta">
+            <div class="card-type">Quiz interactif</div>
+            <div class="card-title">Le Grand Scrutin</div>
+          </div>
+        </div>
+        <p class="card-desc">Un quiz complet sur les élections professionnelles au CSE. Testez vos connaissances sur les règles du jeu électoral en droit du travail français.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">❓ Quiz</span>
+            <span class="tag">⏱ ~15 min</span>
+          </div>
+          <a class="btn-launch" href="jeu_grand_scrutin_cse_elections_professionnelles.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-blue" data-day="1" data-keywords="mandat scellés représentation durée">
+        <div class="card-top">
+          <div class="card-icon">📜</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game Classique</div>
+            <div class="card-title">Le Mandat sous Scellés</div>
+          </div>
+        </div>
+        <p class="card-desc">Percez les secrets du mandat CSE : durée, renouvellement, fin anticipée… Un escape game classique pour maîtriser la représentation élue.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_classique_mandat_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" data-day="2">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,rgba(175,82,222,.85),rgba(255,45,85,.70))">📋</div>
+      <div>
+        <h3>Fonctionnement &amp; Organisation</h3>
+        <p>Réunions, règlement intérieur et table plénière</p>
+      </div>
+      <span class="section-tag">3 jeux</span>
+    </div>
+    <div class="grid">
+
+      <div class="card t-purple" data-day="2" data-keywords="réunions périodicité ordre du jour PV">
+        <div class="card-top">
+          <div class="card-icon">📋</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Les Réunions du CSE</div>
+          </div>
+        </div>
+        <p class="card-desc">Fréquence, convocation, ordre du jour, procès-verbal… Maîtrisez les règles des réunions ordinaires et extraordinaires du CSE.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_reunions_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-purple" data-day="2" data-keywords="règlement intérieur organisation interne vote">
+        <div class="card-top">
+          <div class="card-icon">📖</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Le Règlement Intérieur</div>
+          </div>
+        </div>
+        <p class="card-desc">Découvrez pourquoi et comment le CSE se dote d'un règlement intérieur. Rôle, contenu obligatoire, vote et opposabilité aux membres.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_reglement_interieur_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-purple" data-day="2" data-keywords="table plénière séance délibération vote résolution">
+        <div class="card-top">
+          <div class="card-icon">🪑</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">La Table Plénière</div>
+          </div>
+        </div>
+        <p class="card-desc">Présidence, secrétariat, quorum, délibérations… Simulez une séance plénière du CSE et débloquez toutes les règles de fonctionnement.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_table_pleniere_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" data-day="3">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,rgba(255,149,0,.90),rgba(255,214,10,.75))">🛡️</div>
+      <div>
+        <h3>Droits &amp; Moyens des Élus</h3>
+        <p>Heures de délégation, protection, budget et délit d'entrave</p>
+      </div>
+      <span class="section-tag">4 jeux</span>
+    </div>
+    <div class="grid">
+
+      <div class="card t-orange" data-day="3" data-keywords="heures délégation crédit temps liberté déplacement">
+        <div class="card-top">
+          <div class="card-icon">⏰</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Heures de Délégation</div>
+          </div>
+        </div>
+        <p class="card-desc">Crédit d'heures, mutualisation, report, bon de délégation… Devenez expert des règles qui garantissent le temps libre des représentants du personnel.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_heures_delegation_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-orange" data-day="3" data-keywords="protection mandat licenciement autorisation inspection">
+        <div class="card-top">
+          <div class="card-icon">🛡️</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Protection du Mandat</div>
+          </div>
+        </div>
+        <p class="card-desc">Statut protecteur, procédure d'autorisation de licenciement, durée de la protection après mandat… Défendez vos droits comme un pro.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_protection_mandat_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-orange" data-day="3" data-keywords="délit entrave obstacle infraction pénale">
+        <div class="card-top">
+          <div class="card-icon">⚠️</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Le Délit d'Entrave</div>
+          </div>
+        </div>
+        <p class="card-desc">Reconnaître et qualifier le délit d'entrave au fonctionnement du CSE. Sanctions, jurisprudence et comportements à risque : saurez-vous les détecter ?</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_delit_entrave_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-orange" data-day="3" data-keywords="budget fonctionnement activités sociales culturelles ASC">
+        <div class="card-top">
+          <div class="card-icon">💰</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Le Budget du CSE</div>
+          </div>
+        </div>
+        <p class="card-desc">Budget de fonctionnement et budget des ASC : calcul, gestion, transfert entre budgets, obligations comptables… Gérez les finances du CSE.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_budget_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" data-day="4">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,rgba(52,199,89,.85),rgba(48,209,88,.70))">⚖️</div>
+      <div>
+        <h3>Attributions Économiques &amp; Sociales</h3>
+        <p>Consultations, alertes, négociations et cadre juridique</p>
+      </div>
+      <span class="section-tag">4 jeux</span>
+    </div>
+    <div class="grid">
+
+      <div class="card t-green" data-day="4" data-keywords="consultations avis experts délais informations">
+        <div class="card-top">
+          <div class="card-icon">🔍</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Consultations, Avis &amp; Experts</div>
+          </div>
+        </div>
+        <p class="card-desc">Trois grandes consultations annuelles, délais de rendu d'avis, recours aux experts… Naviguez dans le labyrinthe des procédures consultatives.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~25 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_consultations_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-green" data-day="4" data-keywords="négociations collectives accords syndicats NAO">
+        <div class="card-top">
+          <div class="card-icon">🤝</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Négociations Collectives</div>
+          </div>
+        </div>
+        <p class="card-desc">Quelle place pour le CSE dans les négociations collectives ? Accords majoritaires, NAO, négociation avec les élus mandatés… Découvrez-le en jouant.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~25 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_negociations_collectives_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-green" data-day="4" data-keywords="droits alerte danger grave économique social">
+        <div class="card-top">
+          <div class="card-icon">🚨</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Les Droits d'Alerte</div>
+          </div>
+        </div>
+        <p class="card-desc">Alerte économique, alerte sociale, alerte en cas d'atteinte aux droits des personnes… Identifiez le bon type d'alerte et la bonne procédure.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_droits_alerte_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-green" data-day="4" data-keywords="CSE droit cadre légal code travail ordonnances">
+        <div class="card-top">
+          <div class="card-icon">⚖️</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Le CSE en Droit</div>
+          </div>
+        </div>
+        <p class="card-desc">Textes fondateurs, ordonnances Macron, articles du Code du travail… Situez le CSE dans son cadre légal à travers ce jeu de mise en situation juridique.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~20 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_cse_en_droit_final.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section" data-day="5">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,rgba(255,59,48,.88),rgba(175,82,222,.72))">🔴</div>
+      <div>
+        <h3>Santé, Sécurité &amp; Conditions de Travail</h3>
+        <p>Prévention, accidents du travail et cadre réglementaire SSCT</p>
+      </div>
+      <span class="section-tag">4 jeux</span>
+    </div>
+    <div class="grid">
+
+      <div class="card t-red" data-day="5" data-keywords="acteurs prévention CSSCT inspection médecin travail CARSAT">
+        <div class="card-top">
+          <div class="card-icon">🦺</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game 3D</div>
+            <div class="card-title">Les Acteurs de la Prévention</div>
+          </div>
+        </div>
+        <p class="card-desc">Employeur, CSSCT, médecin du travail, CARSAT, inspection du travail… Identifiez le rôle de chaque acteur dans la prévention des risques professionnels.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game 3D</span>
+            <span class="tag">⏱ ~25 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_3d_liquidglass_acteurs_prevention_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-red" data-day="5" data-keywords="accident travail trajet maladie professionnelle qualification">
+        <div class="card-top">
+          <div class="card-icon">🏥</div>
+          <div class="card-meta">
+            <div class="card-type">Mission / Quiz</div>
+            <div class="card-title">AT, Trajet ou Maladie Pro ?</div>
+          </div>
+        </div>
+        <p class="card-desc">Accident du travail, accident de trajet ou maladie professionnelle ? Apprenez à qualifier chaque situation grâce à des cas pratiques immersifs.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🎯 Mission</span>
+            <span class="tag">⏱ ~15 min</span>
+          </div>
+          <a class="btn-launch" href="jeu_cse_at_trajet_maladie_professionnelle.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-red" data-day="5" data-keywords="cadre réglementaire droit français code travail loi décret">
+        <div class="card-top">
+          <div class="card-icon">📚</div>
+          <div class="card-meta">
+            <div class="card-type">Escape Game</div>
+            <div class="card-title">Cadre Réglementaire du Droit Français</div>
+          </div>
+        </div>
+        <p class="card-desc">Hiérarchie des normes, sources du droit social, principes généraux de prévention… Maîtrisez le socle réglementaire de la SSCT en entreprise.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~30 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_liquidglass_cadre_reglementaire_cse.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="card t-red" data-day="5" data-keywords="révision réactivation prévention consultations experts registres DUERP DGI PV BDESE SSCT J1 J2 J3">
+        <div class="card-top">
+          <div class="card-icon">🔁</div>
+          <div class="card-meta">
+            <div class="card-type">Révision — 20 scellés</div>
+            <div class="card-title">Réactivation CSE / SSCT — J1 à J3</div>
+          </div>
+        </div>
+        <p class="card-desc">20 questions progressives pour réactiver les notions vues sur 3 jours : prévention, rôle du CSE, consultations, experts, ordre du jour, PV, registres et documents SSCT. Recommençable, avec fiche mémo finale.</p>
+        <div class="card-footer">
+          <div class="card-info">
+            <span class="tag">🧩 Escape Game</span>
+            <span class="tag">⏱ ~60-90 min</span>
+          </div>
+          <a class="btn-launch" href="escape_game_revision_3_jours_cse_ssct_v2.html" target="_blank">
+            Jouer
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="glass footer">
+    <strong>Formation CSE — Santé, Sécurité &amp; Conditions de Travail</strong><br>
+    <span>Espace pédagogique interactif · Tous droits réservés</span>
+  </footer>
+
+</div>
+
+<script>
+let activeDay = 'all';
+
+function filterDay(day, btn) {
+  activeDay = day;
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterCards() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+
+  document.querySelectorAll('.section').forEach(section => {
+    const sDay = section.dataset.day;
+    const dayMatch = activeDay === 'all' || sDay === activeDay;
+
+    let sectionHasVisible = false;
+
+    section.querySelectorAll('.card').forEach(card => {
+      const title   = card.querySelector('.card-title').textContent.toLowerCase();
+      const desc    = card.querySelector('.card-desc').textContent.toLowerCase();
+      const kw      = (card.dataset.keywords || '').toLowerCase();
+      const textOk  = !q || title.includes(q) || desc.includes(q) || kw.includes(q);
+      const dayOk   = dayMatch;
+
+      if (textOk && dayOk) {
+        card.classList.remove('hidden');
+        sectionHasVisible = true;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    section.style.display = (dayMatch && sectionHasVisible) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

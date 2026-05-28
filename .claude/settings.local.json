@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"/Users/fabriceavrila/Library/Mobile Documents/com~apple~CloudDocs/3-Devweb/avrila-formation/styles\" \\\\ *)"
+    ]
+  }
+}

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mission CSE — AT, Trajet ou Maladie Professionnelle ?</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --ink:#172033;
+      --muted:#667085;
+      --card:#ffffff;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --orange:#f97316;
+      --purple:#7c3aed;
+      --red:#dc2626;
+      --border:#d8dee9;
+      --shadow: 0 16px 40px rgba(15, 23, 42, .10);
+      --radius: 24px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top left, #e0f2fe, transparent 34%),
+                  radial-gradient(circle at bottom right, #fef3c7, transparent 34%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+    .app{max-width:1180px;margin:0 auto;padding:28px}
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+      margin-bottom:22px;
+    }
+    .brand{
+      display:flex;gap:14px;align-items:center;
+    }
+    .logo{
+      width:58px;height:58px;border-radius:18px;background:#0f172a;color:#fff;
+      display:grid;place-items:center;font-size:30px;font-weight:800;box-shadow:var(--shadow)
+    }
+    h1{font-size:30px;margin:0;line-height:1.05}
+    .subtitle{color:var(--muted);margin:6px 0 0;font-size:15px}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      border:0;border-radius:16px;padding:13px 16px;font-weight:700;cursor:pointer;
+      background:#111827;color:#fff;box-shadow:0 8px 18px rgba(17,24,39,.13);
+      transition:.18s transform,.18s opacity,.18s background;
+      font-size:15px;
+    }
+    button:hover{transform:translateY(-1px)}
+    button.secondary{background:#fff;color:#111827;border:1px solid var(--border);box-shadow:none}
+    button.blue{background:var(--blue)}
+    button.green{background:var(--green)}
+    button.orange{background:var(--orange)}
+    button.purple{background:var(--purple)}
+    button.red{background:var(--red)}
+    button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:22px}
+    .panel{
+      background:rgba(255,255,255,.88);border:1px solid rgba(216,222,233,.9);
+      border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;
+      backdrop-filter: blur(8px);
+    }
+    .intro h2,.panel h2{margin:0 0 10px;font-size:24px}
+    .intro p{font-size:16px;line-height:1.55;color:#334155}
+    .rules{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px
+    }
+    .rule{
+      border:1px solid var(--border);border-radius:18px;padding:14px;background:#fff;
+    }
+    .rule b{display:block;margin-bottom:6px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;
+      background:#eef2ff;color:#3730a3;font-weight:700;font-size:13px;margin-bottom:12px;
+    }
+    .stats{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px
+    }
+    .stat{background:#fff;border:1px solid var(--border);padding:14px;border-radius:18px;text-align:center}
+    .stat .num{font-size:28px;font-weight:900}
+    .stat .label{font-size:13px;color:var(--muted)}
+    .progress{height:12px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:10px 0 18px}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--green));transition:.25s}
+    .scenario{
+      background:#fff;border:1px solid var(--border);border-radius:22px;padding:22px;margin:12px 0 18px
+    }
+    .scenario h3{font-size:22px;margin:0 0 10px}
+    .scenario p{font-size:18px;line-height:1.5;margin:0;color:#1f2937}
+    .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .choice{
+      min-height:82px;text-align:left;font-size:16px;border:1px solid var(--border);
+      background:#fff;color:#172033;box-shadow:none;display:flex;align-items:center;gap:12px;
+    }
+    .choice .icon{font-size:28px}
+    .choice.selected.good{background:#dcfce7;border-color:#16a34a}
+    .choice.selected.bad{background:#fee2e2;border-color:#dc2626}
+    .feedback{
+      border-radius:20px;padding:16px;margin-top:16px;border:1px solid var(--border);display:none;
+      background:#fff;
+    }
+    .feedback.show{display:block}
+    .feedback.good{border-color:#86efac;background:#f0fdf4}
+    .feedback.bad{border-color:#fecaca;background:#fef2f2}
+    .feedback h3{margin:0 0 8px}
+    .definition{
+      display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);
+      padding:14px;border-radius:18px;margin:10px 0;
+    }
+    .definition .k{font-size:26px}
+    .definition p{margin:0;color:#475569;line-height:1.4}
+    .hidden{display:none!important}
+    .result{
+      text-align:center;padding:20px
+    }
+    .result .big{font-size:62px;font-weight:900;margin:6px 0;color:#0f172a}
+    .table{
+      width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:16px
+    }
+    .table td,.table th{padding:12px;background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .table th{text-align:left;color:#475569;font-size:13px}
+    .table td:first-child,.table th:first-child{border-left:1px solid var(--border);border-radius:14px 0 0 14px}
+    .table td:last-child,.table th:last-child{border-right:1px solid var(--border);border-radius:0 14px 14px 0}
+    .small{font-size:13px;color:var(--muted);line-height:1.4}
+    .facilitator{
+      margin-top:22px;background:#0f172a;color:#fff;border-radius:var(--radius);padding:20px
+    }
+    .facilitator h2{color:#fff}
+    .facilitator p,.facilitator li{color:#dbeafe;line-height:1.5}
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr}
+      .rules,.choices,.stats{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start}
+    }
+    @media print{
+      body{background:#fff}
+      .top-actions,.choices,#nextBtn,#startBtn,#restartBtn{display:none!important}
+      .panel{box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">⚖️</div>
+      <div>
+        <h1>Mission CSE : AT, Trajet ou Maladie Professionnelle ?</h1>
+        <p class="subtitle">Un jeu pédagogique pour distinguer les trois notions et justifier son raisonnement.</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="secondary" onclick="window.print()">Imprimer / PDF</button>
+      <button class="secondary" onclick="showFacilitator()">Mode formateur</button>
+    </div>
+  </header>
+
+  <section id="intro" class="panel intro">
+    <span class="badge">🎮 Jeu interactif — 10 situations</span>
+    <h2>Objectif du jeu</h2>
+    <p>
+      Les participants doivent lire une situation de travail et choisir s’il s’agit plutôt d’un
+      <b>accident du travail</b>, d’un <b>accident de trajet</b>, d’une <b>maladie professionnelle</b>
+      ou d’une situation qui demande une <b>analyse complémentaire</b>.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>⏱️ Durée</b>15 à 25 minutes selon les échanges.</div>
+      <div class="rule"><b>👥 Animation</b>Individuel, binômes ou équipes en classe entière.</div>
+      <div class="rule"><b>🎯 But</b>Répondre, justifier, puis débattre des indices.</div>
+    </div>
+
+    <h2 style="margin-top:24px">Rappels simples</h2>
+    <div class="definition"><div class="k">🏥</div><p><b>Accident du travail :</b> événement soudain survenu par le fait ou à l’occasion du travail, entraînant une lésion physique ou psychique.</p></div>
+    <div class="definition"><div class="k">🚗</div><p><b>Accident de trajet :</b> accident survenu pendant le trajet normal entre le domicile et le lieu de travail, ou entre le lieu de travail et le lieu de restauration.</p></div>
+    <div class="definition"><div class="k">📋</div><p><b>Maladie professionnelle :</b> maladie liée à l’exposition à un risque ou à des conditions de travail. Elle peut être reconnue via un tableau ou, dans certains cas, après examen spécifique.</p></div>
+
+    <button id="startBtn" class="blue" onclick="startGame()">Commencer le jeu</button>
+  </section>
+
+  <main id="game" class="grid hidden">
+    <section class="panel">
+      <div class="stats">
+        <div class="stat"><div class="num" id="qNum">1</div><div class="label">Question</div></div>
+        <div class="stat"><div class="num" id="score">0</div><div class="label">Score</div></div>
+        <div class="stat"><div class="num" id="timer">60</div><div class="label">Secondes</div></div>
+      </div>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+      <div class="scenario">
+        <h3 id="scenarioTitle"></h3>
+        <p id="scenarioText"></p>
+      </div>
+      <div class="choices">
+        <button class="choice" onclick="answer('AT')"><span class="icon">🏥</span><span>Accident du travail</span></button>
+        <button class="choice" onclick="answer('TRAJET')"><span class="icon">🚗</span><span>Accident de trajet</span></button>
+        <button class="choice" onclick="answer('MP')"><span class="icon">📋</span><span>Maladie professionnelle</span></button>
+        <button class="choice" onclick="answer('ANALYSE')"><span class="icon">🔎</span><span>À analyser / pas assez d’éléments</span></button>
+      </div>
+      <div id="feedback" class="feedback"></div>
+      <button id="nextBtn" class="green hidden" onclick="nextQuestion()">Question suivante</button>
+    </section>
+
+    <aside class="panel">
+      <h2>Indices pour raisonner</h2>
+      <div class="definition"><div class="k">⚡</div><p><b>Soudaineté :</b> y a-t-il un événement précis, daté, identifiable ?</p></div>
+      <div class="definition"><div class="k">📍</div><p><b>Lieu et temps :</b> la situation se produit-elle au travail, pendant une mission ou sur le trajet normal ?</p></div>
+      <div class="definition"><div class="k">⏳</div><p><b>Exposition dans le temps :</b> la maladie apparaît-elle après une exposition répétée ou prolongée ?</p></div>
+      <div class="definition"><div class="k">🧩</div><p><b>Preuves et analyse :</b> témoins, déclaration, certificat médical, circonstances, poste, exposition, DUERP.</p></div>
+      <p class="small">Astuce animation : demande aux participants de justifier avec un indice, pas seulement de donner la réponse.</p>
+    </aside>
+  </main>
+
+  <section id="end" class="panel result hidden">
+    <h2>Résultat final</h2>
+    <div class="big"><span id="finalScore">0</span>/10</div>
+    <p id="finalMsg"></p>
+    <button id="restartBtn" class="blue" onclick="restart()">Rejouer</button>
+    <h2 style="margin-top:26px;text-align:left">Correction synthétique</h2>
+    <table class="table" id="correction"></table>
+  </section>
+
+  <section id="facilitator" class="facilitator hidden">
+    <h2>Mode formateur — Exploitation pédagogique</h2>
+    <p><b>Déroulé conseillé :</b> fais voter les participants, demande une justification, affiche la correction, puis fais le lien avec le rôle du CSE.</p>
+    <ul>
+      <li>Le CSE ne qualifie pas juridiquement à la place de la CPAM : il repère, questionne, alerte et propose des actions de prévention.</li>
+      <li>Après un accident du travail ou une maladie professionnelle, le CSE peut s’intéresser aux causes, à l’enquête, au DUERP et aux mesures de prévention.</li>
+      <li>L’objectif n’est pas de “piéger” les participants, mais de leur apprendre à chercher les bons indices.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const questions = [
+  {
+    t:"Situation 1 — Chute dans l’entreprise",
+    s:"Un salarié glisse dans un escalier de l’entreprise pendant ses heures de travail et se fracture la cheville.",
+    a:"AT",
+    exp:"Il y a un événement soudain, localisé, pendant le travail, avec une lésion. C’est typiquement un accident du travail."
+  },
+  {
+    t:"Situation 2 — Accident sur la route",
+    s:"Une salariée quitte son domicile pour aller travailler. Sur le trajet habituel, elle est percutée par une voiture.",
+    a:"TRAJET",
+    exp:"L’accident survient pendant le trajet normal entre le domicile et le lieu de travail. On pense à un accident de trajet."
+  },
+  {
+    t:"Situation 3 — Douleurs progressives",
+    s:"Un technicien installe régulièrement des écrans lourds. Depuis plusieurs mois, il souffre de douleurs aux épaules et aux poignets.",
+    a:"MP",
+    exp:"La situation évoque une atteinte progressive liée à des gestes, postures ou manutentions répétées. Il faut penser à une possible maladie professionnelle, notamment des TMS."
+  },
+  {
+    t:"Situation 4 — Malaise en réunion",
+    s:"Pendant une réunion tendue avec un client, un salarié fait un malaise brutal et doit être pris en charge.",
+    a:"ANALYSE",
+    exp:"Il y a un événement soudain pendant le travail, mais il faut analyser les circonstances, le lien avec le travail et les éléments médicaux. Le réflexe est de ne pas conclure trop vite."
+  },
+  {
+    t:"Situation 5 — Repas du midi",
+    s:"Un salarié se rend de son lieu de travail au restaurant où il prend habituellement son repas. Il tombe sur le trottoir et se blesse.",
+    a:"TRAJET",
+    exp:"Le trajet entre le lieu de travail et le lieu habituel de restauration peut relever de l’accident de trajet."
+  },
+  {
+    t:"Situation 6 — Bruit répété",
+    s:"Un technicien intervient régulièrement sur des événements sonorisés. Après plusieurs années d’exposition au bruit, une baisse auditive est constatée.",
+    a:"MP",
+    exp:"La baisse auditive peut être liée à une exposition répétée au bruit. C’est une situation qui fait penser à une maladie professionnelle possible."
+  },
+  {
+    t:"Situation 7 — Coupure en intervention",
+    s:"Lors d’une installation chez un client, un technicien se coupe profondément la main avec un outil.",
+    a:"AT",
+    exp:"L’accident survient pendant une mission professionnelle, avec un fait soudain et une lésion. C’est un accident du travail."
+  },
+  {
+    t:"Situation 8 — Télétravail",
+    s:"En télétravail, une salariée tombe dans son escalier en allant chercher un dossier nécessaire à sa tâche.",
+    a:"ANALYSE",
+    exp:"Le télétravail peut relever du cadre professionnel, mais il faut analyser précisément le moment, le lieu, la tâche et les circonstances."
+  },
+  {
+    t:"Situation 9 — Stress durable",
+    s:"Un chargé de projet subit depuis plusieurs mois une surcharge importante, des urgences permanentes et des tensions. Il consulte pour anxiété et épuisement.",
+    a:"MP",
+    exp:"Une atteinte psychique liée au travail peut, selon les cas, faire l’objet d’une démarche de reconnaissance. Il faut analyser l’exposition, les éléments médicaux et les procédures applicables."
+  },
+  {
+    t:"Situation 10 — Détour personnel",
+    s:"Après le travail, un salarié fait un détour important pour une course personnelle. Il a un accident après ce détour.",
+    a:"ANALYSE",
+    exp:"L’accident de trajet suppose un trajet normal. Un détour personnel important peut modifier l’analyse. Il faut examiner les circonstances."
+  }
+];
+
+let i=0, score=0, timer=60, interval=null, answered=false;
+const labels = {AT:"Accident du travail", TRAJET:"Accident de trajet", MP:"Maladie professionnelle", ANALYSE:"À analyser"};
+
+function startGame(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  i=0; score=0; loadQuestion();
+}
+function loadQuestion(){
+  answered=false;
+  timer=60;
+  document.getElementById('qNum').textContent = i+1;
+  document.getElementById('score').textContent = score;
+  document.getElementById('bar').style.width = ((i)/questions.length*100)+'%';
+  document.getElementById('scenarioTitle').textContent = questions[i].t;
+  document.getElementById('scenarioText').textContent = questions[i].s;
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';
+  fb.innerHTML='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.querySelectorAll('.choice').forEach(b=>{
+    b.disabled=false; b.classList.remove('selected','good','bad');
+  });
+  clearInterval(interval);
+  document.getElementById('timer').textContent=timer;
+  interval=setInterval(()=>{
+    timer--;
+    document.getElementById('timer').textContent=timer;
+    if(timer<=0){ answer('TIME');}
+  },1000);
+}
+function answer(choice){
+  if(answered) return;
+  answered=true;
+  clearInterval(interval);
+  const q=questions[i];
+  const ok = choice === q.a;
+  if(ok) score++;
+  document.getElementById('score').textContent = score;
+  const buttons=document.querySelectorAll('.choice');
+  buttons.forEach(b=>b.disabled=true);
+  const mapping={0:'AT',1:'TRAJET',2:'MP',3:'ANALYSE'};
+  buttons.forEach((b,idx)=>{
+    const val=mapping[idx];
+    if(val===q.a) b.classList.add('selected','good');
+    if(val===choice && !ok) b.classList.add('selected','bad');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(ok?'good':'bad');
+  const chosen = choice==='TIME' ? "Temps écoulé" : labels[choice];
+  fb.innerHTML = `<h3>${ok ? '✅ Bonne réponse' : '❌ À revoir'}</h3>
+    <p><b>Réponse attendue :</b> ${labels[q.a]}</p>
+    <p><b>Votre choix :</b> ${chosen}</p>
+    <p>${q.exp}</p>`;
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+function nextQuestion(){
+  i++;
+  if(i>=questions.length){ endGame(); } else { loadQuestion(); }
+}
+function endGame(){
+  clearInterval(interval);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('end').classList.remove('hidden');
+  document.getElementById('finalScore').textContent=score;
+  let msg="Bon travail : l’essentiel est de savoir repérer les indices et justifier.";
+  if(score>=8) msg="Excellent : les notions sont bien distinguées.";
+  if(score<=5) msg="À retravailler : reprenez les indices de soudaineté, trajet normal et exposition prolongée.";
+  document.getElementById('finalMsg').textContent=msg;
+  const table=document.getElementById('correction');
+  table.innerHTML='<tr><th>Situation</th><th>Réponse</th><th>Idée clé</th></tr>'+
+    questions.map((q,idx)=>`<tr><td>${idx+1}. ${q.t.replace('Situation '+(idx+1)+' — ','')}</td><td><b>${labels[q.a]}</b></td><td>${q.exp}</td></tr>`).join('');
+}
+function restart(){
+  document.getElementById('end').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+}
+function showFacilitator(){
+  document.getElementById('facilitator').classList.toggle('hidden');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Le budget du CSE</title>
+<style>
+:root{
+  --ink:#101828; --muted:#667085; --blue:#007aff; --cyan:#00c7ff; --purple:#af52de; --pink:#ff2d55; --green:#34c759; --orange:#ff9500; --red:#ff3b30; --yellow:#ffd60a;
+  --line:rgba(255,255,255,.74); --shadow:0 30px 90px rgba(31,41,55,.18); --radius:32px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(0,122,255,.25), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(255,45,85,.18), transparent 31%),
+    radial-gradient(circle at 74% 94%, rgba(52,199,89,.18), transparent 30%),
+    linear-gradient(135deg,#f8fbff 0%,#edf5ff 48%,#fff1f7 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.75) 48%,transparent 49% 100%) 0 0/120px 120px,
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.5px) 0 0/42px 42px;
+}
+.app{max-width:1380px;margin:0 auto;padding:28px;position:relative}
+.liquid{
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  border:1px solid var(--line);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.86);
+  backdrop-filter:blur(30px) saturate(185%);-webkit-backdrop-filter:blur(30px) saturate(185%);
+  border-radius:var(--radius);
+}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:78px;height:78px;border-radius:28px;display:grid;place-items:center;font-size:39px;color:#fff;
+  background:linear-gradient(135deg,rgba(0,122,255,.96),rgba(0,199,255,.82) 42%,rgba(175,82,222,.9));
+  box-shadow:0 22px 62px rgba(0,122,255,.28), inset 0 1px 0 rgba(255,255,255,.38);position:relative;overflow:hidden;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.45)}
+h1{font-size:34px;line-height:1.02;margin:0;letter-spacing:-.8px}
+.sub{margin:7px 0 0;color:var(--muted);font-size:15px}
+button{
+  border:0;border-radius:18px;padding:13px 16px;font-weight:800;cursor:pointer;font-size:15px;
+  background:rgba(255,255,255,.67);color:#101828;border:1px solid rgba(255,255,255,.84);
+  box-shadow:0 12px 28px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(180%);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,filter .18s ease;
+}
+button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 20px 44px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.92);filter:saturate(1.06)}
+button:active{transform:translateY(0) scale(.99)}
+button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,rgba(0,122,255,.95),rgba(0,199,255,.82));color:#fff}
+.green{background:linear-gradient(135deg,rgba(52,199,89,.95),rgba(158,255,179,.78));color:#052e16}
+.dark{background:rgba(17,24,39,.78);color:#fff;border-color:rgba(255,255,255,.22)}
+.gold{background:linear-gradient(135deg,rgba(255,149,0,.95),rgba(255,214,10,.84));color:#3b2600}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;align-items:stretch}
+.panel{padding:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.78);color:#174ea6;
+}
+.hero h2{font-size:50px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.55;color:#344054}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.rule{
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:15px;transition:.18s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.rule:hover{transform:translateY(-4px);background:rgba(255,255,255,.72);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#667085;font-size:14px;line-height:1.35}
+.poster{min-height:560px;display:grid;place-items:center;position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.78}
+.o1{width:230px;height:230px;background:rgba(0,122,255,.20);left:9%;top:14%}
+.o2{width:260px;height:260px;background:rgba(255,45,85,.15);right:8%;top:12%}
+.o3{width:310px;height:310px;background:rgba(52,199,89,.14);right:18%;bottom:8%}
+.budgetPanel{
+  width:90%;max-width:585px;border-radius:44px;padding:18px;background:rgba(255,255,255,.36);
+  border:1px solid rgba(255,255,255,.76);box-shadow:0 34px 90px rgba(15,23,42,.20), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter:blur(24px) saturate(180%);transform:rotate(-1.5deg)
+}
+.budgetScreen{
+  border-radius:34px;background:rgba(15,23,42,.82);padding:25px;color:#fff;min-height:400px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden
+}
+.budgetScreen:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle at 25% 22%,rgba(0,199,255,.36),transparent 30%),radial-gradient(circle at 82% 40%,rgba(255,45,85,.30),transparent 28%);pointer-events:none}
+.budgetScreen h3{position:relative;font-size:31px;margin:0 0 18px}
+.clue{position:relative;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:14px;margin:11px 0;font-weight:800;display:flex;align-items:center;gap:12px;transition:.18s}
+.clue:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:372px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);border-radius:20px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:#667085}
+.progress{height:12px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.55)}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--pink));transition:.35s}
+.rooms{display:grid;gap:8px}
+.room{
+  display:flex;gap:10px;align-items:center;border-radius:21px;padding:10px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.74);color:#344054;transition:.18s
+}
+.room:hover{transform:translateX(4px);background:rgba(255,255,255,.72);box-shadow:0 16px 34px rgba(15,23,42,.10)}
+.room .num{min-width:34px;height:34px;border-radius:13px;background:linear-gradient(135deg,rgba(0,122,255,.92),rgba(0,199,255,.80));display:grid;place-items:center;font-weight:1000;color:#fff}
+.room.active{background:rgba(255,255,255,.82);border-color:rgba(0,122,255,.45)}
+.room.done{border-color:rgba(52,199,89,.55)}
+.inventory{margin-top:14px;border-radius:24px;padding:14px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.72)}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:rgba(52,199,89,.14);color:#046c4e;border:1px solid rgba(52,199,89,.32);font-weight:900;font-size:12px}
+.mission{padding:24px;min-height:720px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:31px;margin:0;letter-spacing:-.5px}.mission-head p{color:#5b6b82;line-height:1.45;margin:7px 0 0}
+.case{
+  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.80);border-radius:26px;padding:22px;margin:14px 0;
+  box-shadow:0 16px 40px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.78)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#344054}
+.doc{background:rgba(255,250,230,.82);border:1px solid rgba(255,214,10,.46);border-radius:20px;padding:15px;margin:12px 0;color:#503400}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:rgba(255,255,255,.60);color:#172033;text-align:left;border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  min-height:84px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:28px}.choice:hover{background:rgba(255,255,255,.85);transform:translateY(-4px) scale(1.012)}
+.choice.selected{outline:4px solid rgba(0,122,255,.16);background:rgba(239,246,255,.90)}
+.choice.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.choice.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{
+  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.82);border-radius:22px;padding:15px;cursor:pointer;min-height:120px;
+  box-shadow:0 10px 26px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+.tile:hover{transform:translateY(-5px) scale(1.015);background:rgba(255,255,255,.85);box-shadow:0 20px 42px rgba(15,23,42,.12)}
+.tile b{color:#0f172a}.tile p{font-size:14px;color:#475569}.tile.selected{background:rgba(239,246,255,.92);border-color:rgba(0,122,255,.38)}
+.tile.good{background:rgba(220,252,231,.92);border-color:rgba(52,199,89,.55)}
+.tile.bad{background:rgba(254,226,226,.92);border-color:rgba(255,59,48,.45)}
+input{border:1px solid rgba(255,255,255,.84);border-radius:18px;padding:13px 14px;font-size:18px;font-weight:900;min-width:190px;background:rgba(255,255,255,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;border:1px solid rgba(255,255,255,.80);background:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.feedback.show{display:block}.feedback.good{background:rgba(236,253,245,.88);border-color:rgba(52,199,89,.45)}
+.feedback.bad{background:rgba(255,241,242,.88);border-color:rgba(255,59,48,.35)}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:var(--blue);margin:0}
+.memo{text-align:left;margin-top:24px}
+.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:rgba(255,255,255,.74);border-top:1px solid rgba(255,255,255,.80);border-bottom:1px solid rgba(255,255,255,.80);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid rgba(255,255,255,.80);border-radius:16px 0 0 16px}
+.memo th:last-child,.memo td:last-child{border-right:1px solid rgba(255,255,255,.80);border-radius:0 16px 16px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:980px){.hero,.game{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.tile-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.liquid,.case{box-shadow:none;background:#fff;border:1px solid #ddd}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">💶</div>
+    <div>
+      <h1>Escape Game — Le budget du CSE</h1>
+      <p class="sub">Distinguer budget de fonctionnement, budget ASC, transferts, dépenses autorisées et obligations comptables.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button onclick="toggleFacilitator()">Mode formateur</button>
+    <button onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="liquid panel">
+    <span class="badge">🔐 Escape game cas pratiques — Liquid Glass Edition</span>
+    <h2>Deux coffres, deux budgets : les élus doivent éviter la confusion.</h2>
+    <p>
+      Les participants résolvent des cas concrets : calculer la subvention de fonctionnement,
+      distinguer ASC et fonctionnement, choisir la bonne imputation, financer une expertise,
+      transférer un excédent, sécuriser les critères d’attribution, suivre les comptes,
+      éviter les erreurs de trésorerie et construire de bons réflexes de gestion.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Animation</b><span>Le formateur projette le jeu. Le groupe débat avant validation.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>20 salles : QCM, sélections multiples, codes et cas pratiques.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Savoir utiliser le bon budget, au bon moment, avec une trace comptable claire.</span></div>
+    </div>
+    <p class="sources">Base juridique intégrée : Code du travail L2315-61, L2312-81 à L2312-84, R2315-31-1, L2315-64 et règles d’expertise.</p>
+    <button class="primary" onclick="startGame()">Ouvrir les coffres budgétaires</button>
+  </div>
+  <div class="liquid panel poster">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+    <div class="budgetPanel">
+      <div class="budgetScreen">
+        <h3>Budget CSE</h3>
+        <div class="clue">⚙️ Fonctionnement : 0,20 % / 0,22 %</div>
+        <div class="clue">🎁 Activités sociales et culturelles</div>
+        <div class="clue">🔁 Transferts limités</div>
+        <div class="clue">🔎 Expertises & formation</div>
+        <div class="clue">🧾 Comptes, justificatifs, traçabilité</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="liquid panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Messages clés</h2>
+  <div class="rules">
+    <div class="rule"><b>Dualité</b><span>Deux budgets : fonctionnement et ASC. Chaque budget a sa finalité et ne doit pas être confondu.</span></div>
+    <div class="rule"><b>Traçabilité</b><span>Toute dépense doit être décidée, justifiée, imputée au bon budget et conservée dans les pièces comptables.</span></div>
+    <div class="rule"><b>Bons usages</b><span>Faire voter les règles dans le règlement intérieur, utiliser des critères ASC objectifs et contrôler les risques URSSAF.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar liquid">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Salle</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/20</div><div class="l">Clés</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés budgétaires</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="mission liquid">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="primary hidden" onclick="validateRoom()">Valider</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="liquid panel end hidden">
+  <h2>Coffres budgétaires déverrouillés</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Fiche mémo finale — Budget du CSE</h2>
+    <table>
+      <tr><th>Thème</th><th>À retenir</th></tr>
+      <tr><td>Deux budgets</td><td>Le CSE d’au moins 50 salariés dispose en pratique d’un budget de fonctionnement et d’un budget destiné aux activités sociales et culturelles. Les deux budgets ont des finalités distinctes.</td></tr>
+      <tr><td>Fonctionnement</td><td>L’employeur verse une subvention annuelle : 0,20 % de la masse salariale brute de 50 à moins de 2 000 salariés ; 0,22 % à partir de 2 000 salariés.</td></tr>
+      <tr><td>ASC</td><td>La contribution employeur pour les activités sociales et culturelles est fixée par accord d’entreprise ; à défaut, son rapport à la masse salariale ne peut être inférieur au même rapport existant l’année précédente.</td></tr>
+      <tr><td>Utilisation du fonctionnement</td><td>Frais de fonctionnement du comité, documentation, communication, formation économique, expertises à la charge du CSE, outils, assistance juridique liée au mandat, rétrocession au CSE central selon les cas.</td></tr>
+      <tr><td>Utilisation des ASC</td><td>Activités destinées à améliorer les conditions de vie, de travail et de loisirs des salariés et de leur famille : chèques cadeaux sous conditions, voyages, loisirs, culture, sport, secours, prestations sociales.</td></tr>
+      <tr><td>Transferts</td><td>Le transfert de l’excédent annuel du budget de fonctionnement vers les ASC est limité à 10 % de cet excédent. Il doit être décidé par délibération et tracé dans les comptes/rapports.</td></tr>
+      <tr><td>Expertises</td><td>Certaines expertises sont financées par l’employeur ; d’autres sont cofinancées 80 % employeur / 20 % budget de fonctionnement du CSE. Il faut toujours vérifier la base légale.</td></tr>
+      <tr><td>Comptabilité</td><td>Le CSE est soumis à des obligations comptables. Les comptes doivent être fiables, justifiés, présentés selon les règles applicables et conservés avec les pièces justificatives.</td></tr>
+      <tr><td>Bons usages</td><td>Budget prévisionnel, règles de validation des dépenses, double signature, justificatifs, critères ASC objectifs, contrôle URSSAF, présentation régulière aux élus, séparation stricte des budgets.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const rooms=[
+{title:"Salle 1 — Deux coffres", type:"QCM", key:"Dualité", story:"Le trésorier ouvre un compte unique et veut payer toutes les dépenses sans distinction.", kind:"choice", answer:"B", explain:"Le CSE doit distinguer le budget de fonctionnement et le budget des activités sociales et culturelles. Chaque budget a sa finalité. Les dépenses doivent être imputées au bon budget.", question:"Quelle règle pédagogique faut-il poser ?", choices:[["A","Tout peut être payé avec n’importe quel budget."],["B","Il faut distinguer fonctionnement et ASC, avec une imputation conforme à la finalité de chaque budget."],["C","Le budget ASC sert à payer les experts économiques."],["D","Le budget de fonctionnement sert à acheter uniquement des cadeaux de Noël."]]},
+{title:"Salle 2 — Seuil d’existence des budgets", type:"QCM", key:"50 salariés", story:"Entreprise de 42 salariés. Les élus réclament automatiquement un budget de fonctionnement légal de 0,20 %.", kind:"choice", answer:"C", explain:"Le budget de fonctionnement obligatoire concerne les entreprises d’au moins 50 salariés. Dans les entreprises de moins de 50 salariés, les moyens du CSE sont plus limités et ne relèvent pas du même régime.", question:"Quelle réponse est correcte ?", choices:[["A","Oui, 0,20 % est dû dès 11 salariés."],["B","Oui, 0,22 % est dû dès 20 salariés."],["C","Non, la subvention légale de fonctionnement vise les CSE d’au moins 50 salariés."],["D","Le budget est fixé par le hasard."]]},
+{title:"Salle 3 — Taux de fonctionnement", type:"Code", key:"0,20 / 0,22", story:"Le coffre demande les deux taux légaux de la subvention de fonctionnement.", kind:"input", answer:"020022", explain:"L’employeur verse 0,20 % de la masse salariale brute de 50 à moins de 2 000 salariés, et 0,22 % dans les entreprises d’au moins 2 000 salariés.", html:`<div class="case"><h3>Code des taux</h3><div class="doc">Assemblez les taux sans virgule ni symbole : 0,20 % puis 0,22 %.</div><input id="input" placeholder="Code à 6 chiffres" maxlength="6"></div>`},
+{title:"Salle 4 — Base de calcul", type:"QCM", key:"Masse salariale", story:"Le CSE veut vérifier sur quelle base l’employeur calcule le budget.", kind:"choice", answer:"A", explain:"La subvention de fonctionnement est calculée sur la masse salariale brute, définie par référence aux gains et rémunérations soumis à cotisations de sécurité sociale, avec l’exclusion des indemnités versées à l’occasion de la rupture du CDI.", question:"Quelle base faut-il rechercher ?", choices:[["A","La masse salariale brute au sens du Code du travail"],["B","Le chiffre d’affaires"],["C","Le bénéfice net"],["D","Le budget marketing"]]},
+{title:"Salle 5 — Calcul pratique", type:"Code", key:"Calcul", story:"Entreprise de 120 salariés, masse salariale brute : 5 000 000 €. Calculez le budget de fonctionnement légal.", kind:"input", answer:"10000", explain:"De 50 à moins de 2 000 salariés, le taux est 0,20 %. 5 000 000 € x 0,20 % = 10 000 €.", html:`<div class="case"><h3>Calcul rapide</h3><div class="doc">Masse salariale brute : 5 000 000 €. Taux : 0,20 %. Quel montant annuel ?</div><input id="input" placeholder="Montant en euros" maxlength="6"></div>`},
+{title:"Salle 6 — Budget ASC", type:"QCM", key:"ASC accord", story:"Le CSE demande comment se fixe la contribution destinée aux activités sociales et culturelles.", kind:"choice", answer:"D", explain:"La contribution versée chaque année par l’employeur pour financer les institutions sociales du CSE est fixée par accord d’entreprise. À défaut d’accord, le rapport de cette contribution à la masse salariale brute ne peut être inférieur au même rapport existant l’année précédente.", question:"Quelle règle faut-il retenir ?", choices:[["A","Elle est toujours de 0,20 %."],["B","Elle est toujours de 0,22 %."],["C","Elle est fixée librement chaque mois par l’employeur sans repère."],["D","Elle est fixée par accord ; à défaut, maintien du rapport contribution / masse salariale de l’année précédente."]]},
+{title:"Salle 7 — Qu’est-ce qu’une ASC ?", type:"Sélection multiple", key:"ASC", story:"Le coffre mélange des dépenses ASC et des dépenses de fonctionnement.", kind:"tiles", answer:["A","B","C","D"], explain:"Les ASC visent l’amélioration des conditions de vie, de travail et de loisirs des salariés et de leur famille : loisirs, culture, vacances, sport, aides sociales, secours, événements familiaux selon les règles applicables.", tiles:[["A","Chèques cadeaux attribués selon des critères conformes"],["B","Voyage ou sortie culturelle pour les salariés"],["C","Aide sociale ou secours selon critères"],["D","Participation à une activité sportive ou de loisirs"],["E","Honoraires d’un expert-comptable pour la consultation économique"],["F","Abonnement juridique du CSE pour préparer ses avis"]]},
+{title:"Salle 8 — Fonctionnement : dépenses possibles", type:"Sélection multiple", key:"Fonctionnement", story:"Le trésorier doit imputer plusieurs dépenses au bon budget.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Le budget de fonctionnement finance les moyens du CSE pour exercer ses missions : documentation, communication, formation économique, frais de fonctionnement, expertises à charge du CSE, conseil juridique lié au mandat, outils, rétrocession au CSE central selon les cas.", tiles:[["A","Formation économique des élus"],["B","Documentation juridique et abonnements utiles au mandat"],["C","Outil de communication avec les salariés"],["D","Honoraires d’un expert à charge du CSE"],["E","Assistance juridique liée aux missions économiques et sociales"],["F","Cadeaux de Noël pour les enfants des salariés"]]},
+{title:"Salle 9 — Mauvaise imputation", type:"QCM", key:"Piège", story:"Le CSE veut payer une journée à Disneyland avec le budget de fonctionnement pour économiser l’ASC.", kind:"choice", answer:"B", explain:"Une sortie loisirs pour les salariés relève en principe des ASC, pas du fonctionnement. Utiliser le mauvais budget expose le CSE à une confusion des budgets et à des difficultés comptables.", question:"Quelle réponse donner ?", choices:[["A","Bonne idée : le fonctionnement sert à tout."],["B","Non, c’est une dépense ASC et elle doit être imputée sur le budget ASC."],["C","Oui, si la facture est jolie."],["D","Oui, mais uniquement en liquide."]]},
+{title:"Salle 10 — Formation des délégués syndicaux / représentants de proximité", type:"QCM", key:"Formation DS RP", story:"Le CSE envisage d’affecter une partie du budget de fonctionnement à la formation de délégués syndicaux ou représentants de proximité.", kind:"choice", answer:"A", explain:"Le CSE peut décider, par délibération, de consacrer une partie de son budget de fonctionnement au financement de la formation des délégués syndicaux de l’entreprise et des représentants de proximité lorsqu’ils existent.", question:"Est-ce possible ?", choices:[["A","Oui, par délibération du CSE dans les conditions prévues."],["B","Non, jamais."],["C","Oui, mais uniquement avec le budget ASC."],["D","Oui, seulement si aucun élu n’est formé."]]},
+{title:"Salle 11 — Expertises 80/20", type:"Code", key:"80 / 20", story:"Le coffre expertise demande la répartition de financement pour certaines expertises cofinancées.", kind:"input", answer:"8020", explain:"Certaines expertises sont financées à 80 % par l’employeur et 20 % par le CSE sur son budget de fonctionnement. D’autres sont intégralement à la charge de l’employeur : il faut identifier la base légale.", html:`<div class="case"><h3>Code expertise</h3><div class="doc">Assemblez : part employeur + part CSE pour les expertises cofinancées.</div><input id="input" placeholder="Code à 4 chiffres" maxlength="4"></div>`},
+{title:"Salle 12 — Expertises : bon réflexe", type:"Sélection multiple", key:"Expertises", story:"Le CSE veut désigner un expert sans vérifier qui paie.", kind:"tiles", answer:["A","B","C","D"], explain:"Avant de voter une expertise, le CSE doit identifier le fondement légal, la mission, le coût prévisionnel, le financement applicable et l’impact sur le budget de fonctionnement.", tiles:[["A","Identifier le fondement légal de l’expertise"],["B","Clarifier la mission confiée à l’expert"],["C","Vérifier le financement : employeur seul ou 80/20"],["D","Mesurer l’impact sur le budget de fonctionnement"],["E","Voter sans connaître le coût ni le cadre"],["F","Faire payer l’expert avec les chèques cadeaux"]]},
+{title:"Salle 13 — Transfert d’excédent fonctionnement vers ASC", type:"Code", key:"Transfert 10 %", story:"Le CSE a un excédent annuel de fonctionnement et veut en transférer une partie vers les ASC.", kind:"input", answer:"10", explain:"L’excédent annuel du budget de fonctionnement peut être transféré au budget ASC dans la limite de 10 % de cet excédent, conformément à l’article R2315-31-1.", html:`<div class="case"><h3>Code transfert</h3><div class="doc">Quel est le pourcentage maximum de l’excédent annuel de fonctionnement transférable vers les ASC ?</div><input id="input" placeholder="Pourcentage" maxlength="2"></div>`},
+{title:"Salle 14 — Délibération et traçabilité", type:"Sélection multiple", key:"Traçabilité transfert", story:"Le trésorier veut transférer un excédent sans vote ni mention comptable.", kind:"tiles", answer:["A","B","C","D"], explain:"Un transfert doit être décidé par délibération. Il doit être tracé dans les comptes et documents/rapports applicables, avec le montant, le budget d’origine, le budget destinataire et la justification.", tiles:[["A","Délibération du CSE"],["B","Montant transféré clairement indiqué"],["C","Inscription dans les comptes/documents applicables"],["D","Justification de l’utilisation et respect du plafond"],["E","Transfert informel sans trace"],["F","Transfert de 100 % du budget de fonctionnement initial"]]},
+{title:"Salle 15 — Critères ASC et non-discrimination", type:"Sélection multiple", key:"Critères ASC", story:"Le CSE veut réserver toutes les prestations aux salariés ayant deux ans d’ancienneté.", kind:"tiles", answer:["A","B","C","D"], explain:"Les critères ASC doivent être objectifs, transparents, non discriminatoires et conformes au droit social. Les CSE doivent être vigilants sur les conditions d’accès, notamment après la jurisprudence relative à l’interdiction des conditions d’ancienneté pour l’accès aux ASC.", tiles:[["A","Utiliser des critères objectifs"],["B","Éviter les critères discriminatoires"],["C","Formaliser les règles dans le règlement intérieur ou une note ASC"],["D","Contrôler les risques sociaux et URSSAF"],["E","Attribuer selon la sympathie personnelle"],["F","Exclure automatiquement sans justification une catégorie de salariés"]]},
+{title:"Salle 16 — Justificatifs", type:"QCM", key:"Justificatifs", story:"Un élu propose de rembourser des achats sans facture pour gagner du temps.", kind:"choice", answer:"C", explain:"Toute dépense doit être justifiée : facture, décision, bénéficiaire, imputation, mode de paiement, pièce comptable. Sans justificatif, le CSE s’expose à une mauvaise gestion et à des difficultés de contrôle.", question:"Quel bon usage faut-il rappeler ?", choices:[["A","Les justificatifs sont inutiles pour le CSE."],["B","Une photo floue suffit toujours."],["C","Pas de dépense sans pièce justificative suffisante et imputation claire."],["D","Les dépenses en espèces sont toujours préférables."]]},
+{title:"Salle 17 — Comptabilité du CSE", type:"QCM", key:"Comptabilité", story:"Le CSE pense qu’il n’a aucune obligation comptable puisqu’il n’est pas une entreprise.", kind:"choice", answer:"B", explain:"Le CSE est soumis à des obligations comptables. Les modalités varient selon sa taille et ses ressources, mais il doit tenir des comptes fiables et conserver ses justificatifs.", question:"Quelle réponse est correcte ?", choices:[["A","Le CSE n’a jamais de comptabilité."],["B","Le CSE est soumis à des obligations comptables adaptées à sa taille et à ses ressources."],["C","Seul l’employeur tient les comptes du CSE."],["D","Les comptes sont remplacés par un message WhatsApp."]]},
+{title:"Salle 18 — Budget prévisionnel", type:"Sélection multiple", key:"Prévisionnel", story:"Le nouveau trésorier veut piloter l’année sans budget prévisionnel.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Un budget prévisionnel est un bon usage : il permet d’anticiper les recettes, arbitrer les dépenses, distinguer les budgets, suivre les écarts et présenter les décisions aux élus.", tiles:[["A","Prévoir recettes et dépenses par budget"],["B","Séparer fonctionnement et ASC"],["C","Suivre les écarts entre prévu et réalisé"],["D","Arbitrer collectivement les priorités"],["E","Présenter régulièrement la situation aux élus"],["F","Décider les dépenses au hasard"]]},
+{title:"Salle 19 — Contrôle interne", type:"Sélection multiple", key:"Contrôle", story:"Le CSE veut éviter les erreurs et soupçons de mauvaise gestion.", kind:"tiles", answer:["A","B","C","D","E"], explain:"Les bons usages incluent : double signature selon seuils, validation collégiale, séparation des rôles, pièces justificatives, tableau de suivi, rapprochement bancaire, compte rendu régulier et règles écrites dans le RI.", tiles:[["A","Double signature ou validation au-delà d’un seuil"],["B","Rapprochement bancaire régulier"],["C","Tableau de suivi des dépenses par budget"],["D","Règles écrites dans le règlement intérieur"],["E","Compte rendu régulier aux élus"],["F","Carte bancaire utilisée sans limite ni justificatif"]]},
+{title:"Salle 20 — CSE central et établissements", type:"QCM", key:"CSE central", story:"Il existe un CSE central et des CSE d’établissement. Le CSE central doit exercer des attributions économiques.", kind:"choice", answer:"A", explain:"Les CSE d’établissement et le CSE central déterminent par accord les modalités de répartition de la subvention de fonctionnement. À défaut d’accord, les règles réglementaires permettent de déterminer cette répartition.", question:"Quel réflexe budgétaire faut-il avoir ?", choices:[["A","Prévoir la répartition ou rétrocession de fonctionnement entre CSE d’établissement et CSE central selon les règles applicables."],["B","Le CSE central n’a jamais besoin de moyens."],["C","Tout est automatiquement versé au secrétaire."],["D","Le budget ASC finance toujours les attributions économiques du CSE central."]]},
+{title:"Salle finale — Code des deux coffres", type:"Code final", key:"Coffre final", story:"Pour ouvrir le coffre final, retrouvez les chiffres clés du budget CSE.", kind:"input", answer:"500200222010", explain:"Code final : 50 salariés, 0,20 %, 0,22 %, 20 % part CSE dans certaines expertises cofinancées, 10 % plafond de transfert de l’excédent fonctionnement vers ASC.", html:`<div class="case"><h3>Code final</h3><div class="doc">Assemblez : seuil budget 50 + taux 0,20 + taux 0,22 + part CSE 20 + transfert 10.</div><input id="input" placeholder="Code final" maxlength="12"></div>`}
+];
+
+let current=0,score=0,keys=[],selected=null,selectedTiles=[];
+function startGame(){document.getElementById("intro").classList.add("hidden");document.getElementById("game").classList.remove("hidden");current=0;score=0;keys=[];render();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){document.getElementById("rooms").innerHTML=rooms.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>${r.title.split(' — ')[0]}</b><br><span class="sources">${r.title.split(' — ')[1]}</span></div></div>`).join("");document.getElementById("bar").style.width=(current/rooms.length*100)+"%";document.getElementById("roomNum").textContent=current+1;document.getElementById("score").textContent=score;document.getElementById("progressTxt").textContent=keys.length+"/20";document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`}
+function render(){selected=null;selectedTiles=[];document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";document.getElementById("validateBtn").classList.remove("hidden");document.getElementById("nextBtn").classList.add("hidden");const r=rooms[current];document.getElementById("title").textContent=r.title;document.getElementById("story").textContent=r.story;document.getElementById("type").textContent=r.type;renderNav();if(r.kind==="input")document.getElementById("content").innerHTML=r.html;if(r.kind==="choice")renderChoice(r);if(r.kind==="tiles")renderTiles(r)}
+function renderChoice(r){document.getElementById("content").innerHTML=`<div class="case"><h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`}
+function renderTiles(r){document.getElementById("content").innerHTML=`<div class="case"><h3>Sélectionnez toutes les bonnes réponses.</h3><div class="tile-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div></div>`}
+function ico(k){return {A:"💶",B:"🧾",C:"⚖️",D:"✅",E:"⚠️",F:"🚫"}[k]||"•"}
+function selectChoice(k){selected=k;document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));document.getElementById("c-"+k).classList.add("selected")}
+function toggleTile(k){if(selectedTiles.includes(k))selectedTiles=selectedTiles.filter(x=>x!==k);else selectedTiles.push(k);document.getElementById("t-"+k).classList.toggle("selected")}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){const r=rooms[current];let ok=false;if(r.kind==="input")ok=(document.getElementById("input").value.trim().toUpperCase()===r.answer);if(r.kind==="choice"){ok=selected===r.answer;markChoice(r.answer,selected)}if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer);markTiles(r.answer)}showFeedback(ok,r.explain)}
+function markChoice(ans,pick){document.querySelectorAll(".choice").forEach(b=>b.disabled=true);document.getElementById("c-"+ans)?.classList.add("good");if(pick&&pick!==ans)document.getElementById("c-"+pick)?.classList.add("bad")}
+function markTiles(ans){document.querySelectorAll(".tile").forEach(t=>{const k=t.id.replace("t-","");if(ans.includes(k))t.classList.add("good");else if(selectedTiles.includes(k))t.classList.add("bad")})}
+function showFeedback(ok,txt){const fb=document.getElementById("feedback");fb.className="feedback show "+(ok?"good":"bad");fb.innerHTML=`<h3>${ok?"✅ Clé obtenue":"🟠 Point à reprendre"}</h3><p>${txt}</p>`;if(ok){score+=current===rooms.length-1?5:5;if(!keys.includes(rooms[current].key)&&current<20)keys.push(rooms[current].key)}else score+=1;document.getElementById("validateBtn").classList.add("hidden");document.getElementById("nextBtn").classList.remove("hidden");renderNav()}
+function nextRoom(){current++;if(current>=rooms.length)endGame();else render()}
+function endGame(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");let final=Math.min(100,score);document.getElementById("finalScore").textContent=final;let msg="Les coffres sont ouverts. Reprends les salles les moins maîtrisées en débrief.";if(final>=80)msg="Excellent : les participants savent distinguer, utiliser et sécuriser les budgets du CSE.";if(final<55)msg="À consolider : refaire un point sur dualité des budgets, 0,20/0,22 %, ASC, transferts, expertises et comptabilité.";document.getElementById("finalMsg").textContent=msg}
+function restart(){document.getElementById("end").classList.add("hidden");document.getElementById("intro").classList.remove("hidden")}
+</script>
+</body>
+</html>

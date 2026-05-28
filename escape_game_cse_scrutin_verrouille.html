@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape Game CSE — Le Scrutin Verrouillé</title>
+<style>
+:root{
+  --bg1:#070b1a; --bg2:#151131; --bg3:#341544;
+  --ink:#f8fbff; --muted:#b9c5d8; --paper:#fff8e8; --dark:#111827;
+  --gold:#ffd166; --cyan:#4cc9f0; --pink:#ff5c93; --green:#2dd4bf; --red:#ff4d6d; --violet:#9b5de5;
+  --glass:rgba(255,255,255,.105); --glass2:rgba(255,255,255,.16); --line:rgba(255,255,255,.24);
+  --shadow:0 30px 100px rgba(0,0,0,.42); --radius:30px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--ink);background:#070b1a}
+body{
+  background:
+    radial-gradient(circle at 8% 10%, rgba(76,201,240,.35), transparent 24%),
+    radial-gradient(circle at 88% 12%, rgba(255,92,147,.29), transparent 25%),
+    radial-gradient(circle at 72% 88%, rgba(255,209,102,.24), transparent 28%),
+    linear-gradient(135deg,var(--bg1),var(--bg2) 45%,var(--bg3));
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(255,255,255,.45) 48%,transparent 49% 100%) 0 0/90px 90px,
+    radial-gradient(circle,rgba(255,255,255,.7) 1px,transparent 1.5px) 0 0/38px 38px;
+}
+.app{max-width:1320px;margin:0 auto;padding:28px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.brand{display:flex;gap:16px;align-items:center}
+.logo{
+  width:78px;height:78px;border-radius:27px;display:grid;place-items:center;font-size:40px;
+  background:conic-gradient(from 210deg,var(--gold),var(--cyan),var(--violet),var(--pink),var(--gold));
+  box-shadow:0 20px 70px rgba(255,209,102,.22);
+  position:relative;
+}
+.logo:after{content:"";position:absolute;inset:8px;border-radius:21px;border:1px solid rgba(255,255,255,.55)}
+h1{font-size:36px;line-height:1;margin:0;letter-spacing:-.8px}
+.subtitle{color:#d9e6ff;margin:7px 0 0;font-size:15px}
+button{
+  border:0;border-radius:17px;padding:13px 16px;font-size:15px;font-weight:900;cursor:pointer;
+  box-shadow:0 16px 34px rgba(0,0,0,.22);transition:.16s transform,.16s filter,.16s opacity;
+  background:#fff;color:#0b1020
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.04)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(135deg,var(--gold),#fff1a8)}
+.cyan{background:linear-gradient(135deg,var(--cyan),#aaf2ff)}
+.pink{background:linear-gradient(135deg,var(--pink),#ffc1d5)}
+.green{background:linear-gradient(135deg,var(--green),#bcfff7)}
+.red{background:linear-gradient(135deg,#fb7185,#fecdd3)}
+.ghost{background:rgba(255,255,255,.10);color:#fff;border:1px solid var(--line);box-shadow:none;backdrop-filter:blur(12px)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.panel{
+  background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);backdrop-filter:blur(15px);padding:26px;
+}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:stretch}
+.hero h2{font-size:52px;line-height:.98;margin:20px 0 16px;letter-spacing:-1.3px}
+.hero p{font-size:17px;line-height:1.58;color:#e4eeff}
+.badge{display:inline-flex;gap:8px;align-items:center;border-radius:999px;padding:9px 13px;font-weight:900;font-size:13px;background:rgba(255,209,102,.16);border:1px solid rgba(255,209,102,.48);color:#fff4c4}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.rule{background:rgba(255,255,255,.10);border:1px solid var(--line);border-radius:22px;padding:15px}
+.rule b{display:block;margin-bottom:6px;color:#fff}.rule span{color:#d5deed;font-size:14px;line-height:1.35}
+.poster{min-height:560px;position:relative;overflow:hidden;display:grid;place-items:center}
+.door{
+  width:72%;max-width:430px;aspect-ratio:.72/1;border-radius:42px 42px 24px 24px;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.04)),linear-gradient(135deg,#18254a,#32184f);
+  border:1px solid rgba(255,255,255,.32);box-shadow:0 30px 100px rgba(0,0,0,.5);position:relative;
+}
+.door:before{content:"";position:absolute;inset:24px;border-radius:30px 30px 18px 18px;border:2px solid rgba(255,209,102,.35)}
+.lock{
+  position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:150px;height:130px;border-radius:26px;
+  background:linear-gradient(135deg,var(--gold),#fff2b4);color:#111827;display:grid;place-items:center;font-size:64px;
+  box-shadow:0 25px 55px rgba(0,0,0,.35)
+}
+.lock:before{content:"";position:absolute;top:-54px;width:92px;height:78px;border-radius:60px 60px 0 0;border:17px solid #f8d878;border-bottom:0}
+.float{position:absolute;font-size:36px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.4))}
+.f1{top:13%;left:12%}.f2{top:18%;right:13%}.f3{bottom:20%;left:15%}.f4{bottom:14%;right:18%}.f5{top:50%;right:7%}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:350px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:16px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:rgba(255,255,255,.105);border:1px solid var(--line);border-radius:22px;padding:13px;text-align:center}
+.stat .num{font-size:30px;font-weight:1000;color:#fff}.stat .lab{font-size:12px;color:#c8d3e6}
+.progress{height:11px;background:rgba(255,255,255,.13);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--gold),var(--pink));transition:.3s}
+.rooms{display:grid;gap:10px}
+.room{
+  display:flex;gap:12px;align-items:center;border-radius:22px;padding:12px;background:rgba(255,255,255,.08);
+  border:1px solid var(--line);color:#dbeafe
+}
+.room .rnum{min-width:38px;height:38px;border-radius:14px;background:rgba(255,255,255,.13);display:grid;place-items:center;font-weight:1000}
+.room.active{border-color:rgba(255,209,102,.85);background:rgba(255,209,102,.14);color:#fff}
+.room.done{border-color:rgba(45,212,191,.75)}
+.inventory{margin-top:14px;background:rgba(0,0,0,.18);border-radius:24px;padding:15px;border:1px solid var(--line)}
+.key{display:inline-flex;gap:6px;align-items:center;margin:5px;padding:7px 10px;border-radius:999px;background:rgba(255,209,102,.18);border:1px solid rgba(255,209,102,.5);font-size:13px;font-weight:900}
+.room-card{min-height:650px;position:relative;overflow:hidden}
+.room-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+.room-title h2{margin:0;font-size:32px;letter-spacing:-.5px}.room-title p{color:#dbeafe;line-height:1.45;margin:7px 0 0}
+.scene{
+  background:rgba(255,255,255,.92);color:#142033;border-radius:28px;padding:24px;
+  box-shadow:0 24px 60px rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.6);margin:14px 0;
+}
+.scene h3{font-size:23px;margin:0 0 8px}.scene p,.scene li{font-size:16px;line-height:1.52;color:#334155}
+.document{
+  background:#fff8e8;border:1px solid #ead9a6;border-radius:22px;padding:18px;color:#172033;box-shadow:0 10px 25px rgba(0,0,0,.08);margin:12px 0
+}
+.document b{color:#0f172a}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:#fff;color:#172033;border:1px solid #dbe3ef;box-shadow:none;text-align:left;min-height:84px;
+  display:flex;gap:12px;align-items:center;
+}
+.choice .ico{font-size:29px}.choice.selected{outline:4px solid rgba(76,201,240,.28)}.choice.good{background:#d1fae5;border-color:#10b981}.choice.bad{background:#ffe4e6;border-color:#fb7185}
+.input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:15px}
+input[type=text], input[type=number]{
+  border:1px solid #dbe3ef;border-radius:17px;padding:14px 16px;font-size:18px;font-weight:900;min-width:160px;color:#111827;background:#fff
+}
+.feedback{display:none;border-radius:22px;padding:16px;margin-top:16px;color:#172033;background:#f8fafc;border:1px solid #dbe3ef}
+.feedback.show{display:block}.feedback.good{background:#ecfdf5;border-color:#86efac}.feedback.bad{background:#fff1f2;border-color:#fecdd3}
+.puzzle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tile{background:#fff;border:1px solid #dbe3ef;border-radius:22px;padding:15px;color:#172033;cursor:pointer;min-height:112px}
+.tile.selected{background:#e0f2fe;border-color:#38bdf8}.tile.good{background:#d1fae5;border-color:#10b981}.tile.bad{background:#ffe4e6;border-color:#fb7185}
+.sort-list{display:grid;gap:10px;margin-top:12px}
+.sort-item{background:#fff;border:1px solid #dbe3ef;color:#172033;border-radius:18px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sort-actions{display:flex;gap:6px}.sort-actions button{padding:8px 10px;border-radius:12px;background:#eef2ff;color:#1e1b4b;box-shadow:none}
+.case-board{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.case-card{border-radius:22px;padding:16px;background:#fff;color:#172033;border:1px solid #dbe3ef}
+.case-card h4{margin:0 0 7px;font-size:18px}.case-card p{color:#475569;font-size:15px}
+.final-panel{text-align:center}.final-panel h2{font-size:40px}.big{font-size:82px;font-weight:1000;color:var(--gold);margin:0}
+.memo{color:#fff;text-align:left;margin-top:18px}.memo table{width:100%;border-collapse:separate;border-spacing:0 8px;color:#172033}
+.memo th,.memo td{background:#fff;padding:12px;text-align:left;border-top:1px solid #dbe3ef;border-bottom:1px solid #dbe3ef}
+.memo th:first-child,.memo td:first-child{border-left:1px solid #dbe3ef;border-radius:14px 0 0 14px}.memo th:last-child,.memo td:last-child{border-right:1px solid #dbe3ef;border-radius:0 14px 14px 0}
+.note{font-size:13px;color:#cbd5e1;line-height:1.38}
+@media(max-width:1000px){
+  .hero,.game,.case-board{grid-template-columns:1fr}.sidebar{position:static}
+  .rules,.choices,.puzzle-grid{grid-template-columns:1fr}
+  h1{font-size:28px}.hero h2{font-size:38px}.header{flex-direction:column;align-items:flex-start}
+}
+@media print{body{background:#fff;color:#000}.actions,button,.poster,.sidebar{display:none!important}.panel,.scene{box-shadow:none;background:#fff;color:#000;border:1px solid #ddd}.game,.hero{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🗝️</div>
+    <div>
+      <h1>Le Scrutin Verrouillé</h1>
+      <p class="subtitle">Escape game CSE — élections professionnelles, difficultés et conditions préalables.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="ghost" onclick="toggleFacilitator()">Mode formateur</button>
+    <button class="ghost" onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="panel">
+    <span class="badge">🔐 Escape game pédagogique — 60 à 90 minutes</span>
+    <h2>Une élection CSE est bloquée. À vous de sécuriser le processus.</h2>
+    <p>
+      Vous êtes la cellule “Scrutin sécurisé”. Une entreprise veut mettre en place son CSE, mais plusieurs difficultés apparaissent :
+      seuil d’effectif incertain, demande d’un salarié, syndicats mal invités, PAP incomplet, candidats contestables,
+      second tour oublié, risque de carence et première réunion mal préparée.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>👥 Équipes</b><span>2 à 5 équipes. Chaque équipe propose une décision et la justifie.</span></div>
+      <div class="rule"><b>🧩 Mécanique</b><span>8 salles, des indices, des codes à trouver, des décisions à débattre.</span></div>
+      <div class="rule"><b>🎯 Objectif</b><span>Ouvrir la chambre finale : “CSE installé sans contestation majeure”.</span></div>
+    </div>
+    <p class="note">
+      Le jeu est volontairement construit pour faire réfléchir. Certaines situations ne demandent pas seulement de connaître une règle, mais de repérer le bon risque juridique ou organisationnel.
+    </p>
+    <button class="primary" onclick="startGame()">Entrer dans l’escape game</button>
+  </div>
+  <div class="panel poster">
+    <div class="door"><div class="lock">🗳️</div></div>
+    <div class="float f1">📣</div><div class="float f2">📜</div><div class="float f3">⚖️</div><div class="float f4">🔎</div><div class="float f5">🤝</div>
+  </div>
+</section>
+
+<section id="facilitator" class="panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Comment animer</h2>
+  <p class="note">
+    Affiche le jeu à l’écran. Pour chaque salle, laisse les équipes discuter 3 à 6 minutes avant de valider. Demande systématiquement :
+    “Quel indice vous a guidés ?”, “Quel risque de contestation voyez-vous ?”, “Quelle action sécurise le processus ?”.
+  </p>
+  <div class="rules">
+    <div class="rule"><b>Durée courte</b><span>Joue les salles 1, 2, 4, 6 et finale : environ 45 min.</span></div>
+    <div class="rule"><b>Durée longue</b><span>Joue les 8 salles avec débriefs : 75 à 90 min.</span></div>
+    <div class="rule"><b>Production</b><span>À la fin, chaque équipe formule “les 5 points à vérifier avant d’organiser les élections”.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar panel">
+    <div class="stats">
+      <div class="stat"><div class="num" id="roomNum">1</div><div class="lab">Salle</div></div>
+      <div class="stat"><div class="num" id="score">0</div><div class="lab">Sécurité</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory">
+      <b>🗝️ Clés récupérées</b>
+      <div id="keys"><span class="note">Aucune clé pour l’instant.</span></div>
+    </div>
+    <p class="note">Score conseillé : au moins 80/100 pour considérer le scrutin sécurisé.</p>
+  </aside>
+
+  <section class="panel room-card">
+    <div class="room-head">
+      <div class="room-title">
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="roomType"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="validateBtn" class="cyan hidden" onclick="validateRoom()">Valider la décision</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Ouvrir la salle suivante</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="panel final-panel hidden">
+  <h2>Chambre finale ouverte</h2>
+  <p class="big"><span id="finalScore">0</span>/100</p>
+  <p id="finalMsg"></p>
+  <button class="primary" onclick="restart()">Rejouer</button>
+  <div class="memo">
+    <h2>Débrief final — Les réflexes à retenir</h2>
+    <table>
+      <tr><th>Moment</th><th>Réflexe de sécurisation</th></tr>
+      <tr><td>Avant de lancer</td><td>Vérifier que le seuil d’au moins 11 salariés est atteint pendant 12 mois consécutifs.</td></tr>
+      <tr><td>Si aucun CSE</td><td>Si un salarié ou un syndicat demande les élections, l’employeur engage la procédure dans le mois.</td></tr>
+      <tr><td>Information</td><td>Informer le personnel avec une date certaine et prévoir un premier tour dans le délai applicable.</td></tr>
+      <tr><td>Syndicats</td><td>Inviter correctement les organisations syndicales concernées à négocier le PAP et présenter des listes.</td></tr>
+      <tr><td>PAP</td><td>Fixer clairement collèges, sièges, dates, modalités de vote et règles pratiques.</td></tr>
+      <tr><td>Électorat / éligibilité</td><td>Distinguer conditions pour voter et conditions pour être candidat.</td></tr>
+      <tr><td>Scrutin</td><td>Premier tour syndical ; second tour en cas de quorum non atteint, sièges non pourvus ou absence de liste.</td></tr>
+      <tr><td>Après</td><td>Proclamer, établir les PV, traiter la carence si nécessaire, installer le CSE et organiser la première réunion.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const roomNames = [
+  "Salle 1 — Le seuil fantôme",
+  "Salle 2 — La demande oubliée",
+  "Salle 3 — Les invitations piégées",
+  "Salle 4 — Le PAP incomplet",
+  "Salle 5 — Le laboratoire électoral",
+  "Salle 6 — Le théâtre du scrutin",
+  "Salle 7 — La salle des incidents",
+  "Salle 8 — La chambre finale"
+];
+
+const rooms = [
+{
+  type:"Calcul & diagnostic",
+  title:"Salle 1 — Le seuil fantôme",
+  story:"La direction veut lancer les élections, mais le registre des effectifs montre des variations. Le CSE est-il obligatoire maintenant ?",
+  kind:"choice",
+  document:`<div class="document"><b>Relevé d’effectif sur 12 mois :</b><br>
+  Janvier 10 — Février 11 — Mars 12 — Avril 12 — Mai 12 — Juin 13 — Juillet 11 — Août 11 — Septembre 12 — Octobre 12 — Novembre 12 — Décembre 12</div>`,
+  question:"Quelle décision sécurise le mieux le processus ?",
+  choices:[
+    ["A","Lancer obligatoirement les élections, car il y a au moins 11 salariés sur plusieurs mois."],
+    ["B","Ne pas conclure trop vite : vérifier si le seuil d’au moins 11 salariés est bien atteint pendant 12 mois consécutifs."],
+    ["C","Attendre 50 salariés, car le CSE ne concerne que les entreprises de 50 salariés et plus."],
+    ["D","Demander aux salariés s’ils veulent un CSE avant toute vérification."]
+  ],
+  answer:"B",
+  key:"Seuil",
+  explain:"La mise en place du CSE devient obligatoire lorsque l’effectif d’au moins 11 salariés est atteint pendant 12 mois consécutifs. Ici, janvier est à 10 : il faut donc sécuriser le calcul avant de conclure."
+},
+{
+  type:"Situation problème",
+  title:"Salle 2 — La demande oubliée",
+  story:"Il n’y a pas de CSE. Un salarié a écrit à l’employeur pour demander l’organisation des élections. L’employeur pense pouvoir attendre le prochain trimestre.",
+  kind:"choice",
+  document:`<div class="document"><b>Indice :</b> En l’absence de CSE, une demande peut venir d’un salarié ou d’une organisation syndicale.</div>`,
+  question:"Quelle est la bonne conduite à tenir ?",
+  choices:[
+    ["A","L’employeur doit engager la procédure dans le mois suivant la demande."],
+    ["B","L’employeur peut attendre 6 mois dans tous les cas."],
+    ["C","Le salarié doit d’abord obtenir l’accord de la majorité du personnel."],
+    ["D","La demande est sans effet si aucun syndicat ne l’a signée."]
+  ],
+  answer:"A",
+  key:"Demande",
+  explain:"En l’absence de CSE, lorsque l’employeur est saisi par un salarié ou une organisation syndicale, il doit engager la procédure dans le mois."
+},
+{
+  type:"Sélection multiple",
+  title:"Salle 3 — Les invitations piégées",
+  story:"La direction prépare le PAP, mais elle envisage d’inviter uniquement les syndicats déjà présents dans l’entreprise. Votre équipe doit repérer les invitations à sécuriser.",
+  kind:"tiles",
+  question:"Sélectionnez les acteurs à inviter ou informer pour négocier le PAP et établir les listes.",
+  tiles:[
+    ["A","Organisations syndicales représentatives dans l’entreprise ou l’établissement"],
+    ["B","Syndicats ayant constitué une section syndicale"],
+    ["C","Syndicats affiliés à une organisation représentative au niveau national et interprofessionnel"],
+    ["D","Organisations légalement constituées depuis au moins deux ans, respectant les critères requis et couvrant le champ concerné"],
+    ["E","Les principaux clients de l’entreprise"],
+    ["F","Les candidats libres avant le premier tour"]
+  ],
+  answer:["A","B","C","D"],
+  key:"Syndicats",
+  explain:"L’invitation ne doit pas se limiter aux syndicats déjà visibles dans l’entreprise. Plusieurs catégories d’organisations syndicales sont concernées. Les clients et les candidatures libres ne participent pas à la négociation du PAP."
+},
+{
+  type:"Dossier incomplet",
+  title:"Salle 4 — Le PAP incomplet",
+  story:"Le protocole d’accord préélectoral est presque prêt. Mais certains éléments semblent absents. Il faut repérer ce qui doit impérativement être cadré.",
+  kind:"tiles",
+  question:"Sélectionnez les éléments qui relèvent normalement du PAP.",
+  tiles:[
+    ["A","Date et heures du scrutin"],
+    ["B","Répartition des sièges"],
+    ["C","Collèges électoraux et répartition du personnel"],
+    ["D","Modalités de vote"],
+    ["E","Montant du budget des activités sociales et culturelles"],
+    ["F","Composition du futur bureau du CSE après l’élection"]
+  ],
+  answer:["A","B","C","D"],
+  key:"PAP",
+  explain:"Le PAP organise concrètement les élections : date, collèges, répartition des sièges et modalités du vote. Le budget ASC et la composition du bureau relèvent d’autres sujets."
+},
+{
+  type:"Classement",
+  title:"Salle 5 — Le laboratoire électoral",
+  story:"Quatre personnes veulent participer. Le groupe doit distinguer électeur et candidat.",
+  kind:"cases",
+  cases:[
+    {name:"Nora", text:"17 ans, 5 mois d’ancienneté.", answer:"electeur", explain:"Elle peut voter si les autres conditions sont remplies, mais elle n’a pas 18 ans pour être candidate."},
+    {name:"Malik", text:"19 ans, 14 mois d’ancienneté.", answer:"candidat", explain:"Il remplit les conditions principales pour voter et être candidat, sous réserve des exceptions."},
+    {name:"Élodie", text:"22 ans, 2 mois d’ancienneté.", answer:"ni", explain:"Elle n’a pas les 3 mois d’ancienneté requis pour voter."},
+    {name:"Paul", text:"18 ans, 4 mois d’ancienneté.", answer:"electeur", explain:"Il peut voter, mais n’a pas encore 1 an d’ancienneté pour être candidat."}
+  ],
+  key:"Électorat",
+  explain:"Pour voter : 16 ans et 3 mois d’ancienneté. Pour être candidat : 18 ans et 1 an d’ancienneté, avec des exceptions liées notamment à la proximité avec l’employeur."
+},
+{
+  type:"Remise en ordre",
+  title:"Salle 6 — Le théâtre du scrutin",
+  story:"Le jour du vote approche. Les affiches sont prêtes, mais les étapes du scrutin sont mélangées.",
+  kind:"sort",
+  question:"Remettez les étapes dans l’ordre logique.",
+  items:[
+    "Information des salariés sur l’organisation des élections",
+    "Invitation des organisations syndicales concernées",
+    "Négociation du PAP",
+    "Premier tour réservé aux listes syndicales",
+    "Second tour si nécessaire",
+    "Proclamation des résultats et PV"
+  ],
+  key:"Scrutin",
+  explain:"Le processus se sécurise dans un ordre logique : informer, inviter, négocier le PAP, organiser le premier tour, puis éventuellement le second tour, et formaliser les résultats."
+},
+{
+  type:"Incidents",
+  title:"Salle 7 — La salle des incidents",
+  story:"Trois difficultés apparaissent. Chaque équipe doit choisir la réaction la plus prudente.",
+  kind:"incidents",
+  incidents:[
+    {
+      q:"Aucun syndicat ne présente de liste au premier tour.",
+      choices:[["A","Organiser un second tour ouvert aux candidatures libres."],["B","Annuler définitivement toute élection."],["C","Désigner les élus au hasard."],["D","Installer un CSE sans vote."]],
+      answer:"A",
+      explain:"L’absence de liste syndicale peut conduire à l’organisation d’un second tour, ouvert aux candidatures libres."
+    },
+    {
+      q:"Un PV de carence a été établi après un processus électoral sans candidat. Un salarié redemande des élections deux mois après.",
+      choices:[["A","Relancer immédiatement dans tous les cas."],["B","Vérifier le délai : après PV de carence, une nouvelle demande ne peut intervenir qu’à l’issue d’un délai de six mois."],["C","Refuser définitivement toute nouvelle demande."],["D","Organiser une réunion informelle seulement."]],
+      answer:"B",
+      explain:"Après un PV de carence, la demande d’organisation des élections ne peut intervenir qu’à l’issue d’un délai de six mois."
+    },
+    {
+      q:"Tous les sièges ne sont pas pourvus au premier tour.",
+      choices:[["A","Organiser un second tour pour les sièges restant à pourvoir."],["B","Supprimer les sièges vacants."],["C","Laisser l’employeur choisir les personnes."],["D","Reporter à quatre ans plus tard."]],
+      answer:"A",
+      explain:"Lorsque tous les sièges ne sont pas pourvus, un second tour peut être nécessaire."
+    }
+  ],
+  key:"Incidents",
+  explain:"Un processus électoral doit anticiper les difficultés : absence de listes, sièges non pourvus, carence, demande trop précoce après carence."
+},
+{
+  type:"Code final",
+  title:"Salle 8 — La chambre finale",
+  story:"Vous avez presque sécurisé l’élection. Pour installer le CSE, retrouvez le code final à partir des règles essentielles.",
+  kind:"code",
+  document:`<div class="document"><b>Énigme finale :</b><br>
+  1) Seuil minimum d’effectif pour mettre en place un CSE : __ salariés.<br>
+  2) Durée consécutive pendant laquelle ce seuil doit être atteint : __ mois.<br>
+  3) Âge minimum pour être électeur : __ ans.<br>
+  4) Âge minimum pour être candidat : __ ans.<br><br>
+  Écrivez les quatre nombres collés les uns aux autres.</div>`,
+  answer:"11121618",
+  key:"Installation",
+  explain:"Le code est 11-12-16-18 : 11 salariés, 12 mois consécutifs, 16 ans pour voter, 18 ans pour être candidat."
+}
+];
+
+let current=0, score=0, keys=[], selected=null, selectedTiles=[], caseAnswers={}, sortOrder=[], incidentAnswers=[], finalCode="";
+function startGame(){
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  current=0;score=0;keys=[];renderRooms();renderRoom();
+}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderRooms(){
+  document.getElementById("rooms").innerHTML=roomNames.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="rnum">${i+1}</div><div><b>${r.split(' — ')[0]}</b><br><span class="note">${r.split(' — ')[1]}</span></div></div>`).join("");
+  document.getElementById("bar").style.width=(current/rooms.length*100)+"%";
+  document.getElementById("roomNum").textContent=current+1;
+  document.getElementById("score").textContent=score;
+  document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="note">Aucune clé pour l’instant.</span>`;
+}
+function baseRoom(){
+  const r=rooms[current];
+  selected=null;selectedTiles=[];caseAnswers={};sortOrder=[];incidentAnswers=[];finalCode="";
+  document.getElementById("title").textContent=r.title;
+  document.getElementById("story").textContent=r.story;
+  document.getElementById("roomType").textContent=r.type;
+  document.getElementById("feedback").className="feedback";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("validateBtn").classList.remove("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+  renderRooms();
+}
+function renderRoom(){
+  baseRoom();
+  const r=rooms[current];
+  if(r.kind==="choice") renderChoice(r);
+  if(r.kind==="tiles") renderTiles(r);
+  if(r.kind==="cases") renderCases(r);
+  if(r.kind==="sort") renderSort(r);
+  if(r.kind==="incidents") renderIncidents(r);
+  if(r.kind==="code") renderCode(r);
+}
+function renderChoice(r){
+  document.getElementById("content").innerHTML=`<div class="scene">${r.document||""}<h3>${r.question}</h3><div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`;
+}
+function ico(k){return {A:"📣",B:"🔎",C:"⚖️",D:"🧩",E:"📜",F:"🚫"}[k]||"•"}
+function selectChoice(k){
+  selected=k;
+  document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));
+  document.getElementById("c-"+k).classList.add("selected");
+}
+function renderTiles(r){
+  document.getElementById("content").innerHTML=`<div class="scene"><h3>${r.question}</h3><div class="puzzle-grid">${r.tiles.map(([k,v])=>`<div class="tile" id="t-${k}" onclick="toggleTile('${k}')"><b>${k}</b><p>${v}</p></div>`).join("")}</div><p style="color:#475569">Plusieurs réponses sont attendues.</p></div>`;
+}
+function toggleTile(k){
+  if(selectedTiles.includes(k)) selectedTiles=selectedTiles.filter(x=>x!==k); else selectedTiles.push(k);
+  document.getElementById("t-"+k).classList.toggle("selected");
+}
+function renderCases(r){
+  document.getElementById("content").innerHTML=`<div class="scene"><h3>Classez chaque personne.</h3><div class="case-board">${r.cases.map((c,i)=>`<div class="case-card"><h4>${c.name}</h4><p>${c.text}</p><div class="input-row">
+  <button class="ghost" style="color:#111827;background:#e0f2fe" onclick="setCase(${i},'electeur')">Électeur</button>
+  <button class="ghost" style="color:#111827;background:#dcfce7" onclick="setCase(${i},'candidat')">Candidat</button>
+  <button class="ghost" style="color:#111827;background:#fee2e2" onclick="setCase(${i},'ni')">Ni l’un ni l’autre</button>
+  </div><p id="case-${i}" style="font-weight:900"></p></div>`).join("")}</div></div>`;
+}
+function setCase(i,val){
+  caseAnswers[i]=val;
+  const label={electeur:"Électeur",candidat:"Candidat",ni:"Ni l’un ni l’autre"}[val];
+  document.getElementById("case-"+i).textContent="Choix : "+label;
+}
+function renderSort(r){
+  sortOrder=[...r.items].sort(()=>Math.random()-.5);
+  document.getElementById("content").innerHTML=`<div class="scene"><h3>${r.question}</h3><div class="sort-list" id="sortList"></div><p style="color:#475569">Déplacez les étapes avec les flèches.</p></div>`;
+  drawSort();
+}
+function drawSort(){
+  document.getElementById("sortList").innerHTML=sortOrder.map((item,i)=>`<div class="sort-item"><span><b>${i+1}.</b> ${item}</span><span class="sort-actions"><button onclick="move(${i},-1)">↑</button><button onclick="move(${i},1)">↓</button></span></div>`).join("");
+}
+function move(i,d){let n=i+d;if(n<0||n>=sortOrder.length)return;[sortOrder[i],sortOrder[n]]=[sortOrder[n],sortOrder[i]];drawSort()}
+function renderIncidents(r){
+  incidentAnswers=[];
+  document.getElementById("content").innerHTML=`<div class="scene"><h3>Traitez les incidents électoraux.</h3>${r.incidents.map((inc,idx)=>`<div class="document"><b>Incident ${idx+1}</b><p>${inc.q}</p><div class="choices">${inc.choices.map(([k,v])=>`<button class="choice" id="inc-${idx}-${k}" onclick="setIncident(${idx},'${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div></div>`).join("")}</div>`;
+}
+function setIncident(idx,k){
+  incidentAnswers[idx]=k;
+  document.querySelectorAll(`[id^="inc-${idx}-"]`).forEach(b=>b.classList.remove("selected"));
+  document.getElementById(`inc-${idx}-${k}`).classList.add("selected");
+}
+function renderCode(r){
+  document.getElementById("content").innerHTML=`<div class="scene">${r.document}<h3>Code final</h3><div class="input-row"><input type="text" id="codeInput" placeholder="Ex : 123456" oninput="finalCode=this.value.trim()"></div></div>`;
+}
+function arrEq(a,b){return a.slice().sort().join("|")===b.slice().sort().join("|")}
+function validateRoom(){
+  const r=rooms[current];
+  let ok=false, detail="";
+  if(r.kind==="choice"){ok=selected===r.answer; markChoices(r.answer, selected);}
+  if(r.kind==="tiles"){ok=arrEq(selectedTiles,r.answer); markTiles(r.answer);}
+  if(r.kind==="cases"){
+    ok=r.cases.every((c,i)=>caseAnswers[i]===c.answer);
+    detail="<ul>"+r.cases.map((c,i)=>`<li><b>${c.name}</b> : ${c.explain}</li>`).join("")+"</ul>";
+  }
+  if(r.kind==="sort"){ok=sortOrder.join("|")===r.items.join("|");}
+  if(r.kind==="incidents"){
+    ok=r.incidents.every((inc,i)=>incidentAnswers[i]===inc.answer);
+    detail="<ul>"+r.incidents.map((inc,i)=>`<li><b>Incident ${i+1}</b> : ${inc.explain}</li>`).join("")+"</ul>";
+    r.incidents.forEach((inc,i)=>markIncident(i,inc.answer,incidentAnswers[i]));
+  }
+  if(r.kind==="code"){ok=finalCode===r.answer;}
+  showFeedback(ok, r.explain + detail);
+}
+function markChoices(answer, picked){
+  document.querySelectorAll(".choice").forEach(b=>b.disabled=true);
+  if(answer) document.getElementById("c-"+answer)?.classList.add("good");
+  if(picked && picked!==answer) document.getElementById("c-"+picked)?.classList.add("bad");
+}
+function markTiles(answer){
+  document.querySelectorAll(".tile").forEach(t=>{
+    const k=t.id.replace("t-","");
+    if(answer.includes(k)) t.classList.add("good");
+    else if(selectedTiles.includes(k)) t.classList.add("bad");
+  });
+}
+function markIncident(i,answer,picked){
+  document.querySelectorAll(`[id^="inc-${i}-"]`).forEach(b=>b.disabled=true);
+  document.getElementById(`inc-${i}-${answer}`)?.classList.add("good");
+  if(picked && picked!==answer) document.getElementById(`inc-${i}-${picked}`)?.classList.add("bad");
+}
+function showFeedback(ok, text){
+  const fb=document.getElementById("feedback");
+  fb.className="feedback show "+(ok?"good":"bad");
+  fb.innerHTML=`<h3>${ok?"✅ Salle déverrouillée":"🟠 Verrou partiellement bloqué"}</h3><p>${text}</p>`;
+  if(ok){score+=12;if(!keys.includes(rooms[current].key))keys.push(rooms[current].key);}
+  else score+=4;
+  document.getElementById("score").textContent=score;
+  document.getElementById("validateBtn").classList.add("hidden");
+  document.getElementById("nextBtn").classList.remove("hidden");
+  renderRooms();
+}
+function nextRoom(){
+  current++;
+  if(current>=rooms.length){endGame()} else renderRoom();
+}
+function endGame(){
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("end").classList.remove("hidden");
+  const final=Math.min(100,score);
+  document.getElementById("finalScore").textContent=final;
+  let msg="Le scrutin peut être sécurisé, mais certaines étapes méritent un débrief approfondi.";
+  if(final>=80) msg="Excellent : l’équipe a sécurisé les étapes clés et anticipé les principales difficultés.";
+  if(final<55) msg="Le processus reste fragile : reprenez les conditions préalables, le PAP, les invitations et les incidents de scrutin.";
+  document.getElementById("finalMsg").textContent=msg;
+}
+function restart(){
+  document.getElementById("end").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
