@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Escape Game CSE — Danger, Risque, Situation dangereuse, Dommage</title>
+<style>
+:root{
+  --bg:#f3f7fb; --ink:#142033; --muted:#667085; --card:#ffffff;
+  --navy:#0f1f3a; --blue:#2563eb; --cyan:#0694a2; --orange:#e46f00; --gold:#f59e0b;
+  --green:#16a34a; --red:#dc2626; --purple:#7c3aed; --line:#d9e4f2;
+  --shadow:0 22px 60px rgba(15,23,42,.13); --radius:28px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Aptos, Arial, Helvetica, sans-serif;color:var(--ink);background:var(--bg)}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(6,148,162,.16), transparent 28%),
+    radial-gradient(circle at 92% 18%, rgba(228,111,0,.18), transparent 30%),
+    radial-gradient(circle at 60% 92%, rgba(37,99,235,.12), transparent 30%),
+    linear-gradient(135deg,#f8fbff,#eef5fc 52%,#fff7ed);
+}
+.app{max-width:1360px;margin:0 auto;padding:26px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{
+  width:76px;height:76px;border-radius:26px;background:linear-gradient(135deg,#072636,#095d73 48%,#e46f00);
+  color:#fff;display:grid;place-items:center;font-size:38px;box-shadow:var(--shadow);position:relative;
+}
+.logo:after{content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.35);border-radius:20px}
+h1{font-size:34px;line-height:1.04;margin:0;letter-spacing:-.7px}
+.sub{color:var(--muted);margin:7px 0 0;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;font-size:15px;
+  background:var(--navy);color:#fff;box-shadow:0 12px 25px rgba(15,23,42,.16);transition:.16s transform,.16s filter,.16s opacity
+}
+button:hover{transform:translateY(-1px);filter:brightness(1.04)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button.secondary{background:#fff;color:var(--navy);border:1px solid var(--line);box-shadow:none}
+button.blue{background:var(--blue)} button.green{background:var(--green)}
+button.gold{background:linear-gradient(135deg,#f59e0b,#fde68a);color:#111827}
+button.red{background:var(--red)}
+button.ghost{background:#eef2ff;color:#1e3a8a;box-shadow:none;border:1px solid #c7d2fe}
+.panel{
+  background:rgba(255,255,255,.91);border:1px solid rgba(216,225,239,.95);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;backdrop-filter:blur(10px)
+}
+.hero{display:grid;grid-template-columns:1.04fr .96fr;gap:22px;align-items:stretch}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  font-size:13px;font-weight:900;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe
+}
+.hero h2{font-size:46px;line-height:1.02;margin:18px 0 14px;letter-spacing:-1px}
+.hero p{font-size:17px;line-height:1.55;color:#334155}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.rule{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px}
+.rule b{display:block;margin-bottom:6px}.rule span{color:#64748b;font-size:14px;line-height:1.35}
+.poster{min-height:530px;position:relative;overflow:hidden;padding:0}
+.split{
+  position:absolute;inset:26px;display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.split-card{border-radius:28px;overflow:hidden;position:relative;color:#fff;box-shadow:0 18px 40px rgba(15,23,42,.16)}
+.split-card.danger{background:linear-gradient(180deg,#0891b2,#075985)}
+.split-card.risque{background:linear-gradient(180deg,#ea580c,#b45309)}
+.split-title{position:absolute;top:18px;left:18px;right:18px;z-index:2;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:14px;font-weight:1000;font-size:24px;backdrop-filter:blur(5px)}
+.ocean{position:absolute;inset:0;background:linear-gradient(#bfefff 0 38%, #0ea5e9 39% 62%, #f6d19b 63% 100%)}
+.ocean:after{content:"";position:absolute;left:0;right:0;top:44%;height:54px;background:repeating-linear-gradient(165deg,rgba(255,255,255,.95) 0 16px,transparent 17px 80px);opacity:.7}
+.shark{position:absolute;left:48%;top:42%;width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:70px solid #0f172a;transform:rotate(22deg)}
+.swimmer{position:absolute;left:34%;top:40%;width:130px;height:54px;border-radius:50%;background:rgba(255,255,255,.95);transform:rotate(-10deg)}
+.swimmer:before{content:"";position:absolute;left:86px;top:-18px;width:38px;height:38px;border-radius:50%;background:#b77945}
+.worker{position:absolute;left:34%;bottom:22%;width:70px;height:160px}
+.worker:before{content:"";position:absolute;left:18px;top:0;width:34px;height:34px;border-radius:50%;background:#8b5a2b}
+.worker:after{content:"";position:absolute;left:0;top:35px;width:70px;height:90px;border-radius:38px 38px 20px 20px;background:#0f766e}
+.bottom-caption{position:absolute;left:0;right:0;bottom:0;background:rgba(15,23,42,.78);padding:20px;font-size:18px;font-weight:900}
+.hidden{display:none!important}
+.game{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.sidebar{position:sticky;top:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+.stat .n{font-size:28px;font-weight:1000}.stat .l{font-size:12px;color:var(--muted)}
+.progress{height:12px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--orange));transition:.25s}
+.rooms{display:grid;gap:9px;max-height:560px;overflow:auto;padding-right:4px}
+.room{display:flex;gap:10px;align-items:center;border-radius:18px;padding:10px;background:#fff;border:1px solid var(--line);color:#334155}
+.room .num{min-width:34px;height:34px;border-radius:12px;background:#eff6ff;display:grid;place-items:center;font-weight:1000;color:#1d4ed8}
+.room.active{border-color:#f59e0b;background:#fffbeb}.room.done{border-color:#22c55e;background:#f0fdf4}
+.inventory{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}
+.key{display:inline-flex;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#ecfeff;color:#155e75;border:1px solid #67e8f9;font-weight:900;font-size:12px}
+.mission-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mission-head h2{font-size:30px;margin:0;letter-spacing:-.4px}
+.mission-head p{color:var(--muted);line-height:1.45;margin:7px 0 0}
+.case{
+  background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;margin:14px 0;box-shadow:0 12px 28px rgba(15,23,42,.06)
+}
+.case h3{font-size:22px;margin:0 0 9px}.case p,.case li{font-size:16px;line-height:1.5;color:#334155}
+.scene-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch}
+.scene-card{border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#eef6fb;min-height:360px;position:relative}
+.scene-card svg{width:100%;height:100%;display:block}
+.doc{background:#fff8e1;border:1px solid #f5d477;border-radius:18px;padding:15px;margin:12px 0;color:#422006}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.choice{
+  background:#fff;color:#172033;text-align:left;border:1px solid #dbe3ef;box-shadow:none;min-height:78px;display:flex;gap:12px;align-items:center
+}
+.choice .ico{font-size:26px}.choice.selected{outline:4px solid rgba(37,99,235,.15)}.choice.good{background:#dcfce7;border-color:#22c55e}.choice.bad{background:#fee2e2;border-color:#ef4444}
+.drop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.drop{
+  background:#f8fafc;border:2px dashed #cbd5e1;border-radius:18px;padding:14px;min-height:120px
+}
+.drop h4{margin:0 0 8px;font-size:18px}
+.drop[data-cat="danger"] h4{color:#075985}
+.drop[data-cat="situation"] h4{color:#9333ea}
+.drop[data-cat="risque"] h4{color:#ea580c}
+.drop[data-cat="dommage"] h4{color:#dc2626}
+.pillbox{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{
+  border:1px solid #dbe3ef;border-radius:999px;padding:9px 11px;background:#fff;color:#0f172a;font-weight:900;cursor:pointer;font-size:14px
+}
+.pill.selected{background:#e0f2fe;border-color:#38bdf8}
+.drop .pill{display:inline-flex;margin:4px}
+.feedback{display:none;border-radius:20px;padding:16px;margin-top:16px;border:1px solid var(--line);background:#f8fafc}
+.feedback.show{display:block}.feedback.good{background:#ecfdf5;border-color:#86efac}.feedback.bad{background:#fff1f2;border-color:#fecdd3}
+.feedback h3{margin:0 0 8px}
+.hint{background:#f1f5f9;border:1px solid #dbe3ef;border-radius:18px;padding:14px;margin-top:12px;color:#334155}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.end{text-align:center}.big{font-size:76px;font-weight:1000;color:#f59e0b;margin:0}
+.memo{text-align:left;margin-top:24px}.memo table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.memo th,.memo td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}
+.memo th:first-child,.memo td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}.memo th:last-child,.memo td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
+.sources{font-size:12px;color:#64748b;line-height:1.4}
+@media(max-width:1050px){.hero,.game,.scene-wrap{grid-template-columns:1fr}.sidebar{position:static}.rules,.choices,.drop-grid,.stats{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.hero h2{font-size:36px}.poster{min-height:420px}}
+@media print{body{background:#fff}.actions,button,.poster,.sidebar{display:none!important}.panel,.case{box-shadow:none;background:#fff}.hero,.game{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+  <div class="brand">
+    <div class="logo">🦺</div>
+    <div>
+      <h1>Escape Game — Danger, Risque, Situation dangereuse, Dommage</h1>
+      <p class="sub">Mission CSE / SSCT — Entreprise MANGANELLI · Analyse de situations de travail</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="secondary" onclick="goHome()">Accueil</button>
+    <button class="secondary" onclick="toggleFacilitator()">Mode formateur</button>
+    <button class="secondary" onclick="window.print()">Imprimer / PDF</button>
+  </div>
+</header>
+
+<section id="intro" class="hero">
+  <div class="panel">
+    <span class="badge">🔐 Révision active — 45 à 60 minutes</span>
+    <h2>Les risques cachés de MANGANELLI</h2>
+    <p>
+      Les participants doivent ouvrir 12 scellés en analysant des scènes illustrées.
+      À chaque étape, ils identifient : <b>le danger</b>, <b>la situation dangereuse</b>,
+      <b>le risque</b> et <b>le dommage possible</b>.
+    </p>
+    <div class="rules">
+      <div class="rule"><b>⚠️ Danger</b><span>Ce qui a le potentiel de causer un dommage.</span></div>
+      <div class="rule"><b>🎯 Risque</b><span>La probabilité qu’un danger cause un dommage dans une situation donnée.</span></div>
+      <div class="rule"><b>🚧 Situation dangereuse</b><span>Quand une personne est exposée à un danger.</span></div>
+      <div class="rule"><b>🩹 Dommage</b><span>La conséquence possible : blessure, maladie, atteinte à la santé.</span></div>
+    </div>
+    <p class="sources">
+      Thèmes couverts : logistique, manutention, câbles au sol, transpalette, produits chimiques, bruit, écran,
+      RPS, coactivité, incendie, chute, machine en mouvement, télétravail.
+    </p>
+    <button class="gold" onclick="startGame()">Démarrer l’inspection</button>
+  </div>
+  <div class="panel poster">
+    <div class="split">
+      <div class="split-card danger">
+        <div class="ocean"></div><div class="shark"></div><div class="worker"></div>
+        <div class="split-title">DANGER<br><span style="font-size:14px;font-weight:700">Le requin est présent.</span></div>
+        <div class="bottom-caption">Le danger existe même si personne ne nage.</div>
+      </div>
+      <div class="split-card risque">
+        <div class="ocean"></div><div class="shark" style="left:58%;top:42%"></div><div class="swimmer"></div>
+        <div class="split-title">RISQUE<br><span style="font-size:14px;font-weight:700">Une personne nage près du requin.</span></div>
+        <div class="bottom-caption">Le risque apparaît avec l’exposition.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facilitator" class="panel hidden" style="margin-top:22px">
+  <h2>Mode formateur — Animation</h2>
+  <p>Projette le jeu ou envoie le fichier HTML aux équipes. Pour chaque scène, laisse 3 à 4 minutes de discussion puis demande : “Qu’est-ce qui est observable ? Qu’est-ce qui est une opinion ? Quelle mesure supprimerait ou réduirait le risque ?”</p>
+  <div class="rules">
+    <div class="rule"><b>Variante rapide</b><span>Joue les scènes 1, 2, 4, 6, 8 et 12.</span></div>
+    <div class="rule"><b>Variante groupe</b><span>Une équipe identifie le danger, une autre le risque, une troisième le dommage.</span></div>
+    <div class="rule"><b>Débrief</b><span>Relier chaque situation au DUERP et aux principes généraux de prévention.</span></div>
+    <div class="rule"><b>Vigilance</b><span>Éviter les jugements : “il est imprudent” n’est pas un fait exploitable.</span></div>
+  </div>
+</section>
+
+<main id="game" class="game hidden">
+  <aside class="sidebar panel">
+    <div class="stats">
+      <div class="stat"><div class="n" id="roomNum">1</div><div class="l">Scène</div></div>
+      <div class="stat"><div class="n" id="score">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="n" id="progressTxt">0/12</div><div class="l">Réussies</div></div>
+    </div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="rooms" id="rooms"></div>
+    <div class="inventory"><b>🗝️ Clés d’analyse</b><div id="keys"><span class="sources">Aucune clé pour l’instant.</span></div></div>
+  </aside>
+
+  <section class="panel">
+    <div class="mission-head">
+      <div>
+        <h2 id="title"></h2>
+        <p id="story"></p>
+      </div>
+      <span class="badge" id="type"></span>
+    </div>
+    <div id="content"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="input-row">
+      <button id="hintBtn" class="ghost" onclick="showHint()">Indice</button>
+      <button id="resetBtn" class="secondary" onclick="resetAnswers()">Réinitialiser mes réponses</button>
+      <button id="validateBtn" class="blue" onclick="validateRoom()">Valider</button>
+      <button id="retryBtn" class="red hidden" onclick="retryRoom()">Réessayer</button>
+      <button id="nextBtn" class="green hidden" onclick="nextRoom()">Scène suivante</button>
+      <button class="secondary" onclick="goHome()">Retour accueil</button>
+    </div>
+  </section>
+</main>
+
+<section id="end" class="panel end hidden">
+  <h2>Inspection terminée</h2>
+  <p class="big"><span id="finalScore">0</span>/120</p>
+  <p id="finalMsg"></p>
+  <button class="gold" onclick="restart()">Rejouer</button>
+  <button class="secondary" onclick="goHome()">Accueil</button>
+  <div class="memo">
+    <h2>Fiche mémo finale</h2>
+    <table>
+      <tr><th>Notion</th><th>Question à poser</th><th>Exemple</th></tr>
+      <tr><td>Danger</td><td>Qu’est-ce qui peut causer un dommage ?</td><td>Requin, machine en mouvement, produit corrosif, câble au sol.</td></tr>
+      <tr><td>Situation dangereuse</td><td>Qui est exposé au danger, dans quelle activité ?</td><td>Un salarié marche dans une zone encombrée de câbles.</td></tr>
+      <tr><td>Risque</td><td>Quel événement redouté peut se produire ?</td><td>Chute, happement, intoxication, brûlure, collision, épuisement.</td></tr>
+      <tr><td>Dommage</td><td>Quelle conséquence sur la santé ?</td><td>Entorse, fracture, amputation, irritation respiratoire, stress chronique.</td></tr>
+      <tr><td>Prévention</td><td>Peut-on supprimer le danger ou réduire l’exposition ?</td><td>Ranger les câbles, séparer piétons/chariots, capoter la machine, ventiler, organiser le travail.</td></tr>
+    </table>
+  </div>
+</section>
+</div>
+
+<script>
+const scenarios=[
+{
+ title:"Scène 1 — Flight-cases et câbles au sol",
+ type:"Classement",
+ key:"Câbles au sol",
+ story:"Dans l’atelier logistique MANGANELLI, Karim vérifie une flight-case. Des câbles sont au sol près de la zone de circulation.",
+ hint:"Le danger est un élément matériel. Le dommage est la conséquence possible sur le corps.",
+ scene:"warehouse_cables",
+ items:[
+  ["danger","Câbles au sol dans la zone de contrôle"],
+  ["situation","Karim se déplace à proximité des câbles pendant la préparation"],
+  ["risque","Risque de trébuchement et de chute"],
+  ["dommage","Entorse de la cheville ou fracture du poignet"]
+ ],
+ explain:"Ici, le câble est le danger. La situation devient dangereuse car un salarié se déplace dans cette zone. Le risque est la chute. Le dommage est la blessure possible."
+},
+{
+ title:"Scène 2 — Transpalette et zone piétonne",
+ type:"Classement",
+ key:"Circulation interne",
+ story:"Un salarié tire un transpalette chargé dans une allée où deux personnes circulent à pied.",
+ hint:"Ne confonds pas le transpalette avec le risque : le risque correspond à l’événement redouté.",
+ scene:"pallet_jack",
+ items:[
+  ["danger","Transpalette chargé en mouvement"],
+  ["situation","Piétons et transpalette circulent dans la même allée"],
+  ["risque","Risque de collision ou d’écrasement du pied"],
+  ["dommage","Fracture, écrasement ou contusion"]
+ ],
+ explain:"Le transpalette chargé est le danger. La coactivité piéton/transpalette crée la situation dangereuse. Le risque est la collision ou l’écrasement."
+},
+{
+ title:"Scène 3 — Machine en mouvement",
+ type:"Choix simple",
+ key:"Machine",
+ story:"Dans l’atelier, une machine d’emballage est en marche. Un salarié approche la main d’une zone mobile pour retirer un film coincé.",
+ hint:"La situation dangereuse combine la machine et l’exposition de la main.",
+ scene:"machine",
+ question:"Quelle formulation décrit le mieux la situation dangereuse ?",
+ answer:"B",
+ choices:[
+  ["A","La machine existe dans l’atelier."],
+  ["B","Le salarié approche sa main d’une partie mobile de la machine en fonctionnement."],
+  ["C","Le salarié est sûrement imprudent."],
+  ["D","La machine est ancienne."]
+ ],
+ explain:"La bonne formulation décrit un fait observable : une main exposée à une partie mobile en fonctionnement. Les jugements ou généralités ne suffisent pas."
+},
+{
+ title:"Scène 4 — Produit chimique ouvert",
+ type:"Classement",
+ key:"Produit chimique",
+ story:"Un bidon de dégraissant est ouvert sur une table. Une forte odeur est présente. Le salarié nettoie une pièce sans lunettes.",
+ hint:"Le dommage peut être une atteinte à la peau, aux yeux ou aux voies respiratoires.",
+ scene:"chemical",
+ items:[
+  ["danger","Produit chimique dégraissant"],
+  ["situation","Salarié utilise le produit sans lunettes à proximité du visage"],
+  ["risque","Risque de projection ou d’inhalation"],
+  ["dommage","Irritation oculaire, brûlure ou gêne respiratoire"]
+ ],
+ explain:"Le produit est le danger. L’utilisation sans protection adaptée crée l’exposition. Le risque porte sur la projection ou l’inhalation."
+},
+{
+ title:"Scène 5 — Palettes en hauteur",
+ type:"Choix simple",
+ key:"Chute d’objet",
+ story:"Dans le stock MANGANELLI, des cartons sont empilés en hauteur sur une palette déformée.",
+ hint:"Le danger n’est pas seulement la hauteur : c’est la charge instable.",
+ scene:"stack",
+ question:"Quel est le risque principal ?",
+ answer:"C",
+ choices:[
+  ["A","Le salarié ne range pas correctement."],
+  ["B","La présence d’un rayonnage."],
+  ["C","La chute de cartons ou de charges sur une personne."],
+  ["D","Une maladie professionnelle automatique."]
+ ],
+ explain:"Le risque principal est la chute de charge. L’exercice vise à éviter les jugements du type “il range mal”."
+},
+{
+ title:"Scène 6 — Bruit dans l’atelier",
+ type:"Classement",
+ key:"Bruit",
+ story:"Un opérateur travaille près d’un compresseur bruyant pendant plusieurs heures. Des protections auditives sont disponibles sur une étagère.",
+ hint:"Le dommage peut être progressif et non visible immédiatement.",
+ scene:"noise",
+ items:[
+  ["danger","Niveau sonore élevé du compresseur"],
+  ["situation","Opérateur exposé plusieurs heures au bruit"],
+  ["risque","Risque d’atteinte auditive"],
+  ["dommage","Fatigue auditive, acouphènes ou perte d’audition"]
+ ],
+ explain:"Le bruit est un danger physique. La durée d’exposition est déterminante pour qualifier le risque."
+},
+{
+ title:"Scène 7 — Travail sur écran",
+ type:"Choix simple",
+ key:"Écran",
+ story:"Une salariée travaille sur ordinateur avec l’écran placé sur le côté et les documents posés au sol.",
+ hint:"Cherche la formulation qui décrit un risque lié à la posture.",
+ scene:"screen",
+ question:"Quel dommage peut être associé à cette situation ?",
+ answer:"A",
+ choices:[
+  ["A","Douleurs cervicales, fatigue visuelle ou TMS."],
+  ["B","Explosion du poste informatique."],
+  ["C","Chute de hauteur."],
+  ["D","Aucune conséquence possible."]
+ ],
+ explain:"Une organisation inadaptée du poste écran peut contribuer à des douleurs cervicales, une fatigue visuelle ou des TMS."
+},
+{
+ title:"Scène 8 — Livraison sous pression",
+ type:"Classement",
+ key:"RPS",
+ story:"Le responsable annonce qu’une commande urgente doit partir dans 20 minutes. Les salariés interrompent leur pause et accélèrent la préparation.",
+ hint:"Le danger peut aussi être organisationnel, pas seulement matériel.",
+ scene:"rush",
+ items:[
+  ["danger","Pression temporelle et urgence de production"],
+  ["situation","Salariés accélèrent la préparation et interrompent leur pause"],
+  ["risque","Risque d’erreur, de stress ou d’accident lié à la précipitation"],
+  ["dommage","Fatigue, stress aigu, blessure lors d’une manipulation"]
+ ],
+ explain:"Un danger peut être organisationnel : urgence, cadence, interruption, surcharge. Le risque n’est pas seulement physique."
+},
+{
+ title:"Scène 9 — Escalier encombré",
+ type:"Choix simple",
+ key:"Chute escalier",
+ story:"Un carton est posé sur une marche d’escalier menant au local technique.",
+ hint:"Le danger est visible et localisé.",
+ scene:"stairs",
+ question:"Quelle phrase est un fait exploitable pour l’enquête ?",
+ answer:"D",
+ choices:[
+  ["A","Les salariés sont négligents."],
+  ["B","L’entreprise est mal organisée."],
+  ["C","C’est toujours comme ça ici."],
+  ["D","Un carton est posé sur la troisième marche de l’escalier."]
+ ],
+ explain:"Un fait est observable, précis et vérifiable. Les autres réponses sont des opinions ou généralisations."
+},
+{
+ title:"Scène 10 — Incendie et issue encombrée",
+ type:"Classement",
+ key:"Incendie",
+ story:"Dans l’atelier, une multiprise alimente plusieurs appareils. L’issue de secours voisine est partiellement encombrée par des cartons.",
+ hint:"Il peut y avoir plusieurs dangers, mais classe l’élément principal demandé.",
+ scene:"fire",
+ items:[
+  ["danger","Multiprise surchargée et issue encombrée"],
+  ["situation","Salariés travaillent à proximité avec évacuation gênée"],
+  ["risque","Risque d’incendie ou d’évacuation retardée"],
+  ["dommage","Brûlure, intoxication aux fumées ou panique"]
+ ],
+ explain:"La combinaison source électrique + évacuation gênée aggrave le risque. Le dommage peut concerner plusieurs salariés."
+},
+{
+ title:"Scène 11 — Télétravail prolongé",
+ type:"Choix simple",
+ key:"Télétravail",
+ story:"Une salariée en télétravail répond à des messages jusqu’à 22 h plusieurs soirs par semaine.",
+ hint:"La situation dangereuse est liée à l’exposition répétée à l’hyperconnexion.",
+ scene:"telework",
+ question:"Quelle analyse est la plus correcte ?",
+ answer:"B",
+ choices:[
+  ["A","Le danger est uniquement son ordinateur."],
+  ["B","L’hyperconnexion et l’amplitude horaire peuvent créer un risque de surcharge et d’épuisement."],
+  ["C","Elle aime forcément travailler tard."],
+  ["D","Il n’y a jamais de risque en télétravail."]
+ ],
+ explain:"Le télétravail peut exposer à des risques organisationnels : isolement, surcharge, hyperconnexion, difficulté de déconnexion."
+},
+{
+ title:"Scène 12 — Le coffre final MANGANELLI",
+ type:"Choix multiple",
+ key:"Analyse complète",
+ story:"Pour fermer l’inspection, identifie les 4 formulations correctes correspondant aux notions clés.",
+ hint:"Une seule phrase par catégorie : danger, situation dangereuse, risque, dommage.",
+ scene:"final",
+ items:[
+  ["danger","Le tapis convoyeur en mouvement est un danger"],
+  ["situation","Un salarié intervient à proximité du tapis en fonctionnement"],
+  ["risque","Il existe un risque de happement"],
+  ["dommage","Le dommage possible est une fracture, une plaie grave ou une amputation"]
+ ],
+ explain:"L’analyse complète relie toujours : danger → exposition → événement redouté → conséquence sur la santé."
+}
+];
+
+let current=0, score=0, keys=[], assignments={}, activePill=null, completed=false;
+
+function goHome(){window.location.href='index.html';}
+function startGame(){
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("end").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  current=0;score=0;keys=[];completed=false;render();
+}
+function restart(){startGame();}
+function toggleFacilitator(){document.getElementById("facilitator").classList.toggle("hidden")}
+function renderNav(){
+  document.getElementById("rooms").innerHTML=scenarios.map((r,i)=>`<div class="room ${i===current?'active':''} ${i<current?'done':''}"><div class="num">${i+1}</div><div><b>Scène ${i+1}</b><br><span class="sources">${r.title.split('—')[1]||r.title}</span></div></div>`).join("");
+  document.getElementById("bar").style.width=(current/scenarios.length*100)+"%";
+  document.getElementById("roomNum").textContent=current+1;
+  document.getElementById("score").textContent=score;
+  document.getElementById("progressTxt").textContent=keys.length+"/12";
+  document.getElementById("keys").innerHTML=keys.length?keys.map(k=>`<span class="key">🗝️ ${k}</span>`).join(""):`<span class="sources">Aucune clé pour l’instant.</span>`;
+}
+function render(){
+  assignments={}; activePill=null; completed=false;
+  const r=scenarios[current];
+  document.getElementById("title").textContent=r.title;
+  document.getElementById("story").textContent=r.story;
+  document.getElementById("type").textContent=r.type;
+  document.getElementById("feedback").className="feedback";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("validateBtn").classList.remove("hidden");
+  document.getElementById("hintBtn").classList.remove("hidden");
+  document.getElementById("resetBtn").classList.remove("hidden");
+  document.getElementById("retryBtn").classList.add("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+  renderNav();
+  if(r.type==="Choix simple") renderChoice(r); else renderClassify(r);
+}
+function renderChoice(r){
+  document.getElementById("content").innerHTML=`
+  <div class="scene-wrap">
+    <div class="scene-card">${sceneSvg(r.scene)}</div>
+    <div class="case">
+      <h3>${r.question}</h3>
+      <div class="choices">${r.choices.map(([k,v])=>`<button class="choice" id="c-${k}" onclick="selectChoice('${k}')"><span class="ico">${ico(k)}</span><span><b>${k}.</b> ${v}</span></button>`).join("")}</div>
+    </div>
+  </div>`;
+}
+function renderClassify(r){
+  const shuffled=[...r.items].sort(()=>Math.random()-.5);
+  document.getElementById("content").innerHTML=`
+  <div class="scene-wrap">
+    <div class="scene-card">${sceneSvg(r.scene)}</div>
+    <div class="case">
+      <h3>Classe les 4 cartes dans les bonnes catégories</h3>
+      <p>Clique d’abord sur une carte, puis sur une zone.</p>
+      <div class="pillbox" id="pillbox">${shuffled.map((it,idx)=>`<span class="pill" id="p-${idx}" onclick="pickPill(${idx})" data-cat="${it[0]}">${it[1]}</span>`).join("")}</div>
+      <div class="drop-grid">
+        ${dropZone("danger","⚠️ Danger")}
+        ${dropZone("situation","🚧 Situation dangereuse")}
+        ${dropZone("risque","🎯 Risque")}
+        ${dropZone("dommage","🩹 Dommage")}
+      </div>
+    </div>
+  </div>`;
+}
+function dropZone(cat,label){return `<div class="drop" data-cat="${cat}" onclick="dropHere('${cat}')"><h4>${label}</h4><div id="drop-${cat}"></div></div>`}
+function pickPill(idx){
+  document.querySelectorAll(".pill").forEach(p=>p.classList.remove("selected"));
+  activePill=idx;
+  document.getElementById("p-"+idx).classList.add("selected");
+}
+function dropHere(cat){
+  if(activePill===null) return;
+  const p=document.getElementById("p-"+activePill);
+  if(!p) return;
+  assignments[activePill]=cat;
+  document.getElementById("drop-"+cat).appendChild(p);
+  p.classList.remove("selected");
+  activePill=null;
+}
+function selectChoice(k){
+  assignments.choice=k;
+  document.querySelectorAll(".choice").forEach(b=>b.classList.remove("selected"));
+  document.getElementById("c-"+k).classList.add("selected");
+}
+function validateRoom(){
+  const r=scenarios[current];
+  let ok=false;
+  if(r.type==="Choix simple"){
+    ok=assignments.choice===r.answer;
+    document.querySelectorAll(".choice").forEach(b=>b.classList.remove("good","bad"));
+    if(ok){ document.getElementById("c-"+r.answer).classList.add("good");}
+    else if(assignments.choice){ document.getElementById("c-"+assignments.choice).classList.add("bad");}
+  } else {
+    const pills=[...document.querySelectorAll(".pill")];
+    ok=pills.length===4 && pills.every(p=>assignments[p.id.replace("p-","")]===p.dataset.cat);
+    pills.forEach(p=>{
+      p.style.borderColor = (assignments[p.id.replace("p-","")]===p.dataset.cat) ? "#22c55e" : "#ef4444";
+      p.style.background = (assignments[p.id.replace("p-","")]===p.dataset.cat) ? "#dcfce7" : "#fee2e2";
+    });
+  }
+  showFeedback(ok,r.explain);
+}
+function resetAnswers(){
+  const r = scenarios[current];
+  assignments = {};
+  activePill = null;
+
+  // Clear feedback/hint area.
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").innerHTML = "";
+
+  // For simple-choice questions, only remove the selected state.
+  if(r.type === "Choix simple"){
+    document.querySelectorAll(".choice").forEach(b => {
+      b.classList.remove("selected", "good", "bad");
+      b.disabled = false;
+    });
+    return;
+  }
+
+  // For classification questions, return all cards to the original card area.
+  const pillbox = document.getElementById("pillbox");
+  document.querySelectorAll(".pill").forEach(p => {
+    p.classList.remove("selected");
+    p.style.borderColor = "";
+    p.style.background = "";
+    if(pillbox) pillbox.appendChild(p);
+  });
+}
+
+function retryRoom(){
+  render();
+}
+function showHint(){
+  const r=scenarios[current];
+  const fb=document.getElementById("feedback");
+  fb.className="feedback show";
+  fb.innerHTML=`<h3>💡 Indice</h3><p>${r.hint}</p>`;
+}
+function showFeedback(ok,txt){
+  const fb=document.getElementById("feedback");
+  fb.className="feedback show "+(ok?"good":"bad");
+  fb.innerHTML=`<h3>${ok?"✅ Analyse validée":"🟠 Analyse à corriger"}</h3><p>${txt}</p><p><b>Repère pédagogique :</b> commence toujours par ce qui est observable, puis formule le risque et le dommage possible.</p>`;
+  if(ok){
+    score+=10;
+    if(!keys.includes(scenarios[current].key)) keys.push(scenarios[current].key);
+    document.getElementById("validateBtn").classList.add("hidden");
+    document.getElementById("hintBtn").classList.add("hidden");
+    document.getElementById("resetBtn").classList.add("hidden");
+    document.getElementById("retryBtn").classList.add("hidden");
+    document.getElementById("nextBtn").classList.remove("hidden");
+  }else{
+    score=Math.max(0,score-1);
+    document.getElementById("validateBtn").classList.add("hidden");
+    document.getElementById("resetBtn").classList.add("hidden");
+    document.getElementById("retryBtn").classList.remove("hidden");
+    document.getElementById("nextBtn").classList.add("hidden");
+  }
+  renderNav();
+}
+function nextRoom(){current++; if(current>=scenarios.length) endGame(); else render();}
+function endGame(){
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("end").classList.remove("hidden");
+  document.getElementById("finalScore").textContent=score;
+  let msg="Mission terminée. Reprends les scènes qui ont posé problème pour renforcer la distinction entre danger, risque, situation dangereuse et dommage.";
+  if(score>=100) msg="Excellent : les participants savent analyser une situation de travail sans confondre danger, risque et dommage.";
+  if(score<70) msg="Révision conseillée : refaire plusieurs scènes en demandant systématiquement “qu’est-ce qui est observable ?”.";
+  document.getElementById("finalMsg").textContent=msg;
+}
+function ico(k){return {A:"⚠️",B:"✅",C:"🎯",D:"🩹",E:"🚧",F:"📎"}[k]||"•"}
+
+function sceneSvg(kind){
+ const common=`<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dff6ff"/><stop offset="1" stop-color="#f8fafc"/></linearGradient>
+ <linearGradient id="floor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbe4ef"/><stop offset="1" stop-color="#94a3b8"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity=".18"/></filter>
+ </defs>`;
+ if(kind==="warehouse_cables") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="url(#sky)"/><rect y="250" width="600" height="140" fill="url(#floor)"/><rect x="30" y="58" width="160" height="180" fill="#cbd5e1"/><g stroke="#64748b" stroke-width="8"><line x1="60" y1="58" x2="60" y2="238"/><line x1="120" y1="58" x2="120" y2="238"/><line x1="180" y1="58" x2="180" y2="238"/></g><g fill="#a16207"><rect x="72" y="80" width="85" height="42"/><rect x="62" y="145" width="110" height="42"/></g><rect x="245" y="180" width="135" height="82" rx="10" fill="#111827" filter="url(#shadow)"/><rect x="260" y="195" width="105" height="52" rx="6" fill="#334155"/><path d="M160 310 C210 270,245 340,300 300 C350 260,400 340,460 300" fill="none" stroke="#111827" stroke-width="9"/><path d="M150 340 C205 300,260 370,315 330 C370 290,430 370,500 330" fill="none" stroke="#111827" stroke-width="7"/><circle cx="438" cy="137" r="20" fill="#8b5a2b"/><rect x="418" y="158" width="45" height="92" rx="16" fill="#0f766e"/><rect x="405" y="242" width="18" height="65" fill="#1e293b"/><rect x="455" y="242" width="18" height="65" fill="#1e293b"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Atelier MANGANELLI — câbles au sol</text></svg>`;
+ if(kind==="pallet_jack") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#edf6ff"/><rect y="245" width="600" height="145" fill="#cbd5e1"/><path d="M40 310 H560" stroke="#facc15" stroke-width="10" stroke-dasharray="28 18"/><rect x="220" y="158" width="150" height="84" rx="6" fill="#a16207"/><rect x="235" y="110" width="120" height="50" rx="6" fill="#d97706"/><path d="M260 250 h150 l40 52" fill="none" stroke="#334155" stroke-width="9"/><circle cx="275" cy="306" r="14" fill="#111827"/><circle cx="408" cy="306" r="14" fill="#111827"/><circle cx="80" cy="162" r="18" fill="#8b5a2b"/><rect x="62" y="182" width="40" height="75" rx="12" fill="#2563eb"/><rect x="500" y="165" width="40" height="75" rx="12" fill="#16a34a"/><circle cx="520" cy="145" r="18" fill="#8b5a2b"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Coactivité piétons / transpalette</text></svg>`;
+ if(kind==="machine") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f8fafc"/><rect y="245" width="600" height="145" fill="#cbd5e1"/><rect x="185" y="120" width="260" height="135" rx="18" fill="#475569"/><circle cx="250" cy="188" r="42" fill="#94a3b8"/><circle cx="250" cy="188" r="16" fill="#111827"/><rect x="325" y="155" width="90" height="55" rx="8" fill="#0f172a"/><path d="M438 205 C488 198,510 205,540 225" stroke="#8b5a2b" stroke-width="16" fill="none"/><circle cx="537" cy="225" r="14" fill="#8b5a2b"/><polygon points="492,186 518,170 520,206" fill="#facc15"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Machine en fonctionnement</text></svg>`;
+ if(kind==="chemical") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f0fdf4"/><rect y="250" width="600" height="140" fill="#cbd5e1"/><rect x="120" y="210" width="360" height="38" rx="8" fill="#475569"/><rect x="250" y="120" width="70" height="100" rx="8" fill="#0891b2"/><rect x="262" y="92" width="45" height="35" rx="5" fill="#0f766e"/><text x="264" y="177" font-size="18" font-weight="900" fill="#fff">DANGER</text><path d="M334 125 C395 86,460 120,510 83" fill="none" stroke="#94a3b8" stroke-width="8" opacity=".7"/><circle cx="115" cy="145" r="19" fill="#8b5a2b"/><rect x="96" y="165" width="42" height="90" rx="14" fill="#2563eb"/><path d="M140 188 L225 168" stroke="#8b5a2b" stroke-width="10"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Produit chimique ouvert</text></svg>`;
+ if(kind==="stack") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#fff7ed"/><rect y="260" width="600" height="130" fill="#cbd5e1"/><g filter="url(#shadow)"><rect x="250" y="95" width="120" height="65" fill="#d97706"/><rect x="230" y="158" width="160" height="65" fill="#b45309"/><rect x="215" y="220" width="190" height="55" fill="#92400e"/></g><path d="M205 280 H420" stroke="#78350f" stroke-width="8"/><circle cx="95" cy="188" r="18" fill="#8b5a2b"/><rect x="76" y="207" width="40" height="78" rx="12" fill="#16a34a"/><path d="M400 95 L445 125 L415 155" fill="#ef4444" opacity=".8"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Stockage instable en hauteur</text></svg>`;
+ if(kind==="noise") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f8fafc"/><rect y="250" width="600" height="140" fill="#cbd5e1"/><rect x="280" y="150" width="170" height="100" rx="18" fill="#334155"/><circle cx="330" cy="200" r="42" fill="#64748b"/><circle cx="330" cy="200" r="20" fill="#111827"/><path d="M470 168 C520 190,520 215,470 238" fill="none" stroke="#dc2626" stroke-width="10"/><path d="M498 130 C590 178,590 232,498 280" fill="none" stroke="#dc2626" stroke-width="7" opacity=".65"/><circle cx="120" cy="150" r="18" fill="#8b5a2b"/><rect x="100" y="170" width="43" height="85" rx="14" fill="#2563eb"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Exposition au bruit</text></svg>`;
+ if(kind==="screen") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#eef2ff"/><rect y="255" width="600" height="135" fill="#cbd5e1"/><rect x="180" y="185" width="230" height="25" rx="6" fill="#475569"/><rect x="280" y="95" width="130" height="80" rx="8" fill="#0f172a"/><rect x="292" y="107" width="106" height="56" fill="#93c5fd"/><circle cx="170" cy="142" r="18" fill="#8b5a2b"/><rect x="150" y="162" width="42" height="90" rx="14" fill="#7c3aed"/><path d="M190 190 C235 160,250 150,280 150" stroke="#8b5a2b" stroke-width="9" fill="none"/><rect x="105" y="270" width="70" height="40" fill="#fff"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Poste écran mal organisé</text></svg>`;
+ if(kind==="rush") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#fff7ed"/><rect y="250" width="600" height="140" fill="#cbd5e1"/><circle cx="300" cy="92" r="54" fill="#f97316"/><text x="282" y="104" font-size="44" font-weight="900" fill="#fff">!</text><g><circle cx="160" cy="170" r="18" fill="#8b5a2b"/><rect x="140" y="190" width="42" height="82" rx="14" fill="#2563eb"/><circle cx="300" cy="180" r="18" fill="#8b5a2b"/><rect x="280" y="200" width="42" height="82" rx="14" fill="#16a34a"/><circle cx="445" cy="168" r="18" fill="#8b5a2b"/><rect x="425" y="188" width="42" height="82" rx="14" fill="#7c3aed"/></g><rect x="250" y="280" width="110" height="50" fill="#a16207"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Commande urgente / pression temporelle</text></svg>`;
+ if(kind==="stairs") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f8fafc"/><polygon points="70,320 530,320 530,290 160,290 160,260 530,260 530,230 250,230 250,200 530,200 530,170 340,170 340,140 530,140 530,110 430,110 430,80 530,80 530,320" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/><rect x="246" y="182" width="72" height="42" rx="5" fill="#d97706" transform="rotate(-8 282 203)"/><circle cx="115" cy="210" r="18" fill="#8b5a2b"/><rect x="96" y="230" width="40" height="76" rx="12" fill="#2563eb"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Escalier encombré</text></svg>`;
+ if(kind==="fire") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#fff1f2"/><rect y="250" width="600" height="140" fill="#cbd5e1"/><rect x="430" y="85" width="80" height="150" fill="#16a34a"/><text x="444" y="164" font-size="18" font-weight="900" fill="#fff">SORTIE</text><rect x="405" y="220" width="130" height="65" rx="6" fill="#b45309"/><rect x="105" y="230" width="140" height="30" rx="8" fill="#111827"/><path d="M135 228 C120 180,170 170,155 130 C210 165,220 190,204 228 Z" fill="#ef4444"/><path d="M170 228 C160 195,185 183,182 155 C220 190,224 205,210 228 Z" fill="#facc15"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Multiprise + issue encombrée</text></svg>`;
+ if(kind==="telework") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#eef2ff"/><rect y="265" width="600" height="125" fill="#cbd5e1"/><rect x="185" y="210" width="230" height="25" rx="6" fill="#475569"/><rect x="225" y="110" width="155" height="95" rx="10" fill="#0f172a"/><rect x="240" y="125" width="125" height="65" fill="#60a5fa"/><circle cx="155" cy="160" r="18" fill="#8b5a2b"/><rect x="135" y="180" width="42" height="88" rx="14" fill="#7c3aed"/><circle cx="462" cy="95" r="52" fill="#111827"/><text x="428" y="107" font-size="36" font-weight="900" fill="#fff">22h</text><path d="M380 130 C430 160,460 180,500 225" stroke="#ef4444" stroke-width="8" fill="none"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Télétravail et hyperconnexion</text></svg>`;
+ if(kind==="final") return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f8fafc"/><rect y="250" width="600" height="140" fill="#cbd5e1"/><rect x="150" y="120" width="320" height="70" rx="18" fill="#334155"/><circle cx="215" cy="155" r="32" fill="#64748b"/><circle cx="215" cy="155" r="12" fill="#111827"/><path d="M250 190 L430 250" stroke="#475569" stroke-width="18"/><circle cx="90" cy="180" r="18" fill="#8b5a2b"/><rect x="70" y="200" width="42" height="88" rx="14" fill="#f97316"/><rect x="420" y="205" width="70" height="85" rx="12" fill="#facc15" opacity=".8"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Coffre final : tapis convoyeur</text></svg>`;
+ return `<svg viewBox="0 0 600 390">${common}<rect width="600" height="390" fill="#f8fafc"/><text x="30" y="34" font-size="24" font-weight="900" fill="#0f172a">Situation de travail</text></svg>`;
+}
+</script>
+</body>
+</html>
