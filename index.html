@@ -247,6 +247,26 @@ body::before{
 /* ── Hidden ──────────────────────────────── */
 .hidden{display:none!important}
 
+/* ── Mission Finale ──────────────────────── */
+.section-finale{margin:48px 0 16px;padding:2px;border-radius:calc(var(--radius) + 2px);background:linear-gradient(135deg,#0ea5e9,#6366f1 40%,#a855f7 70%,#f43f5e)}
+.section-finale-inner{background:linear-gradient(135deg,rgba(6,8,15,.93),rgba(15,20,40,.91));border-radius:var(--radius);padding:36px}
+.finale-header{display:flex;align-items:center;gap:18px;margin-bottom:28px}
+.finale-icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,#0ea5e9,#6366f1 50%,#a855f7);box-shadow:0 12px 36px rgba(99,102,241,.5);flex-shrink:0}
+.finale-header h3{font-size:26px;font-weight:900;letter-spacing:-.5px;color:#f1f5f9}
+.finale-header p{color:#64748b;font-size:14px;margin-top:4px}
+.card-finale{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(99,102,241,.06) 50%,rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:28px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease}
+.card-finale:hover{transform:translateY(-4px);box-shadow:0 24px 64px rgba(99,102,241,.2)}
+.cf-icon{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;font-size:34px;flex-shrink:0;background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(99,102,241,.2));border:1px solid rgba(99,102,241,.3)}
+.cf-body{flex:1;min-width:220px}
+.cf-type{font-size:11px;font-weight:800;letter-spacing:.8px;color:#818cf8;margin-bottom:6px}
+.cf-title{font-size:22px;font-weight:900;letter-spacing:-.4px;color:#f1f5f9;margin-bottom:8px}
+.cf-desc{font-size:14px;color:#64748b;line-height:1.55}
+.cf-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cf-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:#94a3b8}
+.btn-finale{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:16px;border:none;cursor:pointer;font-size:15px;font-weight:900;color:#fff;background:linear-gradient(135deg,#0ea5e9,#6366f1 50%,#a855f7);box-shadow:0 12px 36px rgba(99,102,241,.45);transition:all .2s ease;text-decoration:none;flex-shrink:0}
+.btn-finale:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 18px 48px rgba(99,102,241,.55);color:#fff}
+.btn-finale svg{width:15px;height:15px}
+
 /* ── Responsive ──────────────────────────── */
 @media(max-width:700px){
   .hero{padding:28px 22px}
@@ -279,7 +299,7 @@ body::before{
       </div>
     </div>
     <div class="header-meta">
-      <span class="pill green">🎮 23 activités disponibles</span>
+      <span class="pill green">🎮 24 activités disponibles</span>
       <span class="pill purple">🏆 Escape Games</span>
       <span class="pill">⚖️ Droit du travail</span>
     </div>
@@ -294,7 +314,7 @@ body::before{
       <h2>Apprenez en jouant,<br><span>maîtrisez le CSE</span></h2>
       <p>Bienvenue dans votre espace de jeux pédagogiques. Chaque activité est conçue pour consolider vos connaissances sur les droits, les obligations et le fonctionnement du Comité Social et Économique.</p>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-n">23</div><div class="stat-l">Jeux &amp; Activités</div></div>
+        <div class="stat"><div class="stat-n">24</div><div class="stat-l">Jeux &amp; Activités</div></div>
         <div class="stat"><div class="stat-n">5</div><div class="stat-l">Thématiques CSE</div></div>
         <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Rejouable à volonté</div></div>
       </div>
@@ -870,6 +890,39 @@ body::before{
 
     </div>
   </section>
+
+  <!-- ── Mission Finale ── -->
+  <div class="section-finale">
+    <div class="section-finale-inner">
+      <div class="finale-header">
+        <div class="finale-icon">🎯</div>
+        <div>
+          <h3>Mission Finale — Révision Complète CSE / SSCT</h3>
+          <p>Clôturez la formation en ouvrant les 5 coffres. 20 questions. 5 jours de savoir à l'épreuve.</p>
+        </div>
+      </div>
+      <div class="card-finale">
+        <div class="cf-icon">🏆</div>
+        <div class="cf-body">
+          <div class="cf-type">ESCAPE GAME FINAL · 5 SALLES · 20 QUESTIONS</div>
+          <div class="cf-title">Le Dossier Final — Formation CSE / SSCT</div>
+          <div class="cf-desc">Élections, mandats, fonctionnement, droits & moyens, attributions économiques, SSCT, inspection, DUERP, PAPRIPACT, enquête AT, alertes, prévention, RPS… Toute la formation en un seul escape game immersif.</div>
+          <div class="cf-tags">
+            <span class="cf-tag">🗳️ Élections & Mandats</span>
+            <span class="cf-tag">📋 Fonctionnement</span>
+            <span class="cf-tag">🛡️ Droits & Moyens</span>
+            <span class="cf-tag">⚖️ Attributions</span>
+            <span class="cf-tag">🦺 SSCT & Prévention</span>
+            <span class="cf-tag">⏱ ~60 min</span>
+          </div>
+        </div>
+        <a class="btn-finale" href="escape_game_final_cse_ssct.html">
+          Démarrer la mission
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- ── Footer ── -->
   <footer class="glass footer">

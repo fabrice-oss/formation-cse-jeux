@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Finale — Formation CSE / SSCT</title>
+<style>
+/* ── Reset ── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+  background:#06080f;color:#f1f5f9;overflow-x:hidden;
+}
+
+/* ── Animated background ── */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.3;animation:drift 18s infinite alternate ease-in-out}
+.orb-1{width:700px;height:700px;background:radial-gradient(circle,#0ea5e9 0%,transparent 70%);top:-250px;left:-200px;animation-delay:0s}
+.orb-2{width:600px;height:600px;background:radial-gradient(circle,#8b5cf6 0%,transparent 70%);top:20%;right:-200px;animation-delay:-6s}
+.orb-3{width:550px;height:550px;background:radial-gradient(circle,#f43f5e 0%,transparent 70%);bottom:-150px;left:25%;animation-delay:-12s}
+.orb-4{width:400px;height:400px;background:radial-gradient(circle,#10b981 0%,transparent 70%);bottom:20%;right:10%;animation-delay:-9s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,35px) scale(1.08)}}
+
+/* ── Noise overlay ── */
+.bg::after{
+  content:"";position:absolute;inset:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Layout ── */
+.app{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:24px 20px 60px}
+.hidden{display:none!important}
+
+/* ── Glass ── */
+.glass{
+  background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+  border-radius:28px;
+}
+.glass-inset{box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+
+/* ════════════════════════════════
+   INTRO SCREEN
+════════════════════════════════ */
+#intro{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 0}
+.intro-wrap{max-width:780px;width:100%;text-align:center}
+
+.intro-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:999px;margin-bottom:36px;
+  background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.28);
+  color:#38bdf8;font-size:13px;font-weight:800;letter-spacing:.6px;
+  animation:fadeDown .6s ease both;
+}
+.intro-title{
+  font-size:clamp(44px,7vw,80px);font-weight:900;letter-spacing:-2.5px;line-height:1.0;
+  margin-bottom:24px;animation:fadeUp .7s .1s ease both;
+}
+.intro-title em{
+  font-style:normal;
+  background:linear-gradient(135deg,#38bdf8 0%,#818cf8 35%,#e879f9 65%,#fb923c 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.intro-desc{
+  font-size:18px;color:#94a3b8;line-height:1.65;max-width:580px;margin:0 auto 36px;
+  animation:fadeUp .7s .2s ease both;
+}
+
+.intro-stats{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:44px;animation:fadeUp .7s .3s ease both;
+}
+.istat{
+  flex:1;min-width:100px;max-width:140px;
+  padding:18px 14px;border-radius:24px;text-align:center;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(20px);
+}
+.istat-n{font-size:38px;font-weight:900;line-height:1;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.istat-l{font-size:12px;color:#64748b;font-weight:600;margin-top:6px;letter-spacing:.3px}
+
+.btn-start{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:20px 44px;border-radius:24px;border:none;cursor:pointer;
+  font-size:18px;font-weight:900;color:#fff;letter-spacing:.2px;
+  background:linear-gradient(135deg,#0ea5e9 0%,#6366f1 45%,#a855f7 100%);
+  box-shadow:0 24px 60px rgba(99,102,241,.45),0 0 0 1px rgba(255,255,255,.12) inset,0 1px 0 rgba(255,255,255,.25) inset;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  animation:fadeUp .7s .4s ease both;
+  position:relative;overflow:hidden;
+}
+.btn-start::before{
+  content:"";position:absolute;inset:-40% auto -40% -60%;width:50%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  transform:rotate(15deg);transition:.7s ease;
+}
+.btn-start:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 32px 70px rgba(99,102,241,.55)}
+.btn-start:hover::before{left:130%}
+.btn-start:active{transform:scale(.98)}
+
+.rooms-preview{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-top:44px;animation:fadeUp .7s .5s ease both;
+}
+.rp{
+  padding:14px 18px;border-radius:18px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;color:#64748b;
+  transition:.2s;
+}
+.rp:hover{color:#f1f5f9;background:rgba(255,255,255,.08);transform:translateY(-2px)}
+.rp-icon{font-size:18px}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════════════════
+   GAME LAYOUT
+════════════════════════════════ */
+#game{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+
+/* ── Sidebar ── */
+.sidebar{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px}
+
+.sb-brand{padding:18px 20px;display:flex;align-items:center;gap:12px}
+.sb-badge{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(135deg,#0ea5e9,#6366f1 55%,#a855f7);
+  box-shadow:0 8px 24px rgba(99,102,241,.4);flex-shrink:0;
+}
+.sb-name{font-size:15px;font-weight:900;letter-spacing:-.3px}
+.sb-sub{font-size:12px;color:#475569;margin-top:2px}
+
+.score-card{padding:20px}
+.sc-label{font-size:10px;letter-spacing:.8px;color:#475569;font-weight:700;margin-bottom:8px}
+.sc-num{
+  font-size:52px;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sc-max{font-size:14px;color:#334155;margin-top:4px}
+.prog-row{margin-top:16px}
+.prog-header{display:flex;justify-content:space-between;font-size:11px;color:#475569;font-weight:600;margin-bottom:7px}
+.prog-track{height:7px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#0ea5e9,#6366f1,#a855f7);border-radius:99px;transition:.5s cubic-bezier(.34,1.56,.64,1);width:0}
+
+.rooms-list{padding:16px;display:flex;flex-direction:column;gap:5px}
+.rl-label{font-size:10px;letter-spacing:.8px;color:#475569;font-weight:700;margin-bottom:8px}
+.room-nav{
+  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;
+  border:1px solid transparent;cursor:pointer;
+  background:transparent;color:#94a3b8;font-size:13px;font-weight:700;
+  transition:.18s;text-align:left;width:100%;
+}
+.room-nav:hover{background:rgba(255,255,255,.06)}
+.room-nav.active{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.10);color:#f1f5f9}
+.room-nav.done{color:#4ade80}
+.room-nav.locked{opacity:.35;cursor:not-allowed}
+.rnav-icon{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  font-size:14px;flex-shrink:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+}
+.rnav-done .rnav-icon{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3)}
+.rnav-info{flex:1}
+.rnav-name{font-size:12px;font-weight:800;line-height:1.2}
+.rnav-count{font-size:10px;color:#475569;margin-top:2px}
+
+.keys-card{padding:16px}
+.keys-label{font-size:10px;letter-spacing:.8px;color:#475569;font-weight:700;margin-bottom:10px}
+.keys-list{display:flex;flex-wrap:wrap;gap:6px}
+.kchip{
+  padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;
+  background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.25);color:#38bdf8;
+}
+
+/* ── Main ── */
+.main-wrap{padding:26px;min-height:600px}
+
+/* Room header */
+.room-hd{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.room-hd-icon{
+  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;
+  font-size:24px;flex-shrink:0;
+}
+.room-hd-title{font-size:24px;font-weight:900;letter-spacing:-.4px}
+.room-hd-sub{font-size:13px;color:#64748b;margin-top:3px}
+.room-hd-tag{
+  margin-left:auto;padding:6px 12px;border-radius:11px;
+  font-size:11px;font-weight:800;letter-spacing:.4px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#475569;
+}
+
+/* Q dots */
+.q-dots{display:flex;gap:7px;margin-bottom:20px}
+.qdot{height:5px;flex:1;border-radius:99px;background:rgba(255,255,255,.07);transition:.4s}
+.qdot.active{background:var(--rc)}
+.qdot.done{background:rgba(74,222,128,.55)}
+
+/* Question card */
+.q-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:22px;padding:22px;margin-bottom:14px;
+}
+.q-top{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.q-num{
+  width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  font-size:11px;font-weight:900;flex-shrink:0;
+}
+.q-type-pill{
+  padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#64748b;
+}
+.q-text{font-size:17px;font-weight:800;line-height:1.45;color:#f1f5f9}
+
+/* Choices */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.choice{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:13px 15px;
+  display:flex;align-items:flex-start;gap:10px;
+  cursor:pointer;text-align:left;color:#94a3b8;
+  font-size:14px;font-weight:600;line-height:1.4;
+  transition:all .16s ease;
+}
+.choice:hover:not(:disabled){background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.14);color:#f1f5f9;transform:translateY(-1px)}
+.choice.sel{background:rgba(99,102,241,.14);border-color:rgba(99,102,241,.4);color:#f1f5f9}
+.choice.good{background:rgba(74,222,128,.10);border-color:rgba(74,222,128,.4);color:#4ade80}
+.choice.bad{background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.35);color:#fb7185}
+.choice-k{
+  width:26px;height:26px;min-width:26px;border-radius:8px;display:grid;place-items:center;
+  font-size:11px;font-weight:900;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#64748b;
+  transition:.16s;
+}
+.choice.sel .choice-k{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5);color:#a5b4fc}
+.choice.good .choice-k{background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.4);color:#4ade80}
+.choice.bad .choice-k{background:rgba(244,63,94,.2);border-color:rgba(244,63,94,.35);color:#fb7185}
+
+/* Feedback */
+.feedback{
+  border-radius:18px;padding:16px;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.03);display:none;
+  animation:fbIn .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.2)}
+.feedback.ko{background:rgba(244,63,94,.07);border-color:rgba(244,63,94,.2)}
+.fb-head{font-size:15px;font-weight:900;margin-bottom:6px}
+.fb-txt{font-size:13px;color:#94a3b8;line-height:1.55}
+.fb-ref{font-size:11px;color:#475569;margin-top:8px;font-weight:700}
+@keyframes fbIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+
+/* Buttons */
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.btn{
+  border:none;border-radius:14px;padding:12px 18px;cursor:pointer;
+  font-size:14px;font-weight:800;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:.18s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;
+  box-shadow:0 8px 24px rgba(99,102,241,.35);
+}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 8px 24px rgba(16,185,129,.3)}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:#94a3b8}
+.btn-amber{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+/* ════════════════════════════════
+   END SCREEN
+════════════════════════════════ */
+#end{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:40px 0;
+}
+.end-wrap{max-width:980px;width:100%}
+
+.end-hero{text-align:center;margin-bottom:40px;padding:44px 32px;border-radius:32px}
+.end-medal{font-size:88px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:14px}
+@keyframes popIn{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:none}}
+.end-title{font-size:clamp(38px,5vw,60px);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px}
+.end-title em{
+  font-style:normal;
+  background:linear-gradient(135deg,#38bdf8,#818cf8 40%,#4ade80 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.end-score-badge{
+  display:inline-flex;align-items:baseline;gap:6px;
+  padding:18px 36px;border-radius:24px;
+  background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);
+  margin:20px 0 16px;
+}
+.end-score-n{font-size:72px;font-weight:900;line-height:1;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.end-score-over{font-size:22px;color:#334155;font-weight:700}
+.end-msg{font-size:17px;color:#94a3b8;line-height:1.65;max-width:620px;margin:0 auto}
+
+.recap-section{margin:32px 0}
+.recap-title{font-size:13px;letter-spacing:.7px;font-weight:700;color:#475569;margin-bottom:16px}
+.recap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.recap-card{
+  padding:18px;border-radius:22px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+}
+.rc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rc-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.rc-name{font-size:13px;font-weight:900;color:#f1f5f9}
+.rc-sub{font-size:11px;color:#475569;margin-top:2px}
+.rc-pts{margin-left:auto;font-size:22px;font-weight:900}
+.rc-bar-wrap{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.rc-bar{height:100%;border-radius:99px;transition:1s .5s ease}
+
+.keys-section{
+  padding:20px;border-radius:24px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  margin:16px 0 28px;text-align:center;
+}
+.ks-label{font-size:12px;letter-spacing:.7px;font-weight:700;color:#475569;margin-bottom:12px}
+.ks-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+
+.end-thanks{
+  text-align:center;padding:28px 24px;border-radius:24px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  margin-bottom:28px;
+}
+.et-name{font-size:18px;font-weight:900;color:#f1f5f9;margin-bottom:8px}
+.et-msg{font-size:15px;color:#94a3b8;line-height:1.65;max-width:580px;margin:0 auto}
+
+.end-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-end{
+  padding:15px 28px;border-radius:18px;border:none;cursor:pointer;
+  font-size:15px;font-weight:900;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:.2s;
+}
+.btn-end:hover{transform:translateY(-2px)}
+.btn-end-main{
+  background:linear-gradient(135deg,#0ea5e9,#6366f1 50%,#a855f7);color:#fff;
+  box-shadow:0 18px 50px rgba(99,102,241,.4);
+}
+.btn-end-sec{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);color:#94a3b8}
+
+/* ── Responsive ── */
+@media(max-width:1050px){
+  #game{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .rooms-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .room-nav{width:auto;flex:1;min-width:140px}
+  .recap-grid{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .choices{grid-template-columns:1fr}
+  .intro-stats{gap:8px}
+  .istat{min-width:80px;padding:14px 10px}
+  .istat-n{font-size:30px}
+  .rooms-preview{gap:7px}
+  .rp{padding:10px 12px;font-size:12px}
+  .end-score-n{font-size:56px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+
+<div class="app">
+
+<!-- ════════════════ INTRO ════════════════ -->
+<section id="intro">
+  <div class="intro-wrap">
+    <div class="intro-eyebrow">🔐 Mission Finale · Formation CSE / SSCT · 5 jours</div>
+    <h1 class="intro-title">Le <em>Dossier Final</em><br>est entre vos mains.</h1>
+    <p class="intro-desc">Cinq jours de formation. Vingt questions. Cinq salles verrouillées. Ouvrez chaque coffre en prouvant que vous maîtrisez le CSE, la SSCT et tout ce qui fait un élu efficace.</p>
+    <div class="intro-stats">
+      <div class="istat"><div class="istat-n">5</div><div class="istat-l">Salles</div></div>
+      <div class="istat"><div class="istat-n">20</div><div class="istat-l">Questions</div></div>
+      <div class="istat"><div class="istat-n">100</div><div class="istat-l">Points max</div></div>
+      <div class="istat"><div class="istat-n">~60'</div><div class="istat-l">Durée</div></div>
+    </div>
+    <button class="btn-start" onclick="startGame()">🚀 Démarrer la mission finale</button>
+    <div class="rooms-preview">
+      <div class="rp"><span class="rp-icon">🗳️</span>Élections & Mandats</div>
+      <div class="rp"><span class="rp-icon">📋</span>Fonctionnement</div>
+      <div class="rp"><span class="rp-icon">🛡️</span>Droits & Moyens</div>
+      <div class="rp"><span class="rp-icon">⚖️</span>Attributions</div>
+      <div class="rp"><span class="rp-icon">🦺</span>SSCT & Prévention</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ GAME ════════════════ -->
+<div id="game" class="hidden">
+
+  <aside class="sidebar">
+    <div class="glass glass-inset sb-brand">
+      <div class="sb-badge">🎯</div>
+      <div><div class="sb-name">Mission Finale</div><div class="sb-sub">Formation CSE / SSCT</div></div>
+    </div>
+    <div class="glass glass-inset score-card">
+      <div class="sc-label">SCORE</div>
+      <div class="sc-num" id="scoreNum">0</div>
+      <div class="sc-max">sur 100 points</div>
+      <div class="prog-row">
+        <div class="prog-header"><span>Progression</span><span id="progTxt">0 / 20</span></div>
+        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+      </div>
+    </div>
+    <div class="glass glass-inset rooms-list">
+      <div class="rl-label">SALLES</div>
+      <div id="roomsNav"></div>
+    </div>
+    <div class="glass glass-inset keys-card">
+      <div class="keys-label">CLÉS OBTENUES</div>
+      <div class="keys-list" id="keysList">
+        <span style="font-size:12px;color:#334155">Aucune clé pour l'instant…</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="glass glass-inset main-wrap" id="mainPanel"></main>
+
+</div>
+
+<!-- ════════════════ END ════════════════ -->
+<section id="end" class="hidden">
+  <div class="end-wrap" id="endContent"></div>
+</section>
+
+</div><!-- /app -->
+
+<script>
+/* ════════════════════════════════════════
+   DATA
+════════════════════════════════════════ */
+const ROOMS = [
+{
+  id:0,icon:"🗳️",title:"Salle des Élections",sub:"Élections & Mandats",
+  c:"#0ea5e9",cd:"rgba(14,165,233,.15)",cb:"rgba(14,165,233,.3)",
+  key:"Élections & Mandats",
+  qs:[
+    {
+      type:"single",pts:5,
+      text:"À partir de quel effectif le CSE est-il obligatoire ?",
+      hint:"Il s'agit du seuil légal d'assujettissement, atteint pendant 12 mois consécutifs.",
+      ch:[["A","10 salariés"],["B","11 salariés"],["C","20 salariés"],["D","50 salariés"]],
+      ans:"B",
+      ex:"Le CSE est obligatoire dans toutes les entreprises qui atteignent 11 salariés pendant 12 mois consécutifs.",
+      ref:"C. trav. L.2311-2"
+    },
+    {
+      type:"single",pts:5,
+      text:"Quelle est la durée légale du mandat des membres élus du CSE ?",
+      hint:"Ce mandat peut être renouvelé, mais dans une certaine limite selon l'effectif.",
+      ch:[["A","2 ans"],["B","3 ans"],["C","4 ans"],["D","5 ans"]],
+      ans:"C",
+      ex:"Les membres du CSE sont élus pour 4 ans. Dans les entreprises d'au moins 300 salariés, les mandats successifs sont limités à 3.",
+      ref:"C. trav. L.2314-33"
+    },
+    {
+      type:"multi",pts:5,
+      text:"Quels documents sont nécessaires pour organiser les élections CSE ?",
+      hint:"Plusieurs réponses sont correctes.",
+      ch:[["A","Protocole d'accord préélectoral"],["B","Liste électorale"],["C","Registre unique du personnel"],["D","DUERP"],["E","Plan de prévention"]],
+      ans:["A","B","C"],
+      ex:"Le protocole préélectoral fixe les règles du scrutin. La liste électorale s'appuie sur le registre du personnel. Le DUERP et le plan de prévention n'ont pas de lien avec l'organisation électorale.",
+      ref:"C. trav. L.2314-5 et suiv."
+    },
+    {
+      type:"single",pts:5,
+      text:"Un salarié protégé (élu CSE) peut-il être licencié par l'employeur ?",
+      hint:"La procédure applicable diffère radicalement du droit commun.",
+      ch:[["A","Non, jamais, quelles que soient les circonstances"],["B","Oui, mais uniquement avec l'autorisation préalable de l'inspecteur du travail"],["C","Oui, comme n'importe quel salarié de droit commun"],["D","Oui, mais seulement pour faute grave après avis du médecin du travail"]],
+      ans:"B",
+      ex:"Le licenciement d'un salarié protégé nécessite impérativement l'autorisation préalable de l'inspecteur du travail, sous peine de nullité.",
+      ref:"C. trav. L.2411-1 et L.2421-3"
+    }
+  ]
+},
+{
+  id:1,icon:"📋",title:"Chambre des Délibérations",sub:"Fonctionnement & Organisation",
+  c:"#a855f7",cd:"rgba(168,85,247,.15)",cb:"rgba(168,85,247,.3)",
+  key:"Fonctionnement CSE",
+  qs:[
+    {
+      type:"single",pts:5,
+      text:"Qui établit conjointement l'ordre du jour des réunions du CSE ?",
+      hint:"L'ordre du jour ne peut pas être décidé unilatéralement.",
+      ch:[["A","Le président du CSE seul"],["B","Le secrétaire du CSE seul"],["C","Le président et le secrétaire conjointement"],["D","L'inspecteur du travail"]],
+      ans:"C",
+      ex:"L'article L.2315-29 dispose que l'ordre du jour est arrêté conjointement par le président et le secrétaire du CSE.",
+      ref:"C. trav. L.2315-29"
+    },
+    {
+      type:"single",pts:5,
+      text:"Dans une entreprise de 300 salariés, quelle est la fréquence minimale des réunions ordinaires du CSE ?",
+      hint:"La fréquence diffère selon que l'effectif est en deçà ou au-delà de 300 salariés.",
+      ch:[["A","Une réunion tous les 3 mois"],["B","Une réunion tous les 2 mois"],["C","Une réunion par mois"],["D","Deux réunions par mois"]],
+      ans:"C",
+      ex:"Dans les entreprises d'au moins 300 salariés, le CSE se réunit au moins une fois par mois. En deçà de 300 salariés, c'est au moins une fois tous les deux mois.",
+      ref:"C. trav. L.2315-27"
+    },
+    {
+      type:"single",pts:5,
+      text:"Qui est chargé de rédiger le procès-verbal (PV) de la réunion du CSE ?",
+      hint:"C'est un membre du bureau du CSE.",
+      ch:[["A","Le président du CSE (l'employeur)"],["B","Le secrétaire du CSE"],["C","Le directeur des ressources humaines"],["D","L'inspecteur du travail"]],
+      ans:"B",
+      ex:"Le secrétaire du CSE établit le PV. À défaut d'accord, un délai de 15 jours après la réunion est prévu par l'article D.2315-26.",
+      ref:"C. trav. L.2315-34 et D.2315-26"
+    },
+    {
+      type:"single",pts:5,
+      text:"Comment le règlement intérieur du CSE est-il adopté ?",
+      hint:"Il est voté en réunion du CSE.",
+      ch:[["A","Par l'employeur seul, qui le notifie aux élus"],["B","Par vote à la majorité des membres présents"],["C","Par vote à l'unanimité de tous les élus"],["D","Par accord de branche ou d'entreprise obligatoire"]],
+      ans:"B",
+      ex:"Le règlement intérieur est adopté par le CSE à la majorité des membres présents lors d'une réunion. Il précise les modalités de fonctionnement interne.",
+      ref:"C. trav. L.2315-24"
+    }
+  ]
+},
+{
+  id:2,icon:"🛡️",title:"Coffre des Droits",sub:"Droits & Moyens des Élus",
+  c:"#f59e0b",cd:"rgba(245,158,11,.15)",cb:"rgba(245,158,11,.3)",
+  key:"Droits & Moyens",
+  qs:[
+    {
+      type:"single",pts:5,
+      text:"Quel est le taux minimal de la subvention de fonctionnement versée par l'employeur au CSE (entreprise de moins de 2 000 salariés) ?",
+      hint:"Ce taux est calculé sur la masse salariale brute de l'entreprise.",
+      ch:[["A","0,10 % de la masse salariale brute"],["B","0,20 % de la masse salariale brute"],["C","0,50 % de la masse salariale brute"],["D","1 % de la masse salariale brute"]],
+      ans:"B",
+      ex:"L'article L.2315-61 fixe la subvention de fonctionnement à 0,20 % de la masse salariale brute pour les entreprises de moins de 2 000 salariés (0,22 % au-delà).",
+      ref:"C. trav. L.2315-61"
+    },
+    {
+      type:"single",pts:5,
+      text:"Quelle est la sanction pénale prévue pour le délit d'entrave au fonctionnement du CSE ?",
+      hint:"C'est une double sanction : prison et amende.",
+      ch:[["A","1 an de prison et 3 750 € d'amende"],["B","1 an de prison et 7 500 € d'amende"],["C","2 ans de prison et 30 000 € d'amende"],["D","Aucune sanction pénale, uniquement civile"]],
+      ans:"B",
+      ex:"L'article L.2317-1 prévoit un emprisonnement d'un an et une amende de 7 500 € pour le délit d'entrave au fonctionnement régulier du CSE.",
+      ref:"C. trav. L.2317-1"
+    },
+    {
+      type:"multi",pts:5,
+      text:"Concernant les heures de délégation, quelles affirmations sont exactes ?",
+      hint:"Trois propositions sont correctes.",
+      ch:[["A","Elles peuvent être mutualisées entre titulaires et suppléants"],["B","Elles peuvent être reportées d'un mois sur l'autre"],["C","Elles sont présumées utilisées conformément à leur objet"],["D","L'employeur peut les refuser à sa discrétion"],["E","Elles ne peuvent être utilisées qu'au sein des locaux de l'entreprise"]],
+      ans:["A","B","C"],
+      ex:"Les heures de délégation peuvent être mutualisées et reportées dans la limite de 1,25 fois le crédit mensuel individuel. Elles sont présumées conformes : l'employeur ne peut les refuser.",
+      ref:"C. trav. L.2315-8 et R.2315-5"
+    },
+    {
+      type:"single",pts:5,
+      text:"Quel est le taux de la subvention de fonctionnement dans une entreprise d'au moins 2 000 salariés ?",
+      hint:"Ce taux est légèrement supérieur au taux de base.",
+      ch:[["A","0,20 % de la masse salariale brute"],["B","0,22 % de la masse salariale brute"],["C","0,30 % de la masse salariale brute"],["D","0,50 % de la masse salariale brute"]],
+      ans:"B",
+      ex:"Dans les entreprises d'au moins 2 000 salariés, le taux de la subvention de fonctionnement est de 0,22 % de la masse salariale brute.",
+      ref:"C. trav. L.2315-61"
+    }
+  ]
+},
+{
+  id:3,icon:"⚖️",title:"Atrium des Attributions",sub:"Attributions Économiques & Sociales",
+  c:"#10b981",cd:"rgba(16,185,129,.15)",cb:"rgba(16,185,129,.3)",
+  key:"Attributions CSE",
+  qs:[
+    {
+      type:"multi",pts:5,
+      text:"Quelles sont les trois grandes consultations récurrentes obligatoires du CSE (entreprise ≥ 50 salariés) ?",
+      hint:"Trois réponses correctes — elles sont définies aux articles L.2312-24 à 26.",
+      ch:[["A","Orientations stratégiques"],["B","Situation économique et financière"],["C","Politique sociale, conditions de travail et emploi"],["D","Plan de développement des compétences"],["E","Budget de fonctionnement prévisionnel"]],
+      ans:["A","B","C"],
+      ex:"Les trois consultations récurrentes sont : orientations stratégiques (L.2312-24), situation économique et financière (L.2312-25), politique sociale, conditions de travail et emploi (L.2312-26).",
+      ref:"C. trav. L.2312-17 et L.2312-24 à 26"
+    },
+    {
+      type:"single",pts:5,
+      text:"Quel outil central permet au CSE de préparer ses consultations récurrentes ?",
+      hint:"Cet outil a évolué avec la loi Climat et Résilience en 2021 pour intégrer un volet environnemental.",
+      ch:[["A","Le plan de développement des compétences"],["B","La BDESE — Base de Données Économiques, Sociales et Environnementales"],["C","Le registre unique du personnel"],["D","Le rapport annuel de la direction générale"]],
+      ans:"B",
+      ex:"La BDESE (art. L.2312-18) regroupe les informations économiques, sociales et désormais environnementales nécessaires aux consultations récurrentes du CSE.",
+      ref:"C. trav. L.2312-18 et L.2312-36"
+    },
+    {
+      type:"multi",pts:5,
+      text:"Dans quels cas le CSE peut-il recourir à un expert habilité en matière de SSCT ?",
+      hint:"L'article L.2315-94 prévoit deux situations distinctes.",
+      ch:[["A","En cas de risque grave, identifié et actuel"],["B","En cas de projet important modifiant les conditions de santé, sécurité ou de travail"],["C","Pour toute réunion ordinaire, sans condition particulière"],["D","Uniquement sur demande expresse de l'employeur"],["E","En cas d'augmentation de l'absentéisme sans cause identifiée"]],
+      ans:["A","B"],
+      ex:"L.2315-94 : le CSE peut recourir à un expert habilité SSCT en cas de risque grave identifié et actuel, ou de projet important modifiant les conditions de santé, sécurité ou les conditions de travail.",
+      ref:"C. trav. L.2315-94"
+    },
+    {
+      type:"single",pts:5,
+      text:"Un élu constate qu'un salarié subit des agissements portant atteinte à sa dignité. Quel droit d'alerte peut-il activer ?",
+      hint:"Il existe plusieurs types d'alertes — chacune a son propre fondement légal.",
+      ch:[["A","Alerte économique (L.2312-63)"],["B","Alerte pour danger grave et imminent (L.4131-2)"],["C","Droit d'alerte en cas d'atteinte aux droits des personnes (L.2312-59)"],["D","Alerte auprès des actionnaires de l'entreprise"]],
+      ans:"C",
+      ex:"L'article L.2312-59 prévoit un droit d'alerte spécifique en cas d'atteinte aux droits des personnes, à leur santé physique et mentale ou aux libertés individuelles dans l'entreprise.",
+      ref:"C. trav. L.2312-59"
+    }
+  ]
+},
+{
+  id:4,icon:"🦺",title:"Forge de la Prévention",sub:"SSCT · Inspection · Enquête · Prévention",
+  c:"#f43f5e",cd:"rgba(244,63,94,.15)",cb:"rgba(244,63,94,.3)",
+  key:"SSCT & Prévention",
+  qs:[
+    {
+      type:"single",pts:5,
+      text:"Quel est le premier des 9 principes généraux de prévention (art. L.4121-2) ?",
+      hint:"Ce principe est le plus en amont de toute démarche de prévention.",
+      ch:[["A","Évaluer les risques qui ne peuvent pas être évités"],["B","Éviter les risques"],["C","Combattre les risques à la source"],["D","Donner des instructions appropriées"]],
+      ans:"B",
+      ex:"Le premier principe est d'éviter les risques. La hiérarchie commence par la suppression du danger ou de l'exposition avant tout autre mesure.",
+      ref:"C. trav. L.4121-2"
+    },
+    {
+      type:"single",pts:5,
+      text:"Qui est légalement responsable de l'élaboration et de la mise à jour du DUERP ?",
+      hint:"La responsabilité de l'évaluation des risques incombe à une seule personne dans l'entreprise.",
+      ch:[["A","Le médecin du travail / SPST"],["B","Le secrétaire du CSE en charge de la SSCT"],["C","L'employeur"],["D","L'inspecteur du travail"]],
+      ans:"C",
+      ex:"L'employeur est seul responsable de l'élaboration et de la mise à jour du DUERP. Le CSE est consulté mais ne porte pas la responsabilité juridique.",
+      ref:"C. trav. R.4121-1 et R.4121-2"
+    },
+    {
+      type:"multi",pts:5,
+      text:"Face à un danger grave et imminent (DGI), quelles actions l'élu CSE doit-il ou peut-il entreprendre ?",
+      hint:"Trois réflexes attendus — ni sanction ni fermeture unilatérale.",
+      ch:[["A","Alerter immédiatement l'employeur"],["B","Consigner l'avis dans le registre spécial DGI"],["C","Réaliser une enquête conjointe avec l'employeur"],["D","Prononcer lui-même une sanction disciplinaire"],["E","Fermer unilatéralement l'entreprise ou l'atelier"]],
+      ans:["A","B","C"],
+      ex:"Face à un DGI : alerter l'employeur (L.4131-2), consigner dans le registre spécial (D.4132-1), puis réaliser une enquête conjointe. L'élu ne peut pas sanctionner ni fermer seul l'entreprise.",
+      ref:"C. trav. L.4131-2, L.4132-2, D.4132-1"
+    },
+    {
+      type:"single",pts:5,
+      text:"Dans le cadre d'une coactivité avec des entreprises extérieures, quel document formalise les mesures de prévention communes ?",
+      hint:"Ce document est obligatoire dès que certains seuils d'heures ou de travaux dangereux sont atteints.",
+      ch:[["A","Le DUERP de l'entreprise utilisatrice"],["B","Le plan de prévention"],["C","Le règlement intérieur de l'entreprise"],["D","La fiche d'entreprise établie par le SPST"]],
+      ans:"B",
+      ex:"Le plan de prévention (R.4512-6) formalise les mesures de prévention lors d'interventions d'entreprises extérieures. Il est obligatoire dès 400 heures annuelles ou pour des travaux dangereux.",
+      ref:"C. trav. R.4512-6 et suiv."
+    }
+  ]
+}
+];
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let S = {
+  room:0, q:0, score:0, done:0,
+  roomScores:[0,0,0,0,0], roomDone:[0,0,0,0,0],
+  sel:[], keys:[]
+};
+
+/* ════════════════════════════════════════
+   START
+════════════════════════════════════════ */
+function startGame(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  renderSidebar();
+  renderMain();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goHome(){window.location.href='index.html';}
+
+/* ════════════════════════════════════════
+   SIDEBAR
+════════════════════════════════════════ */
+function renderSidebar(){
+  // Score
+  document.getElementById('scoreNum').textContent = S.score;
+  document.getElementById('progTxt').textContent = S.done + ' / 20';
+  document.getElementById('progFill').style.width = (S.done / 20 * 100) + '%';
+
+  // Rooms nav
+  document.getElementById('roomsNav').innerHTML = ROOMS.map((r,i)=>{
+    const done = S.roomDone[i] === r.qs.length;
+    const locked = i > 0 && S.roomDone[i-1] < ROOMS[i-1].qs.length;
+    const active = i === S.room;
+    let cls = 'room-nav';
+    if(active) cls += ' active';
+    if(done) cls += ' done rnav-done';
+    if(locked) cls += ' locked';
+    return `<button class="${cls}" onclick="jumpRoom(${i})" style="--rc:${r.c}">
+      <span class="rnav-icon">${done?'✅':locked?'🔒':r.icon}</span>
+      <span class="rnav-info">
+        <span class="rnav-name">${r.title}</span>
+        <span class="rnav-count">${S.roomDone[i]} / ${r.qs.length}</span>
+      </span>
+    </button>`;
+  }).join('');
+
+  // Keys
+  const kl = document.getElementById('keysList');
+  kl.innerHTML = S.keys.length
+    ? S.keys.map(k=>`<span class="kchip">🗝️ ${k}</span>`).join('')
+    : '<span style="font-size:12px;color:#334155">Aucune clé pour l\'instant…</span>';
+}
+
+function jumpRoom(i){
+  if(i > 0 && S.roomDone[i-1] < ROOMS[i-1].qs.length) return;
+  S.room = i; S.q = 0; S.sel = [];
+  renderSidebar(); renderMain();
+}
+
+/* ════════════════════════════════════════
+   MAIN CONTENT
+════════════════════════════════════════ */
+function renderMain(){
+  const r = ROOMS[S.room];
+  const q = r.qs[S.q];
+  const panel = document.getElementById('mainPanel');
+
+  // Q dots
+  const dots = r.qs.map((_,i)=>{
+    const cls = i < S.roomDone[S.room] ? 'done' : i === S.q ? 'active' : '';
+    return `<div class="qdot ${cls}" style="${cls==='active'?'--rc:'+r.c:''}"></div>`;
+  }).join('');
+
+  // Choices
+  const typeLabel = q.type==='single' ? '📍 Une seule réponse' : '📌 Plusieurs réponses';
+  const choices = q.ch.map(([k,v])=>{
+    const sel = S.sel.includes(k) ? 'sel' : '';
+    const fn = q.type==='single' ? `pickOne('${k}')` : `pickMany('${k}')`;
+    return `<button class="choice ${sel}" id="c-${k}" onclick="${fn}">
+      <span class="choice-k">${k}</span><span>${v}</span>
+    </button>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="room-hd">
+      <div class="room-hd-icon" style="background:${r.cd};border:1px solid ${r.cb}">${r.icon}</div>
+      <div>
+        <div class="room-hd-title" style="color:${r.c}">${r.title}</div>
+        <div class="room-hd-sub">${r.sub}</div>
+      </div>
+      <span class="room-hd-tag">Salle ${S.room+1}/5</span>
+    </div>
+    <div class="q-dots" style="--rc:${r.c}">${dots}</div>
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-num" style="background:${r.cd};color:${r.c};border:1px solid ${r.cb}">${S.q+1}</span>
+        <span class="q-type-pill">${typeLabel}</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+    </div>
+    <div class="choices">${choices}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="btn-row">
+      <button class="btn btn-amber" onclick="showHint()">💡 Indice</button>
+      <button class="btn btn-primary" id="valBtn" onclick="validate()">Valider</button>
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════
+   SELECTION
+════════════════════════════════════════ */
+function pickOne(k){
+  S.sel=[k];
+  document.querySelectorAll('.choice').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('c-'+k)?.classList.add('sel');
+}
+function pickMany(k){
+  if(S.sel.includes(k)){S.sel=S.sel.filter(x=>x!==k);document.getElementById('c-'+k)?.classList.remove('sel');}
+  else{S.sel.push(k);document.getElementById('c-'+k)?.classList.add('sel');}
+}
+
+/* ════════════════════════════════════════
+   HINT
+════════════════════════════════════════ */
+function showHint(){
+  const q=ROOMS[S.room].qs[S.q];
+  const fb=document.getElementById('fb');
+  fb.className='feedback show';
+  fb.innerHTML=`<div class="fb-head" style="color:#fbbf24">💡 Indice</div><div class="fb-txt">${q.hint}</div>`;
+}
+
+/* ════════════════════════════════════════
+   VALIDATE
+════════════════════════════════════════ */
+function validate(){
+  if(!S.sel.length){alert('Sélectionnez une réponse.');return;}
+  const r=ROOMS[S.room]; const q=r.qs[S.q];
+  let ok=false;
+  if(q.type==='single') ok=S.sel[0]===q.ans;
+  else ok=[...S.sel].sort().join('|')===[...q.ans].sort().join('|');
+
+  // Mark
+  document.querySelectorAll('.choice').forEach(b=>{
+    const k=b.id.replace('c-','');
+    b.classList.remove('sel');
+    const right=Array.isArray(q.ans)?q.ans.includes(k):k===q.ans;
+    const picked=S.sel.includes(k);
+    if(right) b.classList.add('good');
+    else if(picked) b.classList.add('bad');
+    b.onclick=null; b.style.cursor='default';
+  });
+
+  // Score
+  if(ok){S.score+=q.pts; S.roomScores[S.room]+=q.pts;}
+  S.roomDone[S.room]++; S.done++;
+
+  // Feedback
+  const fb=document.getElementById('fb');
+  fb.className='feedback show '+(ok?'ok':'ko');
+  fb.innerHTML=`<div class="fb-head">${ok?'✅ Bonne réponse !':'🟠 Pas tout à fait…'}</div>
+    <div class="fb-txt">${q.ex}</div>
+    <div class="fb-ref">📖 ${q.ref}</div>`;
+
+  // Next button
+  const lastInRoom=S.q>=r.qs.length-1;
+  const lastRoom=S.room>=ROOMS.length-1;
+  let lbl,fn;
+  if(lastInRoom&&lastRoom){lbl='🏁 Terminer la mission';fn='endGame()';}
+  else if(lastInRoom){lbl='🔓 Salle suivante →';fn='nextRoom()';}
+  else{lbl='Question suivante →';fn='nextQ()';}
+
+  document.getElementById('valBtn').outerHTML=
+    `<button class="btn btn-success" onclick="${fn}">${lbl}</button>`;
+
+  renderSidebar();
+}
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function nextQ(){
+  S.q++; S.sel=[];
+  renderMain(); renderSidebar();
+}
+function nextRoom(){
+  const r=ROOMS[S.room];
+  if(!S.keys.includes(r.key)) S.keys.push(r.key);
+  S.room++; S.q=0; S.sel=[];
+  renderMain(); renderSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ════════════════════════════════════════
+   END GAME
+════════════════════════════════════════ */
+function endGame(){
+  const r=ROOMS[S.room];
+  if(!S.keys.includes(r.key)) S.keys.push(r.key);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('end').classList.remove('hidden');
+
+  let medal,msg;
+  const p=S.score;
+  if(p>=90){medal='🏆';msg='Performance exceptionnelle ! Vous maîtrisez l\'ensemble des thématiques CSE/SSCT. Vos futurs collègues et salariés ont de la chance de vous avoir comme élus !';}
+  else if(p>=75){medal='🥇';msg='Excellent travail ! Vous avez bien intégré les fondamentaux. Votre niveau est très solide pour exercer un mandat efficace et serein.';}
+  else if(p>=55){medal='🥈';msg='Bonne base ! Les fondements sont là. Quelques points méritent encore attention — relisez les fiches des thèmes difficiles pour consolider votre maîtrise.';}
+  else{medal='🥉';msg='Formation à consolider. Prenez le temps de revoir les thèmes clés. Les documents de formation et la pratique feront toute la différence.';}
+
+  const recapCards=ROOMS.map(r=>{
+    const got=S.roomScores[r.id]; const max=r.qs.length*5; const pct=Math.round(got/max*100);
+    return `<div class="recap-card">
+      <div class="rc-top">
+        <div class="rc-icon" style="background:${r.cd};border:1px solid ${r.cb}">${r.icon}</div>
+        <div><div class="rc-name">${r.title}</div><div class="rc-sub">${r.sub}</div></div>
+        <div class="rc-pts" style="color:${r.c}">${got}/${max}</div>
+      </div>
+      <div class="rc-bar-wrap"><div class="rc-bar" style="width:${pct}%;background:${r.c}"></div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('endContent').innerHTML=`
+    <div class="end-hero glass glass-inset">
+      <div class="end-medal">${medal}</div>
+      <h2 class="end-title">Mission <em>accomplie</em> !</h2>
+      <div class="end-score-badge">
+        <div class="end-score-n">${S.score}</div>
+        <div class="end-score-over">/ 100 pts</div>
+      </div>
+      <p class="end-msg">${msg}</p>
+    </div>
+    <div class="recap-section">
+      <div class="recap-title">RÉCAPITULATIF PAR SALLE</div>
+      <div class="recap-grid">${recapCards}</div>
+    </div>
+    <div class="keys-section">
+      <div class="ks-label">CLÉS OBTENUES</div>
+      <div class="ks-chips">${S.keys.map(k=>`<span class="kchip">${k}</span>`).join('')}</div>
+    </div>
+    <div class="end-thanks glass glass-inset">
+      <div class="et-name">🎓 Merci à tous les participants</div>
+      <p class="et-msg">
+        Cette formation de 5 jours vous a donné les outils pour exercer votre mandat avec rigueur, engagement et efficacité.
+        Vous connaissez maintenant vos droits, vos obligations, et les leviers d'action du CSE en matière économique, sociale et de santé au travail.
+        <br><br><strong style="color:#f1f5f9">Bonne continuation dans votre rôle d'élu !</strong>
+      </p>
+    </div>
+    <div class="end-actions">
+      <button class="btn-end btn-end-sec" onclick="restart()">🔄 Rejouer</button>
+      <button class="btn-end btn-end-main" onclick="goHome()">🏠 Retour à l'accueil</button>
+    </div>
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ════════════════════════════════════════
+   RESTART
+════════════════════════════════════════ */
+function restart(){
+  S={room:0,q:0,score:0,done:0,roomScores:[0,0,0,0,0],roomDone:[0,0,0,0,0],sel:[],keys:[]};
+  document.getElementById('end').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  renderSidebar(); renderMain();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
