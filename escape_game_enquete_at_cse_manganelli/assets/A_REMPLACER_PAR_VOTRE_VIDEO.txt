@@ -1,0 +1,2 @@
+Placez ici la vidéo de l'atelier sous le nom : video_atelier.mp4
+Le fichier atelier.html l'intègre automatiquement si ce nom existe.
