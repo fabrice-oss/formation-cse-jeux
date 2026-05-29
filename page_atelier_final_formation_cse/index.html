@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier final CSE / SSCT — MANGANELLI</title>
+<style>
+:root{--bg:#eef3fb;--ink:#0f172a;--muted:#64748b;--navy:#0b1b3a;--blue:#2563eb;--cyan:#0891b2;--orange:#f97316;--green:#16a34a;--red:#dc2626;--violet:#7c3aed;--card:rgba(255,255,255,.82);--border:rgba(15,23,42,.12);--shadow:0 24px 70px rgba(15,23,42,.14);--radius:26px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Aptos,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(37,99,235,.18),transparent 32rem),radial-gradient(circle at 78% 10%,rgba(6,182,212,.14),transparent 30rem),linear-gradient(135deg,#f8fbff 0%,var(--bg) 100%);color:var(--ink);min-height:100vh}
+.page{width:min(1440px,calc(100% - 48px));margin:0 auto;padding:36px 0 64px}
+.hero{position:relative;overflow:hidden;border-radius:34px;padding:40px;background:linear-gradient(135deg,rgba(11,27,58,.98),rgba(17,24,39,.94));color:#fff;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.18)}
+.hero:after{content:"";position:absolute;right:-80px;bottom:-130px;width:380px;height:380px;border-radius:999px;background:linear-gradient(135deg,rgba(6,182,212,.45),rgba(249,115,22,.38));filter:blur(8px);opacity:.72}
+.eyebrow{display:inline-flex;gap:10px;align-items:center;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.12);color:#dbeafe;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;border:1px solid rgba(255,255,255,.18)}
+h1{margin:22px 0 12px;font-size:clamp(38px,5vw,74px);letter-spacing:-.055em;line-height:.94;max-width:980px}
+.hero p{font-size:clamp(18px,2vw,24px);line-height:1.45;color:#cbd5e1;max-width:920px;margin:0}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.hero-actions a{position:relative;overflow:hidden;text-decoration:none;color:#fff;font-weight:900;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.13);backdrop-filter:blur(14px);padding:13px 16px;border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 16px 34px rgba(0,0,0,.18);transition:.22s ease}.hero-actions a:hover{transform:translateY(-3px);background:rgba(255,255,255,.19);box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 22px 42px rgba(0,0,0,.24)}.hero-actions a:after{content:"";position:absolute;inset:-40% auto -40% -55%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:rotate(15deg);transition:.55s ease}.hero-actions a:hover:after{left:120%}.download-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.download.secondary{background:linear-gradient(135deg,#2563eb,#0891b2)}
+.hero-content{position:relative;z-index:2}.brief{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
+.brief div{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:16px;color:#e2e8f0;backdrop-filter:blur(8px)}
+.brief b{display:block;color:#fff;font-size:24px;margin-bottom:4px}
+.toolbar{position:sticky;top:14px;z-index:50;margin:22px 0;padding:12px;border:1px solid var(--border);border-radius:24px;background:rgba(255,255,255,.84);backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(15,23,42,.10);display:flex;gap:10px;flex-wrap:wrap}
+.toolbar a{text-decoration:none;color:#172554;background:#fff;border:1px solid var(--border);padding:11px 13px;border-radius:14px;font-weight:800;font-size:14px;transition:.2s ease}
+.toolbar a:hover{transform:translateY(-2px);border-color:rgba(37,99,235,.45);box-shadow:0 10px 24px rgba(37,99,235,.12)}
+.section-title{margin:44px 0 18px;display:flex;justify-content:space-between;align-items:end;gap:24px}
+.section-title h2{font-size:clamp(28px,3vw,46px);letter-spacing:-.04em;margin:0;color:var(--navy)}
+.section-title p{max-width:680px;color:var(--muted);line-height:1.5;margin:0;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.card{grid-column:span 6;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:0 14px 44px rgba(15,23,42,.08);backdrop-filter:blur(16px);position:relative;overflow:hidden;min-height:340px}
+.card.wide{grid-column:span 12;min-height:auto}.card.highlight{background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(239,246,255,.86))}
+.card:before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:linear-gradient(90deg,var(--accent),rgba(255,255,255,0))}
+.topline{display:flex;gap:14px;align-items:center;margin-bottom:18px}.num{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;color:#fff;background:var(--accent);box-shadow:0 14px 26px rgba(15,23,42,.18);font-size:24px;font-weight:900;flex:0 0 auto}
+.label{color:var(--accent);text-transform:uppercase;letter-spacing:.09em;font-size:12px;font-weight:900;margin-bottom:3px}.card h3{margin:0;font-size:25px;letter-spacing:-.025em;line-height:1.1;color:#111827}
+.card p,.card li{color:#334155;line-height:1.5;font-size:16px}.card ul{margin:16px 0 18px 0;padding-left:20px}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.pill{padding:10px 12px;border-radius:999px;background:#f8fafc;border:1px solid var(--border);color:#334155;font-weight:800;font-size:13px;text-align:center}
+.download{display:inline-flex;align-items:center;gap:10px;margin-top:8px;text-decoration:none;color:#fff;font-weight:900;background:linear-gradient(135deg,var(--accent),#111827);padding:13px 16px;border-radius:16px;box-shadow:0 15px 28px rgba(15,23,42,.18);transition:.22s ease}.download:hover{transform:translateY(-2px);filter:saturate(1.08)}
+.method{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch}.panel{border-radius:24px;border:1px solid var(--border);background:rgba(255,255,255,.76);padding:22px}
+.steps{display:grid;gap:10px}.step{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px}
+.step span{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;background:var(--blue);font-weight:900}.step b{display:block;margin-bottom:2px;color:#172554}.step small{color:#64748b;line-height:1.35;display:block}
+.footer{margin-top:38px;border-radius:28px;background:#0b1b3a;color:#e2e8f0;padding:28px;display:flex;gap:18px;justify-content:space-between;align-items:center}.footer strong{color:#fff}.footer a{color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:12px 15px;border-radius:14px;text-decoration:none;font-weight:900;white-space:nowrap}
+@media(max-width:1000px){.brief{grid-template-columns:repeat(2,1fr)}.card{grid-column:span 12}.method{grid-template-columns:1fr}.section-title{align-items:start;flex-direction:column}}
+@media(max-width:640px){.page{width:min(100% - 24px,1440px);padding-top:18px}.hero{padding:28px;border-radius:26px}.brief{grid-template-columns:1fr}.mini{grid-template-columns:1fr}.card{padding:20px;min-height:auto}.footer{flex-direction:column;align-items:flex-start}}
+
+/* --- AERO / living page enhancements --- */
+body:before{content:"";position:fixed;inset:-25%;z-index:-2;background:radial-gradient(circle at 20% 20%,rgba(56,189,248,.22),transparent 28rem),radial-gradient(circle at 88% 18%,rgba(244,63,94,.13),transparent 24rem),radial-gradient(circle at 55% 90%,rgba(34,197,94,.14),transparent 30rem);animation:aeroFloat 16s ease-in-out infinite alternate}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.22) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),transparent 85%);opacity:.45}
+@keyframes aeroFloat{0%{transform:translate3d(-2%,0,0) scale(1)}100%{transform:translate3d(2%,-3%,0) scale(1.06)}}
+@keyframes shimmer{0%{transform:translateX(-140%) rotate(10deg)}100%{transform:translateX(160%) rotate(10deg)}}
+@keyframes orbPulse{0%,100%{transform:translateY(0) scale(1);opacity:.62}50%{transform:translateY(-18px) scale(1.06);opacity:.9}}
+@keyframes logoGlow{0%,100%{box-shadow:0 18px 60px rgba(255,255,255,.12), inset 0 1px 0 rgba(255,255,255,.85)}50%{box-shadow:0 26px 90px rgba(56,189,248,.24), inset 0 1px 0 rgba(255,255,255,.95)}}
+.logo-wrap{position:absolute;right:38px;top:34px;z-index:4;width:212px;border-radius:26px;padding:14px;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.72);backdrop-filter:blur(24px) saturate(1.35);box-shadow:0 24px 80px rgba(15,23,42,.28);animation:logoGlow 5.5s ease-in-out infinite;overflow:hidden}
+.logo-wrap:after{content:"";position:absolute;inset:-80% -35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);animation:shimmer 5.8s ease-in-out infinite}
+.logo-wrap img{display:block;width:100%;height:auto;position:relative;z-index:2;border-radius:18px}
+.aero-orb{position:absolute;border-radius:999px;filter:blur(.4px);background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(125,211,252,.08));border:1px solid rgba(255,255,255,.34);backdrop-filter:blur(8px);animation:orbPulse 8s ease-in-out infinite;z-index:1}.orb-1{width:160px;height:160px;left:40%;top:24px}.orb-2{width:88px;height:88px;right:290px;bottom:34px;animation-delay:-2s}.orb-3{width:62px;height:62px;left:52px;bottom:42px;animation-delay:-4s}
+.hero{isolation:isolate}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.10) 38%,transparent 58%);transform:translateX(-120%);animation:shimmer 8s ease-in-out infinite;z-index:1}.hero-content{max-width:980px;padding-right:240px}
+.card{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,255,255,.62));box-shadow:0 14px 44px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.8)}
+.card:hover{transform:translateY(-6px);box-shadow:0 28px 80px rgba(15,23,42,.14),0 0 0 1px rgba(255,255,255,.72) inset;border-color:rgba(37,99,235,.22)}
+.download{position:relative;overflow:hidden}.download:after{content:"";position:absolute;inset:-120% -50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);transform:translateX(-140%) rotate(12deg)}.download:hover:after{animation:shimmer 1.4s ease}
+.toolbar{background:rgba(255,255,255,.70);box-shadow:0 18px 50px rgba(15,23,42,.10),inset 0 1px 0 rgba(255,255,255,.9)}
+@media(max-width:900px){.logo-wrap{position:relative;right:auto;top:auto;width:190px;margin:0 0 22px}.hero-content{padding-right:0}.hero{display:flex;flex-direction:column}.orb-1,.orb-2{display:none}}
+
+</style>
+</head>
+<body>
+<main class="page">
+<header class="hero" id="top"><div class="aero-orb orb-1"></div><div class="aero-orb orb-2"></div><div class="aero-orb orb-3"></div><div class="logo-wrap"><img src="assets/manganelli-logo.jpg" alt="Logo MANGANELLI"></div><div class="hero-content">
+<span class="eyebrow">Atelier final · Formation CSE / SSCT</span>
+<h1>Piloter l’atelier final CSE comme une mission terrain</h1>
+<p>Vous êtes les élus du CSE de MANGANELLI. La réunion préparatoire est fixée au <strong>mardi 17 novembre à 9h</strong> afin de préparer les sept points de travail ci-dessous. Votre objectif : construire une position collective claire, argumentée et exploitable avant la réunion plénière du CSE prévue le <strong>mardi 1er décembre à 9h</strong>.</p>
+<div class="hero-actions">
+  <a href="../index.html">🏠 Accueil</a>
+  <a href="https://www.inrs.fr/" target="_blank" rel="noopener noreferrer">↗ Site INRS</a>
+  <a href="https://www.legifrance.gouv.fr/codes/texte_lc/LEGITEXT000006072050/" target="_blank" rel="noopener noreferrer">↗ Code du travail · Légifrance</a>
+</div>
+<div class="brief"><div><b>7</b> livrables à produire</div><div><b>CSE</b> posture d’élu en réunion</div><div><b>DUERP</b> mise à jour argumentée</div><div><b>PAPRIPACT</b> actions planifiées</div></div>
+</div></header>
+
+<nav class="toolbar" aria-label="Navigation atelier">
+<a href="../index.html">🏠 Accueil</a><a href="#point0">0 · Ordre du jour</a><a href="#point1">1 · Inspection</a><a href="#point2">2 · Planning 2027</a><a href="#point3">3 · Accident du travail</a><a href="#point4">4 · Avis CSE</a><a href="#point5">5 · Chaises de bureau</a><a href="#point6">6 · RPS 2027</a>
+</nav>
+
+<section class="section-title"><h2>Mission des groupes</h2><p>Chaque groupe prépare une intervention comme s’il devait la présenter en réunion plénière du CSE. L’objectif est de transformer les constats terrain en propositions argumentées, traçables et exploitables.</p></section>
+
+<section class="grid">
+<article class="card wide highlight" id="point0" style="--accent:#0f172a">
+<div class="topline"><div class="num">0</div><div><div class="label">Préparer la réunion</div><h3>Proposer un ordre du jour intégrant les cinq points principaux</h3></div></div>
+<div class="method"><div><p>Les participants rédigent une proposition d’ordre du jour pour permettre au CSE de traiter les sujets de l’atelier dans un cadre clair : rapport d’inspection, enquête AT, mise à jour DUERP, PAPRIPACT, avis CSE, ergonomie des postes et démarche RPS.</p><div class="mini"><div class="pill">Nature du point</div><div class="pill">Décision attendue</div><div class="pill">Article / fondement</div></div><div class="download-row"><a class="download" href="docs/modele_ordre_du_jour_CSE.docx" download>⬇ Télécharger le modèle d’ordre du jour</a><a class="download secondary" href="docs/aide_construction_ODJ.docx" download>⬇ Télécharger l’aide construction ODJ</a></div></div>
+<div class="panel"><div class="steps"><div class="step"><span>1</span><div><b>Formuler précisément</b><small>Un point = un sujet clair, une décision ou un avis attendu.</small></div></div><div class="step"><span>2</span><div><b>Hiérarchiser</b><small>Commencer par les sujets SSCT prioritaires et ceux nécessitant un vote.</small></div></div><div class="step"><span>3</span><div><b>Prévoir les suites</b><small>Chaque point doit déboucher sur une action, un avis, une demande ou un calendrier.</small></div></div></div></div></div>
+</article>
+
+<article class="card" id="point1" style="--accent:#2563eb"><div class="topline"><div class="num">1</div><div><div class="label">Inspection SSCT</div><h3>Présenter le rapport d’inspection et proposer les suites</h3></div></div><p>Les participants ont réalisé une inspection en matière de santé, sécurité et conditions de travail. Ils doivent présenter le rapport, puis proposer une mise à jour du DUERP et des actions à intégrer au PAPRIPACT MANGANELLI.</p><ul><li>Présenter les constats principaux et les situations dangereuses observées.</li><li>Relier les constats aux risques, dommages possibles et unités de travail.</li><li>Argumenter les actions avec les 9 principes généraux de prévention.</li><li>Transformer les propositions en actions PAPRIPACT : responsable, délai, priorité, indicateur.</li></ul><div class="mini"><div class="pill">Rapport</div><div class="pill">DUERP</div><div class="pill">PAPRIPACT</div></div></article>
+
+<article class="card" id="point2" style="--accent:#0891b2"><div class="topline"><div class="num">2</div><div><div class="label">Planning annuel</div><h3>Proposer le calendrier des inspections 2027</h3></div></div><p>Les participants construisent une proposition de planning annuel d’inspections : zones à visiter, objectifs, risques à observer, documents à consulter et suites prévues en réunion.</p><ul><li>Prévoir des inspections régulières et ciblées.</li><li>Justifier les priorités : accidents, signalements, coactivité, RPS, changements d’organisation.</li><li>Prévoir la restitution en CSE et le suivi des actions.</li></ul><a class="download" href="docs/aide-planning-inspections-cse-2027.docx" download>⬇ Télécharger l’aide au planning 2027</a></article>
+
+<article class="card" id="point3" style="--accent:#dc2626"><div class="topline"><div class="num">3</div><div><div class="label">Enquête AT</div><h3>Exploiter l’enquête accident du travail</h3></div></div><p>Un accident du travail a eu lieu. Une enquête a été réalisée par un membre du CSE et un représentant de la direction. Les participants doivent transformer l’enquête en mesures de prévention.</p><ul><li>Distinguer les faits des opinions et hypothèses.</li><li>Identifier les causes techniques, organisationnelles et humaines.</li><li>Proposer une mise à jour du DUERP sur les risques révélés par l’accident.</li><li>Intégrer les actions au PAPRIPACT MANGANELLI avec les 9 principes généraux.</li></ul><div class="mini"><div class="pill">Faits</div><div class="pill">Causes</div><div class="pill">Actions</div></div></article>
+
+<article class="card" id="point4" style="--accent:#7c3aed"><div class="topline"><div class="num">4</div><div><div class="label">Avis motivé</div><h3>Préparer un avis CSE à partir du DUERP</h3></div></div><p>Les participants disposent du document unique d’évaluation des risques professionnels de leur entreprise. Ils doivent préparer un avis à rendre lors de la prochaine réunion plénière du CSE.</p><ul><li>Évaluer si les informations transmises sont suffisantes.</li><li>Formuler un avis : favorable, favorable avec réserves ou défavorable.</li><li>Rédiger des motifs factuels et des vœux / contre-propositions.</li></ul><a class="download" href="docs/avis_CSE_modele.docx" download>⬇ Télécharger le modèle d’avis CSE</a></article>
+
+<article class="card" id="point5" style="--accent:#f97316"><div class="topline"><div class="num">5</div><div><div class="label">Ergonomie / postes</div><h3>Traiter la demande de modification des chaises de bureau</h3></div></div><p>Les salariés souhaitent modifier leurs chaises de bureau. Une proposition a déjà été formulée : utiliser des ballons comme assise. Les participants doivent l’analyser avec les 9 principes généraux de prévention.</p><ul><li>Le ballon supprime-t-il le risque ou crée-t-il de nouveaux risques ?</li><li>La solution agit-elle à la source ou seulement sur le comportement individuel ?</li><li>Quelles mesures collectives privilégier : analyse ergonomique, réglage des postes, essais encadrés, formation, alternance posturale ?</li><li>Quelles actions inscrire au PAPRIPACT : diagnostic, test, budget, indicateur, retour d’expérience ?</li></ul><div class="mini"><div class="pill">Éviter</div><div class="pill">Adapter</div><div class="pill">Planifier</div></div></article>
+
+<article class="card" id="point6" style="--accent:#16a34a"><div class="topline"><div class="num">6</div><div><div class="label">RPS 2027</div><h3>Proposer un planning d’enquête RPS sur l’année 2027</h3></div></div><p>Les participants proposent une démarche d’évaluation des risques psychosociaux à conduire en 2027. La grille INRS RPS-DU commence à partir de la page 19 du PDF fourni dans l’atelier.</p><ul><li>Découper l’entreprise en unités de travail pertinentes.</li><li>Organiser des entretiens collectifs par unité de travail.</li><li>Utiliser la grille comme guide d’échange, pas comme questionnaire individuel.</li><li>Reporter les résultats dans le DUERP et proposer un plan d’actions suivi en CSE.</li></ul><a class="download" href="docs/grille_rps_duerp_inrs.pdf" download>⬇ Télécharger la grille RPS-DU INRS</a></article>
+
+<article class="card wide" style="--accent:#0f172a"><div class="topline"><div class="num">✓</div><div><div class="label">Restitution attendue</div><h3>Format de présentation conseillé</h3></div></div><div class="method"><div class="panel"><h3>Structure en 6 minutes par groupe</h3><div class="steps"><div class="step"><span>1</span><div><b>Constat</b><small>Ce que nous avons observé ou analysé, sans jugement.</small></div></div><div class="step"><span>2</span><div><b>Risque</b><small>Danger, exposition, dommages possibles, population concernée.</small></div></div><div class="step"><span>3</span><div><b>Argumentation</b><small>Code du travail, 9 principes généraux, travail réel, documents consultés.</small></div></div><div class="step"><span>4</span><div><b>Propositions</b><small>Actions concrètes, responsables, délais, indicateurs, intégration DUERP / PAPRIPACT.</small></div></div></div></div><div class="panel"><h3>Critères de réussite</h3><ul><li>Les propositions sont concrètes et applicables chez MANGANELLI.</li><li>Les actions ne se limitent pas aux EPI ou à la formation.</li><li>Les risques sont reliés à une situation réelle de travail.</li><li>Les suites sont traçables : ordre du jour, avis, PV, DUERP, PAPRIPACT.</li></ul></div></div></article>
+</section>
+<footer class="footer"><div><strong>Atelier final CSE / SSCT — MANGANELLI</strong><br>Transformer les constats terrain en action collective de prévention.</div><a href="#top">↑ Revenir en haut</a></footer>
+</main>
+</body>
+</html>
